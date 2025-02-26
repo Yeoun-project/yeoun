@@ -19,18 +19,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final UserService userService;
     private final KakaoService kakaoService;
-
-    @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequestDto dto) {
-        try {
-            UserEntity newUser = userService.register(dto);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Register successful, username: " + newUser.getUsername());
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getLocalizedMessage());
-        }
-    }
 
     @GetMapping("/login/kakao")
     public ResponseEntity<?> kakaoLogin(@RequestParam("code") String code, HttpServletResponse response) {
