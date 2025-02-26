@@ -2,8 +2,6 @@ package com.example.demo.kakao.controller;
 
 import com.example.demo.kakao.dto.KakaoUserInfoResponseDto;
 import com.example.demo.kakao.service.KakaoService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
