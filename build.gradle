@@ -22,12 +22,17 @@ dependencies {
 
 	// spring security
 	implementation 'org.springframework.boot:spring-boot-starter-security'
+
 	// jwt
 	implementation 'com.auth0:java-jwt:4.4.0'
+
 	// email 관련
 	implementation 'javax.mail:javax.mail-api:1.6.2'
 	implementation 'javax.activation:activation:1.1.1'
 	implementation 'com.sun.mail:javax.mail:1.6.2'
+
+	// util
+	implementation 'org.projectlombok:lombok'
 
 	// default
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
