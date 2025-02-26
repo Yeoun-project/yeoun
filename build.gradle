@@ -24,12 +24,15 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 
 	// jwt
-	implementation 'com.auth0:java-jwt:4.4.0'
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+	// jpa
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
 	// mysql
 	runtimeOnly 'com.mysql:mysql-connector-j'
-
-	// todo db 생성 후 jpa 연결 및 의존성 추가
 
 	// email 관련
 	implementation 'javax.mail:javax.mail-api:1.6.2'
