@@ -95,7 +95,7 @@ public class KakaoUserInfoResponseDto {
 
             //true : 기본 프로필, false : 사용자 등록
             @JsonProperty("is_default_image")
-            public String isDefaultImage;
+            public Boolean isDefaultImage;
 
             //true : 기본 닉네임, false : 사용자 등록
             @JsonProperty("is_default_nickname")

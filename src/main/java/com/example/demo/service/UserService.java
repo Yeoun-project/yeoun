@@ -14,11 +14,8 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
 
     public UserEntity register(RegisterRequestDto dto) {
-
-        //TODO 필요시 아이디 비밀번호 유효성 검사 로직
 
         Optional<UserEntity> findUser = userRepository.findByUsername(dto.getUsername());
 
@@ -26,7 +23,7 @@ public class UserService {
 
         UserEntity newUser = UserEntity.builder()
                 .username(dto.getUsername())
-                .password(passwordEncoder.encode(dto.getPassword()))
+                .password(dto.getPassword())
                 .role("ROLE_USER")
                 .build();
 

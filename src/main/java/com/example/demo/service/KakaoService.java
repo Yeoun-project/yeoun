@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.dto.KakaoTokenResponseDto;
 import com.example.demo.dto.KakaoUserInfoResponseDto;
+import com.example.demo.dto.auth.AuthTokenDto;
 import io.netty.handler.codec.http.HttpHeaderValues;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ public class KakaoService {
         KAUTH_USER_URL_HOST = "https://kapi.kakao.com";
     }
 
-    public String getAccessTokenFromKakao(String code) {
+    public AuthTokenDto getTokenFromKakao(String code) {
 
         KakaoTokenResponseDto kakaoTokenResponseDto = WebClient.create(KAUTH_TOKEN_URL_HOST).post()
                 .uri(uriBuilder -> uriBuilder
@@ -47,7 +48,7 @@ public class KakaoService {
         log.info("Access Token: {}", kakaoTokenResponseDto.getAccessToken());
         log.info("Refresh Token: {}", kakaoTokenResponseDto.getRefreshToken());
 
-        return kakaoTokenResponseDto.getAccessToken();
+        return new AuthTokenDto(kakaoTokenResponseDto.getAccessToken(), kakaoTokenResponseDto.getRefreshToken());
     }
 
     public KakaoUserInfoResponseDto getUserInfo(String accessToken) {
