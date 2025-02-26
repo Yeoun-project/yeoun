@@ -1,18 +1,12 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.RegisterRequestDto;
 import com.example.demo.dto.auth.AuthTokenDto;
-import com.example.demo.entity.UserEntity;
 import com.example.demo.service.KakaoService;
-import com.example.demo.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/public/auth")
