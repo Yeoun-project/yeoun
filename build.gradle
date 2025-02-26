@@ -26,6 +26,11 @@ dependencies {
 	// jwt
 	implementation 'com.auth0:java-jwt:4.4.0'
 
+	// mysql
+	runtimeOnly 'com.mysql:mysql-connector-j'
+
+	// todo db 생성 후 jpa 연결 및 의존성 추가
+
 	// email 관련
 	implementation 'javax.mail:javax.mail-api:1.6.2'
 	implementation 'javax.activation:activation:1.1.1'
