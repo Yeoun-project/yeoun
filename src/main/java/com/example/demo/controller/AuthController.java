@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.auth.AuthTokenDto;
+import com.example.demo.jwt.JwtUtil;
 import com.example.demo.service.KakaoService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -14,19 +14,21 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final KakaoService kakaoService;
+    private final JwtUtil jwtUtil;
 
     @GetMapping("/login/kakao")
     public ResponseEntity<?> kakaoLogin(@RequestParam("code") String code, HttpServletResponse response) {
         try {
-            AuthTokenDto tokenDto = kakaoService.getTokenFromKakao(code);
+            Long userId = kakaoService.getUserIdFromKakao(code);
 
-            String accessCookie = String.format("accessToken=%s; HttpOnly; Path=/; Max-Age=%d; SameSite=None",
-                    tokenDto.getAccessToken(), 60 * 60);
-            String refreshCookie = String.format("refreshToken=%s; HttpOnly; Path=/; Max-Age=%d; SameSite=None",
-                    tokenDto.getRefreshToken(), 60 * 60 * 24 * 7);
+            String accessToken = jwtUtil.generateAccessToken(userId.toString());
+            String refreshToken = jwtUtil.generateRefreshToken(userId.toString());
 
-            response.addHeader("Set-Cookie", accessCookie);
-            response.addHeader("Set-Cookie", refreshCookie);
+            String formattedAccessCookie = String.format("accessToken=%s; HttpOnly; Path=/; Max-Age=%d; SameSite=None", accessToken, 60 * 60);
+            String formattedRefreshCookie = String.format("refreshToken=%s; HttpOnly; Path=/; Max-Age=%d; SameSite=None", refreshToken, 60 * 60 * 24 * 7);
+
+            response.addHeader("Set-Cookie", formattedAccessCookie);
+            response.addHeader("Set-Cookie", formattedRefreshCookie);
 
             return ResponseEntity.ok("Login successful");
         } catch (RuntimeException e) {

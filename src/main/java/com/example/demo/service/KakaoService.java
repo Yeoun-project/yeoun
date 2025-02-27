@@ -2,7 +2,6 @@ package com.example.demo.service;
 
 import com.example.demo.dto.KakaoTokenResponseDto;
 import com.example.demo.dto.KakaoUserInfoResponseDto;
-import com.example.demo.dto.auth.AuthTokenDto;
 import com.example.demo.entity.UserEntity;
 import com.example.demo.repository.UserRepository;
 import io.netty.handler.codec.http.HttpHeaderValues;
@@ -30,7 +29,7 @@ public class KakaoService {
 
     private final UserRepository userRepository;
 
-    public AuthTokenDto getTokenFromKakao(String code) {
+    public Long getUserIdFromKakao(String code) {
 
         KakaoTokenResponseDto kakaoTokenResponseDto = WebClient.create(KAUTH_TOKEN_URL_HOST).post()
                 .uri(uriBuilder -> uriBuilder
@@ -47,18 +46,15 @@ public class KakaoService {
                 .bodyToMono(KakaoTokenResponseDto.class)
                 .block();
 
-        log.info("Access Token: {}", kakaoTokenResponseDto.getAccessToken());
-        log.info("Refresh Token: {}", kakaoTokenResponseDto.getRefreshToken());
-
         KakaoUserInfoResponseDto dto = getUserInfo(kakaoTokenResponseDto.getAccessToken());
         Optional<UserEntity> findUser = userRepository.findByKakaoId(dto.id);
 
-        if (findUser.isEmpty()) registerByUserInfo(dto);
+        UserEntity user = findUser.orElseGet(() -> registerByUserInfo(dto));
 
-        return new AuthTokenDto(kakaoTokenResponseDto.getAccessToken(), kakaoTokenResponseDto.getRefreshToken());
+        return user.getId();
     }
 
-    public void registerByUserInfo(KakaoUserInfoResponseDto dto) {
+    public UserEntity registerByUserInfo(KakaoUserInfoResponseDto dto) {
 
         UserEntity newUser = UserEntity.builder()
                 .kakaoId(dto.getId())
@@ -67,7 +63,7 @@ public class KakaoService {
                 .role("ROLE_USER")
                 .build();
 
-        userRepository.save(newUser);
+        return userRepository.save(newUser);
     }
 
     public KakaoUserInfoResponseDto getUserInfo(String accessToken) {
