@@ -7,6 +7,7 @@ build/
 
 application.properties
 application.yml
+keystore.p12
 
 ### STS ###
 .apt_generated
