@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import com.example.demo.common.ErrorResponse;
+import com.example.demo.common.SuccessResponse;
 import com.example.demo.jwt.JwtUtil;
 import com.example.demo.service.KakaoService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -30,9 +32,9 @@ public class AuthController {
             response.addHeader("Set-Cookie", formattedAccessCookie);
             response.addHeader("Set-Cookie", formattedRefreshCookie);
 
-            return ResponseEntity.ok("Login successful");
+            return ResponseEntity.ok(new SuccessResponse("Login successful", ""));
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Denied access");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse("", "Access denied"));
         }
     }
 }
