@@ -16,20 +16,23 @@ public class UserEntity {
     private Long id;
 
     @Column(nullable = false)
-    private String username;
+    private Long kakaoId;
 
     @Column(nullable = false)
-    private String password;
+    private String name;
+
+    @Column(nullable = false)
+    private String email;
 
     @Column(nullable = false)
     private String role;
 
     @Builder
-    public UserEntity(String username, String password, String role) {
-        this.username = username;
-        this.password = password;
+    public UserEntity(Long kakaoId, String name, String email, String role) {
+        this.kakaoId = kakaoId;
+        this.name = name;
+        this.email = email;
         this.role = role;
     }
-
 }
 

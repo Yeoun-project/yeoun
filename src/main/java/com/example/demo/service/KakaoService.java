@@ -3,9 +3,11 @@ package com.example.demo.service;
 import com.example.demo.dto.KakaoTokenResponseDto;
 import com.example.demo.dto.KakaoUserInfoResponseDto;
 import com.example.demo.dto.auth.AuthTokenDto;
+import com.example.demo.entity.UserEntity;
+import com.example.demo.repository.UserRepository;
 import io.netty.handler.codec.http.HttpHeaderValues;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
@@ -13,20 +15,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.util.Optional;
+
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class KakaoService {
 
-    private final String clientId;
-    private final String KAUTH_TOKEN_URL_HOST;
-    private final String KAUTH_USER_URL_HOST;
+    @Value("${kakao.client_id}")
+    private String clientId;
 
-    @Autowired
-    public KakaoService(@Value("${kakao.client_id}") String clientId) {
-        this.clientId = clientId;
-        KAUTH_TOKEN_URL_HOST = "https://kauth.kakao.com";
-        KAUTH_USER_URL_HOST = "https://kapi.kakao.com";
-    }
+    private String KAUTH_TOKEN_URL_HOST = "https://kauth.kakao.com";
+    private String KAUTH_USER_URL_HOST = "https://kapi.kakao.com";
+
+    private final UserRepository userRepository;
 
     public AuthTokenDto getTokenFromKakao(String code) {
 
@@ -48,7 +50,24 @@ public class KakaoService {
         log.info("Access Token: {}", kakaoTokenResponseDto.getAccessToken());
         log.info("Refresh Token: {}", kakaoTokenResponseDto.getRefreshToken());
 
+        KakaoUserInfoResponseDto dto = getUserInfo(kakaoTokenResponseDto.getAccessToken());
+        Optional<UserEntity> findUser = userRepository.findByKakaoId(dto.id);
+
+        if (findUser.isEmpty()) registerByUserInfo(dto);
+
         return new AuthTokenDto(kakaoTokenResponseDto.getAccessToken(), kakaoTokenResponseDto.getRefreshToken());
+    }
+
+    public void registerByUserInfo(KakaoUserInfoResponseDto dto) {
+
+        UserEntity newUser = UserEntity.builder()
+                .kakaoId(dto.getId())
+                .name(dto.getKakaoAccount().getName())
+                .email(dto.getKakaoAccount().getEmail())
+                .role("ROLE_USER")
+                .build();
+
+        userRepository.save(newUser);
     }
 
     public KakaoUserInfoResponseDto getUserInfo(String accessToken) {
@@ -66,10 +85,6 @@ public class KakaoService {
                 .onStatus(HttpStatusCode::is5xxServerError, clientResponse -> Mono.error(new RuntimeException("Internal Server Error")))
                 .bodyToMono(KakaoUserInfoResponseDto.class)
                 .block();
-
-        log.info("Auth ID: {} ", userInfo.getId());
-        log.info("NickName: {} ", userInfo.getKakaoAccount().getProfile().getNickName());
-        log.info("ProfileImageUrl: {} ", userInfo.getKakaoAccount().getProfile().getProfileImageUrl());
 
         return userInfo;
     }
