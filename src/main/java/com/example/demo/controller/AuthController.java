@@ -4,6 +4,7 @@ import com.example.demo.common.ErrorResponse;
 import com.example.demo.common.SuccessResponse;
 import com.example.demo.jwt.JwtUtil;
 import com.example.demo.service.KakaoService;
+import com.example.demo.util.CookieUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,15 +27,12 @@ public class AuthController {
             String accessToken = jwtUtil.generateAccessToken(userId.toString());
             String refreshToken = jwtUtil.generateRefreshToken(userId.toString());
 
-            String formattedAccessCookie = String.format("accessToken=%s; HttpOnly; Path=/; Max-Age=%d; SameSite=None", accessToken, 60 * 60);
-            String formattedRefreshCookie = String.format("refreshToken=%s; HttpOnly; Path=/; Max-Age=%d; SameSite=None", refreshToken, 60 * 60 * 24 * 7);
-
-            response.addHeader("Set-Cookie", formattedAccessCookie);
-            response.addHeader("Set-Cookie", formattedRefreshCookie);
+            CookieUtil.addCookie(response, "accessToken", accessToken, 60 * 60);
+            CookieUtil.addCookie(response, "refreshToken", refreshToken, 60 * 60 * 24 * 7);
 
             return ResponseEntity.ok(new SuccessResponse("Login successful", ""));
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse("", "Access denied"));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("", "Access denied"));
         }
     }
 }
