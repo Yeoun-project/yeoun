@@ -28,7 +28,7 @@ public class AuthController {
 
             generateAndAddTokenCookie(userId, response);
 
-            return ResponseEntity.ok(new SuccessResponse("Login successful by kakao", ""));
+            return ResponseEntity.ok(new SuccessResponse("Login successful by Kakao", null));
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("", "Access denied"));
         }
@@ -41,9 +41,9 @@ public class AuthController {
 
             generateAndAddTokenCookie(userId, response);
 
-            return ResponseEntity.ok(new SuccessResponse("Login successful by naver", ""));
+            return ResponseEntity.ok(new SuccessResponse("Login successful by Naver", null));
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("", e.getLocalizedMessage()));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("", "Access denied"));
         }
     }
 
