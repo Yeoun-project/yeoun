@@ -16,7 +16,10 @@ public class UserEntity {
     private Long id;
 
     @Column(nullable = false)
-    private Long kakaoId;
+    private String oAuthId;
+
+    @Column(nullable = false)
+    private String oAuthPlatform;
 
     @Column(nullable = false)
     private String name;
@@ -25,13 +28,18 @@ public class UserEntity {
     private String email;
 
     @Column(nullable = false)
+    private String phone;
+
+    @Column(nullable = false)
     private String role;
 
     @Builder
-    public UserEntity(Long kakaoId, String name, String email, String role) {
-        this.kakaoId = kakaoId;
+    public UserEntity(String oAuthId, String oAuthPlatform, String name, String email, String phone, String role) {
+        this.oAuthId = oAuthId;
+        this.oAuthPlatform = oAuthPlatform;
         this.name = name;
         this.email = email;
+        this.phone = phone;
         this.role = role;
     }
 }
