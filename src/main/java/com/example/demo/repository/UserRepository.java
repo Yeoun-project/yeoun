@@ -10,8 +10,6 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
-    Optional<UserEntity> findByPhone(String phone);
-
     @Query("SELECT u FROM UserEntity u WHERE u.oAuthId = :oAuthId")
     Optional<UserEntity> findByOAuthId(@Param("oAuthId") String oAuthId);
 }
