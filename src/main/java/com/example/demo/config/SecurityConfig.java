@@ -1,6 +1,7 @@
 package com.example.demo.config;
 
-import com.example.demo.jwt.JwtAuthenticationFilter;
+import com.example.demo.jwt.JwtAccessTokenFilter;
+import com.example.demo.jwt.JwtRefreshTokenFilter;
 import com.example.demo.service.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -17,7 +18,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtAccessTokenFilter jwtAccessTokenFilter;
+    private final JwtRefreshTokenFilter jwtRefreshTokenFilter;
     private final CustomUserDetailsService customUserDetailsService;
 
     @Bean
@@ -31,7 +33,8 @@ public class SecurityConfig {
 //                        .requestMatchers("").hasRole("USER") //TODO 추후 필요시 경로 추가
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAccessTokenFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(jwtRefreshTokenFilter, JwtAccessTokenFilter.class)
                 .userDetailsService(customUserDetailsService)
                 .build();
     }
