@@ -50,7 +50,7 @@ public class KakaoService {
                 .block();
 
         KakaoUserInfoResponseDto kakaoUserInfoResponseDto = getUserInfo(kakaoTokenResponseDto.getAccessToken());
-        Optional<UserEntity> findUser = userRepository.findByPhone(kakaoUserInfoResponseDto.getKakaoAccount().getPhone());
+        Optional<UserEntity> findUser = userRepository.findByOAuthId(kakaoUserInfoResponseDto.getId());
 
         UserEntity user = findUser.orElseGet(() -> userService.registerByUserInfo(
                 UserRegisterInfoVo.builder()

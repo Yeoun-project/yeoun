@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.common.ErrorResponse;
 import com.example.demo.common.SuccessResponse;
 import com.example.demo.jwt.JwtUtil;
+import com.example.demo.service.GoogleService;
 import com.example.demo.service.KakaoService;
 import com.example.demo.service.NaverService;
 import com.example.demo.util.CookieUtil;
@@ -19,6 +20,7 @@ public class AuthController {
 
     private final KakaoService kakaoService;
     private final NaverService naverService;
+    private final GoogleService googleService;
     private final JwtUtil jwtUtil;
 
     @GetMapping("/login/kakao")
@@ -43,6 +45,21 @@ public class AuthController {
 
             return ResponseEntity.ok(new SuccessResponse("Login successful by Naver", null));
         } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("", "Access denied"));
+        }
+    }
+
+    @GetMapping("/login/google")
+    public ResponseEntity<?> googleLogin(@RequestParam("code") String code, HttpServletResponse response) {
+        System.out.println(code);
+        try{
+            Long userId = googleService.getUserIdFromGoogle(code);
+
+            generateAndAddTokenCookie(userId, response);
+
+            return ResponseEntity.ok(new SuccessResponse("Login successful by Google", null));
+        } catch (RuntimeException e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("", "Access denied"));
         }
     }
