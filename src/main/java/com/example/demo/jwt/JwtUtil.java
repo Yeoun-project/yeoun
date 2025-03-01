@@ -44,14 +44,6 @@ public class JwtUtil {
                 .compact();
     }
 
-    public String refreshAccessToken(String refreshToken) {
-        if (validateAccessToken(refreshToken)) {
-            String userId = extractUserId(refreshToken);
-            return generateAccessToken(userId);
-        }
-        return null;
-    }
-
     public String extractUserId(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
@@ -61,7 +53,7 @@ public class JwtUtil {
                 .getSubject();
     }
 
-    public boolean validateAccessToken(String token) {
+    public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder()
                     .setSigningKey(getSigningKey())
