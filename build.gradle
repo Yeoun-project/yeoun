@@ -34,11 +34,6 @@ dependencies {
 	// mysql
 	runtimeOnly 'com.mysql:mysql-connector-j'
 
-	// email 관련
-	implementation 'javax.mail:javax.mail-api:1.6.2'
-	implementation 'javax.activation:activation:1.1.1'
-	implementation 'com.sun.mail:javax.mail:1.6.2'
-
 	// util
 	implementation 'org.projectlombok:lombok'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
