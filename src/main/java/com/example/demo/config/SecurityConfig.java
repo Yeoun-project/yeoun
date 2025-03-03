@@ -2,7 +2,6 @@ package com.example.demo.config;
 
 import com.example.demo.jwt.JwtAccessTokenFilter;
 import com.example.demo.jwt.JwtRefreshTokenFilter;
-import com.example.demo.service.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,7 +19,6 @@ public class SecurityConfig {
 
     private final JwtAccessTokenFilter jwtAccessTokenFilter;
     private final JwtRefreshTokenFilter jwtRefreshTokenFilter;
-    private final CustomUserDetailsService customUserDetailsService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -35,7 +33,6 @@ public class SecurityConfig {
                 )
                 .addFilterBefore(jwtAccessTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(jwtRefreshTokenFilter, JwtAccessTokenFilter.class)
-                .userDetailsService(customUserDetailsService)
                 .build();
     }
 

@@ -33,7 +33,7 @@ public class NaverService {
     private final UserService userService;
     private final UserRepository userRepository;
 
-    public Long getUserIdFromNaver(String code) {
+    public UserEntity getUserFromNaver(String code) {
 
         NaverTokenResponseDto naverTokenResponseDto = WebClient.create(NAUTH_TOKEN_URL_HOST).post()
                 .uri(uriBuilder -> uriBuilder
@@ -64,7 +64,7 @@ public class NaverService {
                         .build()
         ));
 
-        return user.getId();
+        return user;
     }
 
     public NaverUserInfoResponseDto getUserInfo(String accessToken) {

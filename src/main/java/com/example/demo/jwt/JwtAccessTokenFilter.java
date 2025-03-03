@@ -1,17 +1,18 @@
 package com.example.demo.jwt;
 
-import com.example.demo.service.CustomUserDetailsService;
+import com.example.demo.role.Role;
 import com.example.demo.util.CookieUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.Collection;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -23,37 +24,39 @@ import java.io.IOException;
 public class JwtAccessTokenFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
-    private final CustomUserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
         String accessToken = CookieUtil.getTokenFromCookies("accessToken", request);
 
-        if (accessToken == null) {
+        // 모든 uri에 대하여 실행함 (request uri 확인 절차 없음)
+
+        if (accessToken == null || accessToken.isEmpty()) {
             chain.doFilter(request, response);
             return;
         }
 
         try {
-            String userId = jwtUtil.extractUserId(accessToken);
+            Map<String, String> token = jwtUtil.extractToken(accessToken, "ip", "role");
 
-            if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
+            String userId = token.get("subject");
+            Collection<? extends GrantedAuthority> authorities = Role.getRole(token.get("role")).getAuthorities();
+            String ip = token.get("ip");
 
-                if (jwtUtil.validateToken(accessToken)) {
-                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                            userDetails, null, userDetails.getAuthorities());
-                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(authToken);
-
-                    log.info("인증 성공, 사용자 PK: {}, 권한: {}", userId, userDetails.getAuthorities());
-                }
+            // token 검증
+            if(ip.isEmpty() || !ip.equals(JwtUtil.getIpFromRequest(request))){
+                throw new RuntimeException("strange access token");
             }
+
+            // security context에 authenticaion 저장
+            SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userId, null, authorities));
+
+            log.info("인증 성공, 사용자 PK: {}, 권한: {}", userId, authorities);
+
         } catch (Exception e) {
             log.error("인증 실패!, {}", e.getLocalizedMessage());
-            chain.doFilter(request, response);
         }
+        chain.doFilter(request, response);
     }
-
 }

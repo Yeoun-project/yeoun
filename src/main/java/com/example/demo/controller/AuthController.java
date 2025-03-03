@@ -2,13 +2,16 @@ package com.example.demo.controller;
 
 import com.example.demo.common.ErrorResponse;
 import com.example.demo.common.SuccessResponse;
+import com.example.demo.entity.UserEntity;
 import com.example.demo.jwt.JwtUtil;
 import com.example.demo.service.GoogleService;
 import com.example.demo.service.KakaoService;
 import com.example.demo.service.NaverService;
 import com.example.demo.util.CookieUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,17 +21,22 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthController {
 
+    @Value("${jwt.access-token-expiration-time}")
+    private long accessTokenExpirationTime;
+    @Value("${jwt.refresh-token-expiration-time}")
+    private long refreshTokenExpirationTime;
+
     private final KakaoService kakaoService;
     private final NaverService naverService;
     private final GoogleService googleService;
     private final JwtUtil jwtUtil;
 
     @GetMapping("/login/kakao")
-    public ResponseEntity<?> kakaoLogin(@RequestParam("code") String code, HttpServletResponse response) {
+    public ResponseEntity<?> kakaoLogin(@RequestParam("code") String code, HttpServletRequest request, HttpServletResponse response) {
         try {
-            Long userId = kakaoService.getUserIdFromKakao(code);
+            UserEntity user = kakaoService.getUserFromKakao(code);
 
-            generateAndAddTokenCookie(userId, response);
+            generateAndAddTokenCookie(user, request, response);
 
             return ResponseEntity.ok(new SuccessResponse("Login successful by Kakao", null));
         } catch (RuntimeException e) {
@@ -37,11 +45,11 @@ public class AuthController {
     }
 
     @GetMapping("/login/naver")
-    public ResponseEntity<?> naverLogin(@RequestParam("code") String code, HttpServletResponse response) {
+    public ResponseEntity<?> naverLogin(@RequestParam("code") String code, HttpServletRequest request, HttpServletResponse response) {
         try {
-            Long userId = naverService.getUserIdFromNaver(code);
+            UserEntity user = naverService.getUserFromNaver(code);
 
-            generateAndAddTokenCookie(userId, response);
+            generateAndAddTokenCookie(user, request, response);
 
             return ResponseEntity.ok(new SuccessResponse("Login successful by Naver", null));
         } catch (RuntimeException e) {
@@ -53,7 +61,7 @@ public class AuthController {
     public ResponseEntity<?> googleLogin(@RequestParam("code") String code, HttpServletResponse response) {
         System.out.println(code);
         try{
-            Long userId = googleService.getUserIdFromGoogle(code);
+            Long userId = googleService.getUserFromGoogle(code);
 
             generateAndAddTokenCookie(userId, response);
 
@@ -64,12 +72,14 @@ public class AuthController {
         }
     }
 
-    private void generateAndAddTokenCookie(Long userId, HttpServletResponse response) {
-        String accessToken = jwtUtil.generateAccessToken(userId.toString());
-        String refreshToken = jwtUtil.generateRefreshToken(userId.toString());
+    private void generateAndAddTokenCookie(UserEntity user, HttpServletRequest request, HttpServletResponse response) {
+        String ip = JwtUtil.getIpFromRequest(request);
 
-        CookieUtil.addCookie(response, "accessToken", accessToken, 60 * 60);
-        CookieUtil.addCookie(response, "refreshToken", refreshToken, 60 * 60 * 24 * 7);
+        String accessToken = jwtUtil.generateAccessToken(user, ip);
+        String refreshToken = jwtUtil.generateRefreshToken(user);
+
+        CookieUtil.addCookie(response, "accessToken", accessToken, accessTokenExpirationTime);
+        CookieUtil.addCookie(response, "refreshToken", refreshToken, refreshTokenExpirationTime);
     }
 
 }

@@ -1,17 +1,16 @@
 package com.example.demo.jwt;
 
-import com.example.demo.service.CustomUserDetailsService;
+import com.example.demo.entity.UserEntity;
 import com.example.demo.util.CookieUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -23,7 +22,7 @@ import java.io.IOException;
 public class JwtRefreshTokenFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
-    private final CustomUserDetailsService userDetailsService;
+    private final RefreshRepository refreshRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
@@ -35,28 +34,36 @@ public class JwtRefreshTokenFilter extends OncePerRequestFilter {
         }
 
         try {
-            String userId = jwtUtil.extractUserId(refreshToken);
+            Map<String, String> token = jwtUtil.extractToken(refreshToken);
 
-            if (userId != null && jwtUtil.validateToken(refreshToken)) {
-                UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
+            String userId = token.get("subject");
+            String token_uuid = token.get("uuid");
 
-                String newAccessToken = jwtUtil.generateAccessToken(userDetails.getUsername());
-                String newRefreshToken = jwtUtil.generateRefreshToken(userDetails.getUsername());
+            // db에서 조회
+            RefreshEntity dbRefresh = refreshRepository.findById(Long.valueOf(userId)).get();
+            UserEntity dbUser = dbRefresh.getUser();
 
-                CookieUtil.addCookie(response, "accessToken", newAccessToken, 60 * 60);
-                CookieUtil.addCookie(response, "refreshToken", newRefreshToken, 60 * 60 * 24 * 7);
-
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authToken);
-
-                log.info("accessToken, refreshToken 갱신 완료, 사용자 PK: {}", userId);
+            // token 검증
+            if(dbRefresh==null || !dbRefresh.getUuid().equals(token_uuid)){
+                throw new RuntimeException("db refresh uuid is null or not correct with token uuid");
             }
-        } catch (Exception e) {
-            log.error("Refresh Token 인증 실패, {}", e.getLocalizedMessage());
-        }
 
+            // security context에 authenticaion 저장
+            SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(userId, null, dbUser.getAuthorities()));
+
+            // 새로운 access, refresh token 발급
+            String newAccess = jwtUtil.generateAccessToken(dbUser, JwtUtil.getIpFromRequest(request));
+            String newRefresh = jwtUtil.generateRefreshToken(dbUser);
+
+            CookieUtil.addCookie(response, "accessToken", newAccess, 60 * 60);
+            CookieUtil.addCookie(response, "refreshToken", newRefresh, 60 * 60 * 24 * 7);
+
+            log.info("refresh 성공, 사용자 PK: {}, 권한: {}", userId, dbUser.getAuthorities());
+
+        } catch (Exception e) {
+            log.error("refresh 실패!, {}", e.getLocalizedMessage());
+        }
         chain.doFilter(request, response);
     }
 
