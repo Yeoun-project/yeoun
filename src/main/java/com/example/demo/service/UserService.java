@@ -1,9 +1,10 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.KakaoUserInfoResponseDto;
 import com.example.demo.entity.UserEntity;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.role.Role;
 import com.example.demo.vo.UserRegisterInfoVo;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,14 +15,15 @@ public class UserService {
     private final UserRepository userRepository;
 
     public UserEntity registerByUserInfo(UserRegisterInfoVo vo) {
-
+        String uuid = UUID.randomUUID().toString();
         UserEntity newUser = UserEntity.builder()
                 .oAuthId(vo.getOAuthId())
                 .name(vo.getName())
                 .email(vo.getEmail())
                 .phone(vo.getPhone())
                 .oAuthPlatform(vo.getOAuthPlatform())
-                .role("ROLE_USER")
+                .role(Role.ROLE_USER.name())
+                .uuid(uuid)
                 .build();
 
         return userRepository.save(newUser);

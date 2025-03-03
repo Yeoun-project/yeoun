@@ -1,8 +1,7 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.GoogleUserInfoResponseDto;
-import com.example.demo.dto.KakaoTokenResponseDto;
 import com.example.demo.entity.UserEntity;
+import com.example.demo.dto.GoogleUserInfoResponseDto;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.util.FormattingUtil;
 import com.example.demo.vo.UserRegisterInfoVo;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 
@@ -40,7 +38,7 @@ public class GoogleService {
     private final UserRepository userRepository;
     private final UserService userService;
 
-    public Long getUserIdFromGoogle(String code){
+    public UserEntity getUserFromGoogle(String code){
         String accessToken = getAccessTokenFromGoogle(code);
 
         //System.out.println("access\n" + accessToken);
@@ -63,7 +61,7 @@ public class GoogleService {
                     .build());
         }
 
-        return user.getId();
+        return user;
     }
 
     private String getAccessTokenFromGoogle(String code){

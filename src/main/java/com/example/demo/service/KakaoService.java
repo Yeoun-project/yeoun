@@ -32,7 +32,7 @@ public class KakaoService {
     private final UserService userService;
     private final UserRepository userRepository;
 
-    public Long getUserIdFromKakao(String code) {
+    public UserEntity getUserFromKakao(String code) {
 
         KakaoTokenResponseDto kakaoTokenResponseDto = WebClient.create(KAUTH_TOKEN_URL_HOST).post()
                 .uri(uriBuilder -> uriBuilder
@@ -62,7 +62,7 @@ public class KakaoService {
                         .build()
         ));
 
-        return user.getId();
+        return user;
     }
 
     public KakaoUserInfoResponseDto getUserInfo(String accessToken) {

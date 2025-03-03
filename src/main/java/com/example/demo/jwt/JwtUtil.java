@@ -1,9 +1,14 @@
 package com.example.demo.jwt;
 
-import io.jsonwebtoken.JwtException;
+import com.example.demo.entity.UserEntity;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -11,6 +16,7 @@ import java.security.Key;
 import java.util.Date;
 
 @Component
+@RequiredArgsConstructor
 public class JwtUtil {
 
     @Value("${jwt.secret}")
@@ -26,50 +32,53 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(secretKey.getBytes());
     }
 
-    public String generateAccessToken(String userId) {
+    public String generateAccessToken(UserEntity user, String ip) {
         return Jwts.builder()
-                .setSubject(userId)
-                .setIssuedAt(new Date())
+                .setSubject(user.getId().toString())
+                .claim("ip", ip)
+                .claim("role", user.getRole())
                 .setExpiration(new Date(System.currentTimeMillis() + accessTokenExpirationTime))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public String generateRefreshToken(String userId) {
+    public String generateRefreshToken(UserEntity user) {
         return Jwts.builder()
-                .setSubject(userId)
-                .setIssuedAt(new Date())
+                .setSubject(user.getId().toString())
+                .claim("uuid", user.getUuid())
                 .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpirationTime))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public String refreshAccessToken(String refreshToken) {
-        if (validateAccessToken(refreshToken)) {
-            String userId = extractUserId(refreshToken);
-            return generateAccessToken(userId);
+    public Map<String, String> extractToken(String token, String ...includedClaims) {
+        HashMap<String, String> claims = new HashMap<>();
+
+        Claims body = Jwts.parserBuilder()
+            .setSigningKey(getSigningKey())
+            .build()
+            .parseClaimsJws(token)
+            .getBody();
+
+        claims.put("subject", body.getSubject());
+        for (String arg : includedClaims) {
+            claims.put(arg, body.get(arg, String.class));
         }
-        return null;
+
+        return claims;
     }
 
-    public String extractUserId(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(getSigningKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
-    }
-
-    public boolean validateAccessToken(String token) {
-        try {
-            Jwts.parserBuilder()
-                    .setSigningKey(getSigningKey())
-                    .build()
-                    .parseClaimsJws(token);
-            return true;
-        } catch (JwtException e) {
-            return false;
+    public static String getIpFromRequest(HttpServletRequest request) {
+        String ipAddress = request.getHeader("X-Forwarded-For");
+        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+            ipAddress = request.getHeader("Proxy-Client-IP");
         }
+        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+            ipAddress = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+            ipAddress = request.getRemoteAddr();
+        }
+        return ipAddress;
     }
 }
