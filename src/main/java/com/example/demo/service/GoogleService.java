@@ -1,7 +1,5 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.GoogleUserInfoResponseDto;
-import com.example.demo.dto.KakaoTokenResponseDto;
 import com.example.demo.entity.UserEntity;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.util.FormattingUtil;
@@ -16,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 
