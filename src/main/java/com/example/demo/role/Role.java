@@ -4,13 +4,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 public enum Role {
-    USER("USER") ,
-    ADMIN("USER", "ADMIN") ;
+    ROLE_USER("USER") ,
+    ROLE_ADMIN("USER", "ADMIN") ;
 
     private String[] role;
 
@@ -20,10 +19,11 @@ public enum Role {
     public static Role getRole(String dbRoleName){
         return Arrays.stream(Role.values())
             .filter(R -> R.name().equals(dbRoleName))
-            .findFirst().get();
+            .findFirst()
+            .orElseThrow(() -> new RuntimeException("Invalid role: " + dbRoleName));
     }
     public Collection<? extends GrantedAuthority> getAuthorities(){
-        return Stream.of(this.role)
+        return Arrays.stream(this.role)
             .map(r->new SimpleGrantedAuthority(r))
             .collect(Collectors.toCollection(ArrayList::new));
     }

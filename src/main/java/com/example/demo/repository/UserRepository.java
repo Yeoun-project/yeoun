@@ -12,5 +12,8 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
     @Query("SELECT u FROM UserEntity u WHERE u.oAuthId = :oAuthId")
     Optional<UserEntity> findByOAuthId(@Param("oAuthId") String oAuthId);
+
+    @Query("update UserEntity as u set u.uuid = :uuid where u.id = :userId")
+    String updateUUID(@Param("userId") String userId, @Param("uuid") String uuid);
 }
 

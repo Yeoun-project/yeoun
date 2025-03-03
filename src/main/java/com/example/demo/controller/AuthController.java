@@ -58,12 +58,12 @@ public class AuthController {
     }
 
     @GetMapping("/login/google")
-    public ResponseEntity<?> googleLogin(@RequestParam("code") String code, HttpServletResponse response) {
+    public ResponseEntity<?> googleLogin(@RequestParam("code") String code, HttpServletRequest request, HttpServletResponse response) {
         System.out.println(code);
         try{
-            Long userId = googleService.getUserFromGoogle(code);
+            UserEntity user = googleService.getUserFromGoogle(code);
 
-            generateAndAddTokenCookie(userId, response);
+            generateAndAddTokenCookie(user, request, response);
 
             return ResponseEntity.ok(new SuccessResponse("Login successful by Google", null));
         } catch (RuntimeException e) {

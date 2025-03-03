@@ -55,7 +55,8 @@ public class JwtAccessTokenFilter extends OncePerRequestFilter {
             log.info("인증 성공, 사용자 PK: {}, 권한: {}", userId, authorities);
 
         } catch (Exception e) {
-            log.error("인증 실패!, {}", e.getLocalizedMessage());
+            e.printStackTrace();
+            //log.error("인증 실패!, {}", e.getMessage());
         }
         chain.doFilter(request, response);
     }

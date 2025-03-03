@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import com.example.demo.role.Role;
 import jakarta.persistence.*;
 import java.util.Collection;
 import java.util.List;
@@ -53,7 +54,7 @@ public class UserEntity implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return Role.getRole(role).getAuthorities();
     }
 
     @Override

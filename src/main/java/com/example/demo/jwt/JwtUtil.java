@@ -19,8 +19,6 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class JwtUtil {
 
-    private final RefreshRepository refreshRepository;
-
     @Value("${jwt.secret}")
     private String secretKey;
 
@@ -44,16 +42,16 @@ public class JwtUtil {
                 .compact();
     }
 
-    public String generateRefreshToken(UserEntity user, String uuid) {
+    public String generateRefreshToken(UserEntity user) {
         return Jwts.builder()
                 .setSubject(user.getId().toString())
-                .claim("uuid", uuid)
+                .claim("uuid", user.getUuid())
                 .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpirationTime))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public Map<String, String> extractToken(String token, String ...args) {
+    public Map<String, String> extractToken(String token, String ...includedClaims) {
         HashMap<String, String> claims = new HashMap<>();
 
         Claims body = Jwts.parserBuilder()
@@ -63,7 +61,7 @@ public class JwtUtil {
             .getBody();
 
         claims.put("subject", body.getSubject());
-        for (String arg : args) {
+        for (String arg : includedClaims) {
             claims.put(arg, body.get(arg, String.class));
         }
 

@@ -13,9 +13,8 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final RefreshRepository refreshRepository;
 
-    public RefreshEntity registerByUserInfo(UserRegisterInfoVo vo) {
+    public UserEntity registerByUserInfo(UserRegisterInfoVo vo) {
         String uuid = UUID.randomUUID().toString();
         UserEntity newUser = UserEntity.builder()
                 .oAuthId(vo.getOAuthId())
@@ -23,10 +22,10 @@ public class UserService {
                 .email(vo.getEmail())
                 .phone(vo.getPhone())
                 .oAuthPlatform(vo.getOAuthPlatform())
-                .role(Role.USER.name())
+                .role(Role.ROLE_USER.name())
+                .uuid(uuid)
                 .build();
 
-        userRepository.save(newUser);
-        return refreshRepository.save(new RefreshEntity(newUser, uuid));
+        return userRepository.save(newUser);
     }
 }

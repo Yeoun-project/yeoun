@@ -38,7 +38,7 @@ public class GoogleService {
     private final UserRepository userRepository;
     private final UserService userService;
 
-    public Long getUserIdFromGoogle(String code){
+    public UserEntity getUserFromGoogle(String code){
         String accessToken = getAccessTokenFromGoogle(code);
 
         //System.out.println("access\n" + accessToken);
@@ -61,7 +61,7 @@ public class GoogleService {
                     .build());
         }
 
-        return user.getId();
+        return user;
     }
 
     private String getAccessTokenFromGoogle(String code){
