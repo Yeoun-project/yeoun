@@ -4,27 +4,30 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.Collectors;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 public enum Role {
-    ROLE_USER("USER") ,
-    ROLE_ADMIN("USER", "ADMIN") ;
+    ROLE_USER("USER"),
+    ROLE_ADMIN("USER", "ADMIN");
 
-    private String[] role;
+    private final String[] role;
 
-    Role(String ...role){
+    Role(String... role) {
         this.role = role;
     }
-    public static Role getRole(String dbRoleName){
+
+    public static Role getRole(String dbRoleName) {
         return Arrays.stream(Role.values())
-            .filter(R -> R.name().equals(dbRoleName))
-            .findFirst()
-            .orElseThrow(() -> new RuntimeException("Invalid role: " + dbRoleName));
+                .filter(R -> R.name().equals(dbRoleName))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Invalid role: " + dbRoleName));
     }
-    public Collection<? extends GrantedAuthority> getAuthorities(){
+
+    public Collection<? extends GrantedAuthority> getAuthorities() {
         return Arrays.stream(this.role)
-            .map(r->new SimpleGrantedAuthority(r))
-            .collect(Collectors.toCollection(ArrayList::new));
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 }
