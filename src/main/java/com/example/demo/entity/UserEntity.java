@@ -2,11 +2,13 @@ package com.example.demo.entity;
 
 import com.example.demo.role.Role;
 import jakarta.persistence.*;
+
 import java.util.Collection;
-import java.util.List;
+import java.util.Date;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -32,7 +34,7 @@ public class UserEntity implements UserDetails {
     @Column(nullable = false)
     private String email;
 
-    @Column(nullable = true)
+    @Column
     private String phone;
 
     @Column(nullable = false)
@@ -40,6 +42,12 @@ public class UserEntity implements UserDetails {
 
     @Column(nullable = false)
     private String uuid;
+
+    @CreatedDate
+    private Date createdDateTime;
+
+    @Column
+    private Date deletedDateTime;
 
     @Builder
     public UserEntity(String oAuthId, String oAuthPlatform, String name, String email, String phone, String role, String uuid) {
