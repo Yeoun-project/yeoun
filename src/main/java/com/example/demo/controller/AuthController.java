@@ -59,15 +59,13 @@ public class AuthController {
 
     @GetMapping("/login/google")
     public ResponseEntity<?> googleLogin(@RequestParam("code") String code, HttpServletRequest request, HttpServletResponse response) {
-        System.out.println(code);
-        try{
+        try {
             UserEntity user = googleService.getUserFromGoogle(code);
 
             generateAndAddTokenCookie(user, request, response);
 
             return ResponseEntity.ok(new SuccessResponse("Login successful by Google", null));
         } catch (RuntimeException e) {
-            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("", "Access denied"));
         }
     }

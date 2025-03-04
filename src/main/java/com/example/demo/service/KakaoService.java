@@ -52,7 +52,7 @@ public class KakaoService {
         KakaoUserInfoResponseDto kakaoUserInfoResponseDto = getUserInfo(kakaoTokenResponseDto.getAccessToken());
         Optional<UserEntity> findUser = userRepository.findByOAuthId(kakaoUserInfoResponseDto.getId());
 
-        UserEntity user = findUser.orElseGet(() -> userService.registerByUserInfo(
+        return findUser.orElseGet(() -> userService.registerByUserInfo(
                 UserRegisterInfoVo.builder()
                         .oAuthId(kakaoUserInfoResponseDto.getId())
                         .name(kakaoUserInfoResponseDto.getKakaoAccount().getName())
@@ -61,8 +61,6 @@ public class KakaoService {
                         .oAuthPlatform("KAKAO")
                         .build()
         ));
-
-        return user;
     }
 
     public KakaoUserInfoResponseDto getUserInfo(String accessToken) {

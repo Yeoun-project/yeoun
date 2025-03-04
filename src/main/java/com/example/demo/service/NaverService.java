@@ -54,7 +54,7 @@ public class NaverService {
         NaverUserInfoResponseDto naverUserInfoResponseDto = getUserInfo(naverTokenResponseDto.getAccessToken());
         Optional<UserEntity> findUser = userRepository.findByOAuthId(naverUserInfoResponseDto.getId());
 
-        UserEntity user = findUser.orElseGet(() -> userService.registerByUserInfo(
+        return findUser.orElseGet(() -> userService.registerByUserInfo(
                 UserRegisterInfoVo.builder()
                         .oAuthId(naverUserInfoResponseDto.getId())
                         .name(naverUserInfoResponseDto.getName())
@@ -63,8 +63,6 @@ public class NaverService {
                         .oAuthPlatform("NAVER")
                         .build()
         ));
-
-        return user;
     }
 
     public NaverUserInfoResponseDto getUserInfo(String accessToken) {

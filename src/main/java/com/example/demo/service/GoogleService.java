@@ -8,6 +8,7 @@ import com.example.demo.vo.UserRegisterInfoVo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
@@ -38,35 +39,24 @@ public class GoogleService {
     private final UserRepository userRepository;
     private final UserService userService;
 
-    public UserEntity getUserFromGoogle(String code){
+    public UserEntity getUserFromGoogle(String code) {
         String accessToken = getAccessTokenFromGoogle(code);
-
-        //System.out.println("access\n" + accessToken);
 
         GoogleUserInfoResponseDto info = getUserInfoFromGoogle(accessToken);
 
-        UserEntity user;
         Optional<UserEntity> findUser = userRepository.findByOAuthId(info.getId());
 
-        if(findUser.isPresent())
-            user = findUser.get();
-        else {
-            // create new user
-            user = userService.registerByUserInfo(UserRegisterInfoVo.builder()
-                    .oAuthId(info.getId())
-                    .name(info.getName())
-                    .email(info.getEmail())
-                    .phone(FormattingUtil.formatPhoneNumber(getPhoneNumberFromGoogle(accessToken, info.getId())))
-                    .oAuthPlatform("GOOGLE")
-                    .build());
-        }
-
-        return user;
+        return findUser.orElseGet(() -> userService.registerByUserInfo(UserRegisterInfoVo.builder()
+                .oAuthId(info.getId())
+                .name(info.getName())
+                .email(info.getEmail())
+                .phone(FormattingUtil.formatPhoneNumber(getPhoneNumberFromGoogle(accessToken, info.getId())))
+                .oAuthPlatform("GOOGLE")
+                .build()));
     }
 
-    private String getAccessTokenFromGoogle(String code){
-        // get google access token with client code
-        Map<String, String> googleTokenResponse = WebClient.create(KAUTH_TOKEN_URL_HOST).post()
+    private String getAccessTokenFromGoogle(String code) {
+        Map<String, Object> googleTokenResponse = WebClient.create(KAUTH_TOKEN_URL_HOST).post()
                 .uri(uriBuilder -> uriBuilder
                         .scheme("https")
                         .path("/token")
@@ -78,68 +68,36 @@ public class GoogleService {
                         .build())
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .retrieve()
-                .onStatus(HttpStatusCode::is4xxClientError, (response) -> {
-                    return response.bodyToMono(String.class)
-                            .flatMap(body -> {
-                                // 본문 내용과 상태 코드 모두 포함시켜 RuntimeException 생성
-                                return Mono.error(new RuntimeException("Error response: " + response.statusCode() + ", Body: " + body));
-                            });
+                .onStatus(HttpStatusCode::is4xxClientError, response -> response.bodyToMono(String.class)
+                        .flatMap(body -> Mono.error(new RuntimeException("Error response: " + response.statusCode() + ", Body: " + body))))
+                .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {
                 })
-                .bodyToMono(Map.class)
                 .block();
-        return googleTokenResponse.get("access_token");
+
+        return (String) googleTokenResponse.get("access_token");
     }
 
-    private GoogleUserInfoResponseDto getUserInfoFromGoogle(String accessToken){
-        // get client info with access token
-        GoogleUserInfoResponseDto info = WebClient.create(KAUTH_USER_URL_HOST).get()
+    private GoogleUserInfoResponseDto getUserInfoFromGoogle(String accessToken) {
+        return WebClient.create(KAUTH_USER_URL_HOST).get()
                 .uri(uriBuilder -> uriBuilder
                         .scheme("https")
                         .path("/oauth2/v2/userinfo")
                         .build())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .retrieve()
-                .onStatus(HttpStatusCode::is4xxClientError, (response) -> {
-                    return Mono.error(new RuntimeException(response.toString()));
-                })
+                .onStatus(HttpStatusCode::is4xxClientError, (response) -> Mono.error(new RuntimeException(response.toString())))
                 .bodyToMono(GoogleUserInfoResponseDto.class)
                 .block();
-
-        return info;
-    }
-    private void printUserInfoFromGoogle(String accessToken){
-        // get client info with access token
-        String str = WebClient.create(KAUTH_USER_URL_HOST).get()
-                .uri(uriBuilder -> uriBuilder
-                        .scheme("https")
-                        .path("/oauth2/v2/userinfo")
-                        .build())
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
-                .retrieve()
-                .onStatus(HttpStatusCode::is4xxClientError, (response) -> {
-                    return Mono.error(new RuntimeException(response.toString()));
-                })
-                .bodyToMono(String.class)
-                .block();
-
-        System.out.println(str);
     }
 
-    private String getPhoneNumberFromGoogle(String token, String userId){
-        String phoneNumber = WebClient.create(KUATH_PHONE_URL_HOST).get()
-                .uri("https://people.googleapis.com/v1/people/"+userId+"?personFields=phoneNumbers")
+    private String getPhoneNumberFromGoogle(String token, String userId) {
+        return WebClient.create(KUATH_PHONE_URL_HOST).get()
+                .uri("https://people.googleapis.com/v1/people/" + userId + "?personFields=phoneNumbers")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
-                .onStatus(HttpStatusCode::is4xxClientError, (response) -> {
-                    return response.bodyToMono(String.class)
-                            .flatMap(body -> {
-                                // 본문 내용과 상태 코드 모두 포함시켜 RuntimeException 생성
-                                return Mono.error(new RuntimeException("Error response: " + response.statusCode() + ", Body: " + body));
-                            });
-                })
+                .onStatus(HttpStatusCode::is4xxClientError, (response) -> response.bodyToMono(String.class)
+                        .flatMap(body -> Mono.error(new RuntimeException("Error response: " + response.statusCode() + ", Body: " + body))))
                 .bodyToMono(String.class)
                 .block();
-
-        return null;
     }
 }
