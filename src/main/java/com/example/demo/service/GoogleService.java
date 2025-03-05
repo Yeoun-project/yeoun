@@ -1,7 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.UserEntity;
-import com.example.demo.dto.GoogleUserInfoResponseDto;
+import com.example.demo.dto.response.GoogleUserInfoResponseDto;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.util.FormattingUtil;
 import com.example.demo.vo.UserRegisterInfoVo;

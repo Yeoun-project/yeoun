@@ -1,6 +1,6 @@
 package com.example.demo.jwt;
 
-import com.example.demo.role.Role;
+import com.example.demo.type.Role;
 import com.example.demo.util.CookieUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

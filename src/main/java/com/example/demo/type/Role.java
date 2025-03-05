@@ -1,4 +1,4 @@
-package com.example.demo.role;
+package com.example.demo.type;
 
 import java.util.ArrayList;
 import java.util.Arrays;

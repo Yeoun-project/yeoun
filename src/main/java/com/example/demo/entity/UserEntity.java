@@ -1,6 +1,6 @@
 package com.example.demo.entity;
 
-import com.example.demo.role.Role;
+import com.example.demo.type.Role;
 import jakarta.persistence.*;
 
 import java.util.Collection;
