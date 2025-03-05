@@ -2,11 +2,17 @@ package com.example.demo.entity;
 
 import com.example.demo.type.NotificationType;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.util.Date;
 
-@Entity(name = "notification")
+@Entity
+@Table(name = "notification")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class NotificationEntity {
 
     @Id
@@ -26,6 +32,6 @@ public class NotificationEntity {
     private UserEntity receiver;
 
     @CreatedDate
-    private Date sentDateTime;
+    private final Date sentDateTime = new Date();
 
 }
