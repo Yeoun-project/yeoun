@@ -2,6 +2,8 @@ package com.example.demo.jwt;
 
 import com.example.demo.type.Role;
 import com.example.demo.util.CookieUtil;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -54,9 +56,10 @@ public class JwtAccessTokenFilter extends OncePerRequestFilter {
 
             log.info("인증 성공, 사용자 PK: {}, 권한: {}", userId, authorities);
 
+        } catch (ExpiredJwtException e) {
+            log.error(e.getLocalizedMessage().split("\\.")[0]);
         } catch (Exception e) {
-            e.printStackTrace();
-            //log.error("인증 실패!, {}", e.getMessage());
+            log.error("Error, {}", e.getLocalizedMessage());
         }
         chain.doFilter(request, response);
     }
