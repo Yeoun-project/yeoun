@@ -1,8 +1,9 @@
-package com.example.demo.service;
+package com.example.demo.service.auth;
 
 import com.example.demo.entity.UserEntity;
 import com.example.demo.dto.response.GoogleUserInfoResponseDto;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.service.UserService;
 import com.example.demo.util.FormattingUtil;
 import com.example.demo.vo.UserRegisterInfoVo;
 import lombok.RequiredArgsConstructor;

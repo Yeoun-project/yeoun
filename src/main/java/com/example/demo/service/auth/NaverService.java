@@ -1,9 +1,10 @@
-package com.example.demo.service;
+package com.example.demo.service.auth;
 
 import com.example.demo.dto.response.NaverTokenResponseDto;
 import com.example.demo.dto.response.NaverUserInfoResponseDto;
 import com.example.demo.entity.UserEntity;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.service.UserService;
 import com.example.demo.vo.UserRegisterInfoVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -54,6 +55,7 @@ public class NaverService {
         NaverUserInfoResponseDto naverUserInfoResponseDto = getUserInfo(naverTokenResponseDto.getAccessToken());
         Optional<UserEntity> findUser = userRepository.findByOAuthId(naverUserInfoResponseDto.getId());
 
+        System.out.println(findUser);
         return findUser.orElseGet(() -> userService.registerByUserInfo(
                 UserRegisterInfoVo.builder()
                         .oAuthId(naverUserInfoResponseDto.getId())

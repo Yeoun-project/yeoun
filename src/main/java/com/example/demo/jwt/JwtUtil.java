@@ -1,13 +1,17 @@
 package com.example.demo.jwt;
 
 import com.example.demo.entity.UserEntity;
+import com.example.demo.util.CookieUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.HashMap;
 import java.util.Map;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -51,14 +55,14 @@ public class JwtUtil {
                 .compact();
     }
 
-    public Map<String, String> extractToken(String token, String ...includedClaims) {
+    public Map<String, String> extractToken(String token, String... includedClaims) {
         HashMap<String, String> claims = new HashMap<>();
 
         Claims body = Jwts.parserBuilder()
-            .setSigningKey(getSigningKey())
-            .build()
-            .parseClaimsJws(token)
-            .getBody();
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
 
         claims.put("subject", body.getSubject());
         for (String arg : includedClaims) {
@@ -80,5 +84,12 @@ public class JwtUtil {
             ipAddress = request.getRemoteAddr();
         }
         return ipAddress;
+    }
+
+    public Long getUserIdFromRequest(HttpServletRequest request) {
+        String accessToken = CookieUtil.getTokenFromCookies("accessToken", request);
+        Map<String, String> token = this.extractToken(accessToken);
+        if (token.isEmpty()) return null;
+        return Long.parseLong(token.get("subject"));
     }
 }

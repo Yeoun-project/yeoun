@@ -1,9 +1,10 @@
-package com.example.demo.service;
+package com.example.demo.service.auth;
 
 import com.example.demo.dto.response.KakaoTokenResponseDto;
 import com.example.demo.dto.response.KakaoUserInfoResponseDto;
 import com.example.demo.entity.UserEntity;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.service.UserService;
 import com.example.demo.util.FormattingUtil;
 import com.example.demo.vo.UserRegisterInfoVo;
 import io.netty.handler.codec.http.HttpHeaderValues;
