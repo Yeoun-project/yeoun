@@ -3,6 +3,7 @@ package com.example.demo.jwt;
 import com.example.demo.entity.UserEntity;
 import com.example.demo.util.CookieUtil;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -13,12 +14,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtUtil {
@@ -55,7 +58,7 @@ public class JwtUtil {
                 .compact();
     }
 
-    public Map<String, String> extractToken(String token, String... includedClaims) {
+    public Map<String, String> extractToken(String token, String... includedClaims) throws ExpiredJwtException {
         HashMap<String, String> claims = new HashMap<>();
 
         Claims body = Jwts.parserBuilder()
@@ -65,6 +68,7 @@ public class JwtUtil {
                 .getBody();
 
         claims.put("subject", body.getSubject());
+
         for (String arg : includedClaims) {
             claims.put(arg, body.get(arg, String.class));
         }

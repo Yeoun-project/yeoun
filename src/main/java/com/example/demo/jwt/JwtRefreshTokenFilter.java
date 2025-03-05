@@ -7,7 +7,9 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.util.Map;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -50,13 +52,13 @@ public class JwtRefreshTokenFilter extends OncePerRequestFilter {
             UserEntity dbUser = userRepository.findById(Long.valueOf(userId)).get();
 
             // token 검증
-            if(dbUser==null || !dbUser.getUuid().equals(token_uuid)){
-                throw new RuntimeException("db uuid is null or not correct with token uuid (userId:" +userId+")");
+            if (!dbUser.getUuid().equals(token_uuid)) {
+                throw new RuntimeException("db uuid is null or not correct with token uuid (userId:" + userId + ")");
             }
 
             // security context에 authenticaion 저장
             SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken(userId, null, dbUser.getAuthorities()));
+                    new UsernamePasswordAuthenticationToken(userId, null, dbUser.getAuthorities()));
 
             // 새로운 access, refresh token 발급
             String newAccess = jwtUtil.generateAccessToken(dbUser, JwtUtil.getIpFromRequest(request));
