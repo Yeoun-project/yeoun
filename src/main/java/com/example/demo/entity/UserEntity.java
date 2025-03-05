@@ -5,17 +5,23 @@ import jakarta.persistence.*;
 
 import java.util.Collection;
 import java.util.Date;
+
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-@Getter
-@NoArgsConstructor
 @Entity
 @Table(name = "user")
+@Getter
+@SQLDelete(sql = "UPDATE user SET deleted_date_time = CURRENT_TIMESTAMP WHERE id = ?") // soft delete
+@SQLRestriction("deleted_date_time IS NULL") // 지워지지 않은 레코드에 대한 조건
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserEntity implements UserDetails {
 
     @Id
@@ -44,7 +50,7 @@ public class UserEntity implements UserDetails {
     private String uuid;
 
     @CreatedDate
-    private Date createdDateTime;
+    private final Date createdDateTime = new Date();
 
     @Column
     private Date deletedDateTime;
