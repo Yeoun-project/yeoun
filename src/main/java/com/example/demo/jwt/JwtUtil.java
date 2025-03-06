@@ -15,6 +15,7 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -89,10 +90,7 @@ public class JwtUtil {
         return ipAddress;
     }
 
-    public Long getUserIdFromRequest(HttpServletRequest request) {
-        String accessToken = CookieUtil.getTokenFromCookies("accessToken", request);
-        Map<String, String> token = this.extractToken(accessToken);
-        if (token.isEmpty()) return null;
-        return Long.parseLong(token.get("subject"));
+    public static Long getUserIdFromAuthentication() {
+        return Long.parseLong((String) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
     }
 }

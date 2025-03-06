@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -21,13 +22,12 @@ import java.util.List;
 @RequestMapping("/api/question")
 public class QuestionController {
 
-    private final JwtUtil jwtUtil;
     private final QuestionService questionService;
 
     @PostMapping
-    public ResponseEntity<?> addQuestion(@RequestBody AddQuestionRequestDto addQuestionRequestDto, HttpServletRequest request) {
+    public ResponseEntity<?> addQuestion(@RequestBody AddQuestionRequestDto addQuestionRequestDto) {
         try {
-            addQuestionRequestDto.setUserId(jwtUtil.getUserIdFromRequest(request));
+            addQuestionRequestDto.setUserId(JwtUtil.getUserIdFromAuthentication());
             questionService.addNewQuestion(addQuestionRequestDto);
             return ResponseEntity.status(HttpStatus.CREATED).body(new SuccessResponse("Add question success", null));
         } catch (Exception e) {
@@ -39,6 +39,7 @@ public class QuestionController {
     public ResponseEntity<?> getAllQuestion() {
         List<QuestionEntity> allQuestions = questionService.getAllQuestions();
         List<QuestionResponseDto> questionResponseDtoList = new ArrayList<>();
+
         for (QuestionEntity question : allQuestions) {
             questionResponseDtoList.add(QuestionResponseDto.builder()
                     .id(question.getId())
@@ -50,6 +51,7 @@ public class QuestionController {
                     .build()
             );
         }
+
         return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("get all questions success", questionResponseDtoList));
     }
 
