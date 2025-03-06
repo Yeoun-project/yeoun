@@ -7,7 +7,6 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.HashMap;
@@ -44,7 +43,7 @@ public class JwtUtil {
                 .setSubject(user.getId().toString())
                 .claim("ip", ip)
                 .claim("role", user.getRole())
-                .setExpiration(new Date(System.currentTimeMillis() + accessTokenExpirationTime))
+                .setExpiration(new Date(System.currentTimeMillis() + accessTokenExpirationTime * 1000))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -53,7 +52,7 @@ public class JwtUtil {
         return Jwts.builder()
                 .setSubject(user.getId().toString())
                 .claim("uuid", user.getUuid())
-                .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpirationTime))
+                .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpirationTime * 1000))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
