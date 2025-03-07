@@ -1,0 +1,5 @@
+{
+  "name": "q-service",
+  "private": true,
+  "workspaces": ["backend", "frontend"]
+}
