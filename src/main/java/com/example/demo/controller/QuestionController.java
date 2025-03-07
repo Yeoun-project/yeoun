@@ -6,16 +6,15 @@ import com.example.demo.dto.request.AddQuestionRequestDto;
 import com.example.demo.dto.response.QuestionResponseDto;
 import com.example.demo.entity.QuestionEntity;
 import com.example.demo.jwt.JwtUtil;
+import com.example.demo.service.CommentService;
 import com.example.demo.service.QuestionService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,6 +22,7 @@ import java.util.List;
 public class QuestionController {
 
     private final QuestionService questionService;
+    private final CommentService commentService;
 
     @PostMapping
     public ResponseEntity<?> addQuestion(@RequestBody AddQuestionRequestDto addQuestionRequestDto) {
@@ -38,19 +38,16 @@ public class QuestionController {
     @GetMapping("/all")
     public ResponseEntity<?> getAllQuestion() {
         List<QuestionEntity> allQuestions = questionService.getAllQuestions();
-        List<QuestionResponseDto> questionResponseDtoList = new ArrayList<>();
-
-        for (QuestionEntity question : allQuestions) {
-            questionResponseDtoList.add(QuestionResponseDto.builder()
+        List<QuestionResponseDto> questionResponseDtoList = allQuestions.stream()
+                .map(question -> QuestionResponseDto.builder()
                     .id(question.getId())
                     .content(question.getContent())
                     .heart(question.getHeart())
                     .categoryName(question.getCategory().getName())
                     .commentCount(question.getComments().size())
                     .createTime(question.getCreatedDateTime())
-                    .build()
-            );
-        }
+                    .build())
+                .collect(Collectors.toList());
 
         return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("get all questions success", questionResponseDtoList));
     }
