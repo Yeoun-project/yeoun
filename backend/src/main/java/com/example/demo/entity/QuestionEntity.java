@@ -29,6 +29,9 @@ public class QuestionEntity {
     @Column
     private boolean isDisplayed;
 
+    @Column
+    private final boolean isFixed = false;
+
     @ManyToOne
     private UserEntity user;
 
