@@ -1,5 +1,6 @@
 package com.example.demo.jwt;
 
+import com.example.demo.entity.CommentEntity;
 import com.example.demo.entity.UserEntity;
 import com.example.demo.util.CookieUtil;
 import io.jsonwebtoken.Claims;
@@ -35,6 +36,9 @@ public class JwtUtil {
     @Value("${jwt.refresh-token-expiration-time}")
     private long refreshTokenExpirationTime;
 
+    @Value("${jwt.comment-token-expiration-time}")
+    private long commentTokenExpirationTime;
+
     private Key getSigningKey() {
         return Keys.hmacShaKeyFor(secretKey.getBytes());
     }
@@ -56,6 +60,14 @@ public class JwtUtil {
                 .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpirationTime * 1000))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
+    }
+
+    public String generateCommentToken(int leftCount) {
+        return Jwts.builder()
+            .claim("count", leftCount)
+            .setExpiration(new Date(System.currentTimeMillis() + commentTokenExpirationTime * 1000))
+            .signWith(getSigningKey(), SignatureAlgorithm.ES256)
+            .compact();
     }
 
     public Map<String, String> extractToken(String token, String... includedClaims) throws ExpiredJwtException {

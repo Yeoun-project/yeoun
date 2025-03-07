@@ -27,6 +27,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/public/**").permitAll()
+                        .requestMatchers("/api/**").permitAll()
 //                        .requestMatchers("").hasRole("ADMIN") //TODO 추후 필요시 경로 추가
 //                        .requestMatchers("").hasRole("USER") //TODO 추후 필요시 경로 추가
                         .anyRequest().authenticated()
