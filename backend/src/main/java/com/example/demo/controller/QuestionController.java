@@ -6,8 +6,8 @@ import com.example.demo.dto.request.AddQuestionRequestDto;
 import com.example.demo.dto.response.QuestionResponseDto;
 import com.example.demo.entity.QuestionEntity;
 import com.example.demo.jwt.JwtUtil;
-import com.example.demo.service.CommentService;
 import com.example.demo.service.QuestionService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,10 +22,9 @@ import java.util.stream.Collectors;
 public class QuestionController {
 
     private final QuestionService questionService;
-    private final CommentService commentService;
 
     @PostMapping
-    public ResponseEntity<?> addQuestion(@RequestBody AddQuestionRequestDto addQuestionRequestDto) {
+    public ResponseEntity<?> addQuestion(@RequestBody @Valid AddQuestionRequestDto addQuestionRequestDto) {
         try {
             addQuestionRequestDto.setUserId(JwtUtil.getUserIdFromAuthentication());
             questionService.addNewQuestion(addQuestionRequestDto);
