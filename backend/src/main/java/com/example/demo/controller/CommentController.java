@@ -1,11 +1,11 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.request.SaveCommentRequestDto;
+import com.example.demo.jwt.JwtUtil;
 import com.example.demo.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,12 +27,12 @@ public class CommentController {
             @RequestBody SaveCommentRequestDto commentRequestDto) {
 
         // check user
-        String userId = (String)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId = JwtUtil.getUserIdFromAuthentication();
 
         if(userId == null)
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 
-        commentRequestDto.setUserId(Long.valueOf(userId));
+        commentRequestDto.setUserId(userId);
         commentRequestDto.setQuestionId(questionId);
 
         // add comment
@@ -44,14 +44,15 @@ public class CommentController {
 
     @PutMapping("/{commentId}")
     public ResponseEntity<?> updateComment(@PathVariable("commentId") Long commentId, @RequestBody SaveCommentRequestDto commentRequestDto) {
-        String userId = (String)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        Long userId = JwtUtil.getUserIdFromAuthentication();
 
         if(userId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
         commentRequestDto.setId(commentId);
-        commentRequestDto.setUserId(Long.valueOf(userId));
+        commentRequestDto.setUserId(userId);
 
         commentService.updateComment(commentRequestDto);
 
@@ -61,7 +62,10 @@ public class CommentController {
     @DeleteMapping("/{commentId}")
     public ResponseEntity<?> deleteComment(@PathVariable("commentId") Long commentId) {
 
+        Long userId = JwtUtil.getUserIdFromAuthentication();
+
         commentService.deleteComment(commentId);
+
         return ResponseEntity.status(HttpStatus.OK).body("comment deleted");
     }
 
@@ -71,4 +75,5 @@ public class CommentController {
         // reportService.reportCommnet(commentId);
         return ResponseEntity.status(HttpStatus.OK).body("comment reported");
     }
+
 }

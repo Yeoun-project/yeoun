@@ -7,6 +7,7 @@ import com.example.demo.entity.UserEntity;
 import com.example.demo.repository.CommentRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

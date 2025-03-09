@@ -36,9 +36,6 @@ public class JwtUtil {
     @Value("${jwt.refresh-token-expiration-time}")
     private long refreshTokenExpirationTime;
 
-    @Value("${jwt.comment-token-expiration-time}")
-    private long commentTokenExpirationTime;
-
     private Key getSigningKey() {
         return Keys.hmacShaKeyFor(secretKey.getBytes());
     }
