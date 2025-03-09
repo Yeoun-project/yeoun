@@ -7,7 +7,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class AddCommentRequestDto {
+public class SaveCommentRequestDto {
+
+    public Long id;
 
     public String content;
 

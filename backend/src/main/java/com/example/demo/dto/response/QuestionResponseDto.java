@@ -22,5 +22,4 @@ public class QuestionResponseDto {
     private String categoryName;
 
     private Date createTime;
-
 }

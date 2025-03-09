@@ -3,6 +3,8 @@ package com.example.demo.controller;
 import com.example.demo.common.ErrorResponse;
 import com.example.demo.common.SuccessResponse;
 import com.example.demo.dto.request.AddQuestionRequestDto;
+import com.example.demo.dto.response.CommentResponseDto;
+import com.example.demo.dto.response.QuestionDetailResponseDto;
 import com.example.demo.dto.response.QuestionResponseDto;
 import com.example.demo.entity.QuestionEntity;
 import com.example.demo.jwt.JwtUtil;
@@ -49,6 +51,31 @@ public class QuestionController {
                 .collect(Collectors.toList());
 
         return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("get all questions success", questionResponseDtoList));
+    }
+
+    @GetMapping("/get/{questionId}")
+    public ResponseEntity<?> getQuestionDetails(@PathVariable("questionId") Long questionId) {
+        QuestionEntity question = questionService.getQuestionWithCommentById(questionId);
+
+        List<CommentResponseDto> commentDtoList =
+            question.getComments().stream().map(
+                    comment -> CommentResponseDto.builder()
+                        .id(comment.getId())
+                        .content(comment.getContent())
+                        .createTime(comment.getCreatedDateTime())
+                        .build())
+                .toList();
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+            QuestionDetailResponseDto.builder()
+                .id(question.getId())
+                .content(question.getContent())
+                .heart(question.getHeart())
+                .categoryName(question.getCategory().getName())
+                .createTime(question.getCreatedDateTime())
+                .comments(commentDtoList)
+                .build()
+        );
     }
 
 }

@@ -62,14 +62,6 @@ public class JwtUtil {
                 .compact();
     }
 
-    public String generateCommentToken(int leftCount) {
-        return Jwts.builder()
-            .claim("count", leftCount)
-            .setExpiration(new Date(System.currentTimeMillis() + commentTokenExpirationTime * 1000))
-            .signWith(getSigningKey(), SignatureAlgorithm.ES256)
-            .compact();
-    }
-
     public Map<String, String> extractToken(String token, String... includedClaims) throws ExpiredJwtException {
         HashMap<String, String> claims = new HashMap<>();
 

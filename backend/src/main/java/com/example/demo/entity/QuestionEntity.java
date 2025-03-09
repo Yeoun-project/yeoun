@@ -54,4 +54,6 @@ public class QuestionEntity {
         this.user = user;
         this.category = category;
     }
+
+    public QuestionEntity(Long id) { this.id = id; }
 }

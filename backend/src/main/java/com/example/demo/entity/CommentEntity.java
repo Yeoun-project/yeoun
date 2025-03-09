@@ -2,6 +2,7 @@ package com.example.demo.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -21,10 +22,12 @@ public class CommentEntity {
     @Column(nullable = false)
     private String content;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "userId")
     private UserEntity user;
 
     @ManyToOne
+    @JoinColumn(name = "questionId")
     private QuestionEntity question;
 
     @CreatedDate
@@ -33,4 +36,11 @@ public class CommentEntity {
     @Column
     private Date deletedDateTime;
 
+    @Builder
+    public CommentEntity(Long id, String content, UserEntity user, QuestionEntity question) {
+        this.id = id;
+        this.content = content;
+        this.user = user;
+        this.question = question;
+    }
 }
