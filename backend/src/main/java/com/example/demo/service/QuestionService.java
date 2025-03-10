@@ -8,6 +8,7 @@ import com.example.demo.repository.CategoryRepository;
 import com.example.demo.repository.QuestionRepository;
 import com.example.demo.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -42,4 +43,7 @@ public class QuestionService {
         return questionRepository.findAllOrderByCommentsCountDesc();
     }
 
+    public QuestionEntity getQuestionWithCommentById(Long id) {
+        return questionRepository.findQuestionWithCommentById(id).orElseThrow(() -> new IllegalArgumentException("Invalid question ID"));
+    }
 }
