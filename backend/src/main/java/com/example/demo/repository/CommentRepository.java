@@ -12,6 +12,10 @@ import org.springframework.stereotype.Repository;
 public interface CommentRepository extends JpaRepository<CommentEntity, Long> {
 
     @Modifying
-    @Query(value = "delete from comment where id = :commentId", nativeQuery = true)
-    void delete(@Param("commentId") Long commentId);
+    @Query(value = "update comment set content = :content where id = :commentId and user_id = :userId", nativeQuery = true)
+    int update(@Param("commentId") Long commentId, @Param("content") String content, @Param("userId") Long userId);
+
+    @Modifying
+    @Query(value = "delete from comment where id = :commentId and user_id = :userId", nativeQuery = true)
+    int delete(@Param("commentId") Long commentId, @Param("userId") Long userId);
 }

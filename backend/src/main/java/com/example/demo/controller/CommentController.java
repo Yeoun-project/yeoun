@@ -64,7 +64,7 @@ public class CommentController {
 
         Long userId = JwtUtil.getUserIdFromAuthentication();
 
-        commentService.deleteComment(commentId);
+        commentService.deleteComment(commentId, userId);
 
         return ResponseEntity.status(HttpStatus.OK).body("comment deleted");
     }

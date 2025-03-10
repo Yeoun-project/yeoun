@@ -55,22 +55,18 @@ public class QuestionController {
         return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("get all questions success", questionResponseDtoList));
     }
 
-    @GetMapping("/get/{questionId}")
+    @GetMapping("/{questionId}")
     public ResponseEntity<?> getQuestionDetails(@PathVariable("questionId") Long questionId) {
         QuestionEntity question = questionService.getQuestionWithCommentById(questionId);
 
-        List<CommentResponseDto> commentDtoList = null;
-
-        if(JwtUtil.getUserIdFromAuthentication() != null) {
-            commentDtoList =
-                question.getComments().stream().map(
-                        comment -> CommentResponseDto.builder()
-                            .id(comment.getId())
-                            .content(comment.getContent())
-                            .createTime(comment.getCreatedDateTime())
-                            .build())
-                    .toList();
-        }
+        List<CommentResponseDto> commentDtoList =
+            question.getComments().stream().map(
+                    comment -> CommentResponseDto.builder()
+                        .id(comment.getId())
+                        .content(comment.getContent())
+                        .createTime(comment.getCreatedDateTime())
+                        .build())
+                .toList();
 
         return ResponseEntity.status(HttpStatus.OK).body(
             QuestionDetailResponseDto.builder()

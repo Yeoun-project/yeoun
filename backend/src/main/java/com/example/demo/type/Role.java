@@ -9,8 +9,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 public enum Role {
-    ROLE_USER("USER"),
-    ROLE_ADMIN("USER", "ADMIN");
+    USER("ROLE_USER"),
+    ADMIN("ROLE_USER", "ROLE_ADMIN");
 
     private final String[] role;
 

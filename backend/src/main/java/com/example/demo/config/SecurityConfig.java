@@ -2,6 +2,7 @@ package com.example.demo.config;
 
 import com.example.demo.jwt.JwtAccessTokenFilter;
 import com.example.demo.jwt.JwtRefreshTokenFilter;
+import com.example.demo.type.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,7 +28,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/public/**").permitAll()
-                        .requestMatchers("/api/**").permitAll()
+                        .requestMatchers("/api/**").hasRole("USER")
 //                        .requestMatchers("").hasRole("ADMIN") //TODO 추후 필요시 경로 추가
 //                        .requestMatchers("").hasRole("USER") //TODO 추후 필요시 경로 추가
                         .anyRequest().authenticated()

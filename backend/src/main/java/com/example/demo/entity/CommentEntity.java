@@ -23,11 +23,11 @@ public class CommentEntity {
     private String content;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "user_id")
     private UserEntity user;
 
     @ManyToOne
-    @JoinColumn(name = "questionId")
+    @JoinColumn(name = "question_id")
     private QuestionEntity question;
 
     @CreatedDate

@@ -7,7 +7,6 @@ import com.example.demo.entity.UserEntity;
 import com.example.demo.repository.CommentRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,14 +26,15 @@ public class CommentService {
                 .build());
     }
 
+    @Transactional
     public void updateComment(SaveCommentRequestDto commentDto) {
-        if(saveComment(commentDto) == null)
-            // comment update의 결과가 없음 => update요청한 댓글의 작성자가 userId가 아님
-            throw new IllegalArgumentException(String.format("commentId(%L)'s Author is not userId(%L)", commentDto.getId(), commentDto.getUserId()));
+        if(commentRepository.update(commentDto.getId(), commentDto.getContent(), commentDto.getUserId()) == 0)
+            throw new IllegalArgumentException(String.format("commentId(%d)'s Author is not userId(%d)", commentDto.getId(), commentDto.getUserId()));
     }
 
     @Transactional
-    public void deleteComment(Long commentId) {
-        commentRepository.delete(commentId);
+    public void deleteComment(Long commentId, Long userId) {
+        if(commentRepository.delete(commentId, userId) == 0)
+            throw new IllegalArgumentException(String.format("commentId(%d)'s Author is not userId(%d)", commentId, userId));
     }
 }
