@@ -1,6 +1,5 @@
 package com.example.demo.repository;
 
-import com.example.demo.dto.response.QuestionResponseDto;
 import com.example.demo.entity.QuestionEntity;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;

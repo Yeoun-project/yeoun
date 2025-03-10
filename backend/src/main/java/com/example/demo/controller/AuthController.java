@@ -25,10 +25,6 @@ public class AuthController {
     private long accessTokenExpirationTime;
     @Value("${jwt.refresh-token-expiration-time}")
     private long refreshTokenExpirationTime;
-    @Value("${jwt.comment-token-expiration-time}")
-    private long commentTokenExpirationTime;
-    @Value("${database.guest.comment-count}")
-    private int guestCommentCount;
 
     private final KakaoService kakaoService;
     private final NaverService naverService;
@@ -82,7 +78,6 @@ public class AuthController {
 
         CookieUtil.addCookie(response, "accessToken", accessToken, accessTokenExpirationTime);
         CookieUtil.addCookie(response, "refreshToken", refreshToken, refreshTokenExpirationTime);
-
     }
 
 }

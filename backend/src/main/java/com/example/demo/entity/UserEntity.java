@@ -55,10 +55,6 @@ public class UserEntity implements UserDetails {
     @Column
     private Date deletedDateTime;
 
-    public UserEntity(Long id) {
-        this.id = id;
-    }
-
     @Builder
     public UserEntity(String oAuthId, String oAuthPlatform, String name, String email, String phone, String role, String uuid) {
         this.oAuthId = oAuthId;
