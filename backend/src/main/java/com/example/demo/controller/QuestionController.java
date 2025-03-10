@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -52,16 +53,17 @@ public class QuestionController {
                     .build()
             );
         }
-        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("get all questions success", questionResponseDtoList));
+
+        Map<String, Object> response = Map.of("questions", questionResponseDtoList);
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("get all questions success", response));
     }
 
     @GetMapping("/{questionId}")
     public ResponseEntity<?> getQuestionDetails(@PathVariable("questionId") Long questionId) {
         QuestionEntity question = questionService.getQuestionWithCommentById(questionId);
 
-        List<CommentResponseDto> commentDtoList =
-            question.getComments().stream().map(
-                    comment -> CommentResponseDto.builder()
+        List<CommentResponseDto> commentDtoList = question.getComments().stream()
+                .map(comment -> CommentResponseDto.builder()
                         .id(comment.getId())
                         .content(comment.getContent())
                         .createTime(comment.getCreatedDateTime())
@@ -69,14 +71,14 @@ public class QuestionController {
                 .toList();
 
         return ResponseEntity.status(HttpStatus.OK).body(
-            QuestionDetailResponseDto.builder()
-                .id(question.getId())
-                .content(question.getContent())
-                .heart(question.getHeart())
-                .categoryName(question.getCategory().getName())
-                .createTime(question.getCreatedDateTime())
-                .comments(commentDtoList)
-                .build()
+                QuestionDetailResponseDto.builder()
+                        .id(question.getId())
+                        .content(question.getContent())
+                        .heart(question.getHeart())
+                        .categoryName(question.getCategory().getName())
+                        .createTime(question.getCreatedDateTime())
+                        .comments(commentDtoList)
+                        .build()
         );
     }
 
