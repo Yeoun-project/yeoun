@@ -31,6 +31,7 @@ jobs:
       - name: Build Spring Boot app
         run: |
           cd backend
+          chmod +x ./gradlew
           ./gradlew build -x test
 
       # 서버에 배포 (Frontend & Backend)
