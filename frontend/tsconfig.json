@@ -1,11 +1,9 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
+    "baseUrl": "src",  // baseUrl은 src로 설정
     "paths": {
-      "@src/*": ["src/*"],
-      "@pages/*": ["src/pages/*"],
-      "@components/*": ["src/components/*"]
-
+      "@pages/*": ["pages/*"],
+      "@components/*": ["components/*"]
     }
   },
   "files": [],
