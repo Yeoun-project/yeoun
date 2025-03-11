@@ -18,6 +18,8 @@ jobs:
         run: |
           cd frontend
           pnpm install
+          corepack enable
+          pnpm --version
           pnpm run build
 
       # Backend 빌드
