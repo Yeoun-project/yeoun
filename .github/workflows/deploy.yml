@@ -13,24 +13,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup Node.js and pnpm
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          cache: 'pnpm'
-
-      - name: Enable pnpm and check version
-        run: |
-          corepack enable
-          corepack prepare pnpm@latest --activate
-          pnpm --version  # 설치 확인용
-
       # Frontend 빌드
       - name: Install dependencies & Build React
         run: |
           cd frontend
-          pnpm install
-          pnpm run build
+          npm install
+          npm run build
 
       # Backend 빌드
       - name: Set up JDK
