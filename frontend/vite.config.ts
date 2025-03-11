@@ -7,10 +7,9 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: {
-    alias: {
-      '@': resolve(__dirname, 'src'),
-      '@pages': resolve(__dirname, 'src/pages'),
-      '@components': resolve(__dirname, 'src/components'),
-    }
+    alias: [
+      { find: '@components', replacement: resolve(__dirname, 'src/components') },
+      { find: '@pages', replacement: resolve(__dirname, 'src/pages') },
+    ],
   },
 });
