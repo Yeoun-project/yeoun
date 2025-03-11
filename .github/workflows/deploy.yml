@@ -18,6 +18,7 @@ jobs:
         run: |
           cd frontend
           npm install
+          npm run type-check
           npm run build
 
       # Backend 빌드
