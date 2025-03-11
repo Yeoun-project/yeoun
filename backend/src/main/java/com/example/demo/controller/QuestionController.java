@@ -24,18 +24,13 @@ import java.util.Map;
 @RequestMapping("/api/question")
 public class QuestionController {
 
-    private final JwtUtil jwtUtil;
     private final QuestionService questionService;
 
     @PostMapping
     public ResponseEntity<?> addQuestion(@RequestBody @Valid AddQuestionRequestDto addQuestionRequestDto) {
-        try {
-            addQuestionRequestDto.setUserId(JwtUtil.getUserIdFromAuthentication());
-            questionService.addNewQuestion(addQuestionRequestDto);
-            return ResponseEntity.status(HttpStatus.CREATED).body(new SuccessResponse("Add question success", null));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorResponse("", e.getLocalizedMessage()));
-        }
+        addQuestionRequestDto.setUserId(JwtUtil.getUserIdFromAuthentication());
+        questionService.addNewQuestion(addQuestionRequestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new SuccessResponse("Add question success", null));
     }
 
     @GetMapping("/all")
