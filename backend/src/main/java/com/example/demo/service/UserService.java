@@ -22,7 +22,7 @@ public class UserService {
                 .email(vo.getEmail())
                 .phone(vo.getPhone())
                 .oAuthPlatform(vo.getOAuthPlatform())
-                .role(Role.ROLE_USER.name())
+                .role(Role.USER.name())
                 .uuid(uuid)
                 .build();
 

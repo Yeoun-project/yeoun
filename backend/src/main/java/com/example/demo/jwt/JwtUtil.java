@@ -1,7 +1,6 @@
 package com.example.demo.jwt;
 
 import com.example.demo.entity.UserEntity;
-import com.example.demo.util.CookieUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;

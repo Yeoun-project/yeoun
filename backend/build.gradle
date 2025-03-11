@@ -37,6 +37,7 @@ dependencies {
 	// util
 	implementation 'org.projectlombok:lombok'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
 	// default
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'

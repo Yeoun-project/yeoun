@@ -1,5 +1,6 @@
 package com.example.demo.dto.response;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,4 +25,14 @@ public class QuestionDetailResponseDto {
 
     private List<CommentResponseDto> comments;
 
+    @Builder
+    public QuestionDetailResponseDto(Long id, String content, int heart, String categoryName,
+        Date createTime, List<CommentResponseDto> comments) {
+        this.id = id;
+        this.content = content;
+        this.heart = heart;
+        this.categoryName = categoryName;
+        this.createTime = createTime;
+        this.comments = comments;
+    }
 }

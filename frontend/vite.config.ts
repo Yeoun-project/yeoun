@@ -10,6 +10,7 @@ export default defineConfig({
     alias: [
       { find: '@', replacement: resolve(__dirname, 'src') },
       { find: '@pages', replacement: resolve(__dirname, 'src/pages') },
+      { find: '@components', replacement: resolve(__dirname, 'src/components') },
     ],
   },
 });
