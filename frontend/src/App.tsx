@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { Outlet } from 'react-router-dom';
+import NavBar from '@components/NavBar.tsx';
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
     <>
-      <div class="text-3xl font-bold underline">hello world</div>
+      <NavBar />
+      <Outlet />
     </>
   );
 }

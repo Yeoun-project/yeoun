@@ -26,6 +26,12 @@ public class QuestionEntity {
     @Column(nullable = false)
     private int heart;
 
+    @Column
+    private final boolean isDisplayed = false;
+
+    @Column
+    private final boolean isFixed = false;
+
     @ManyToOne
     private UserEntity user;
 
