@@ -34,7 +34,7 @@
 /* Default Color */
 :root {
   --gradient-top-right: #aad2ff;
-  --gradient-right: #fc90d1;
+  --gradient-right: #fc90d1d3;
   --gradient-bottom-right: #f3c5ff;
 }
 
@@ -44,9 +44,9 @@
   .bg-circle-gradient {
     background-color: #ffffff;
     background-image:
-      radial-gradient(at top right, transparent 40%, var(--gradient-top-right) 85%),
-      linear-gradient(to right, transparent 60%, var(--gradient-right) 100%),
-      radial-gradient(at bottom right, transparent 60%, var(--gradient-bottom-right) 80%);
+      radial-gradient(at top right, transparent 60%, var(--gradient-top-right) 90%),
+      linear-gradient(to right, transparent 50%, var(--gradient-right) 100%),
+      radial-gradient(at bottom right, transparent 40%, var(--gradient-bottom-right) 95%);
   }
 
   .circle {
@@ -57,7 +57,7 @@
     align-items: center;
     justify-content: center;
     z-index: 2;
-    box-shadow: 0px 0px 3px 2px rgb(255, 255, 255);
+    box-shadow: 0px 0px 1.5px 2px rgb(255, 255, 255);
   }
 
   .circle-layer-container {
@@ -66,7 +66,7 @@
     height: 100%;
     background-color: white;
     border-radius: 45%;
-    opacity: 25%;
+    opacity: 30%;
   }
 
   .circle-layer {
