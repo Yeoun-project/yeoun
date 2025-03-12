@@ -1,9 +1,9 @@
-import Circle from '../components/bubble/Circle';
+import Circle from '../components/circle/Circle';
 
 const HomePage = () => {
   return (
     <section className="flex justify-center items-center">
-      <Circle />
+      <Circle>안녕하세요 여운입니다.</Circle>
     </section>
   );
 };
