@@ -32,6 +32,7 @@ jobs:
         run: |
           cd backend
           chmod +x ./gradlew
+          rm -rf ~/.gradle/caches
           ./gradlew build -x test
 
       # 서버에 배포 (Frontend & Backend)
