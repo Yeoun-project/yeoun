@@ -44,10 +44,12 @@ jobs:
       - name: Deploy to Oracle Compute Instance using rsync
         run: |
           docker run --rm -v ${{ github.workspace }}:/workspace \
-            instrumentisto/rsync-ssh rsync -avz /workspace/frontend/dist/ ubuntu@${{ secrets.OCI_COMPUTE_HOST }}:~/deploy/frontend/
+            instrumentisto/rsync-ssh rsync -avz -e "ssh -o StrictHostKeyChecking=no" \
+            /workspace/frontend/dist/ ubuntu@${{ secrets.OCI_COMPUTE_HOST }}:~/deploy/frontend/
 
           docker run --rm -v ${{ github.workspace }}:/workspace \
-            instrumentisto/rsync-ssh rsync -avz /workspace/backend/build/libs/*.jar ubuntu@${{ secrets.OCI_COMPUTE_HOST }}:~/deploy/backend/
+            instrumentisto/rsync-ssh rsync -avz -e "ssh -o StrictHostKeyChecking=no" \
+            /workspace/backend/build/libs/*.jar ubuntu@${{ secrets.OCI_COMPUTE_HOST }}:~/deploy/backend/
 
       - name: Restart services
         uses: appleboy/ssh-action@master
