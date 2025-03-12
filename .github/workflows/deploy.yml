@@ -48,11 +48,11 @@ jobs:
           username: ubuntu
           key: ${{ secrets.OCI_SSH_PRIVATE_KEY }}
           source: |
-            frontend/dist/index.html
-            frontend/dist/vite.svg
-            backend/build/libs/demo-0.0.1-SNAPSHOT.jar
-            backend/build/libs/demo-0.0.1-SNAPSHOT-plain.jar
+            frontend/dist/*   # frontend/dist 디렉토리의 모든 파일
+            backend/build/libs/*.jar   # backend/build/libs 폴더 안의 .jar 파일들
           target: "~/deploy"
+          overwrite: true
+          strip_components: 1
 
       - name: Restart services
         uses: appleboy/ssh-action@master
