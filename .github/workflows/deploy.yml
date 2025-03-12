@@ -48,8 +48,8 @@ jobs:
           username: ubuntu
           key: ${{ secrets.OCI_SSH_PRIVATE_KEY }}
           source: |
-            frontend/dist/*   # frontend/dist 디렉토리의 모든 파일
-            backend/build/libs/*.jar   # backend/build/libs 폴더 안의 .jar 파일들
+            frontend/dist/*
+            backend/build/libs/*.jar
           target: "~/deploy"
           overwrite: true
           strip_components: 1
