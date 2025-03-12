@@ -48,8 +48,10 @@ jobs:
           username: ubuntu
           key: ${{ secrets.OCI_SSH_PRIVATE_KEY }}
           source: |
-            frontend/dist/*
-            backend/build/libs/*.jar
+            frontend/dist/index.html
+            frontend/dist/vite.svg
+            backend/build/libs/demo-0.0.1-SNAPSHOT.jar
+            backend/build/libs/demo-0.0.1-SNAPSHOT-plain.jar
           target: "~/deploy"
 
       - name: Restart services
