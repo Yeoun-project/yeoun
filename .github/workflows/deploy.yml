@@ -43,7 +43,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.OCI_SSH_PRIVATE_KEY }}
           source: |
-            frontend/build/*
+            frontend/dist/*
             backend/build/libs/*.jar
           target: "~/deploy"
 
