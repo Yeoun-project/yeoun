@@ -42,15 +42,9 @@ jobs:
 
       # 서버에 배포 (Frontend & Backend)
       - name: Deploy to Oracle Compute Instance
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.OCI_COMPUTE_HOST }}
-          username: ubuntu
-          key: ${{ secrets.OCI_SSH_PRIVATE_KEY }}
-          source: |
-            frontend/dist/*
-            backend/build/libs/*.jar
-          target: "~/deploy"
+        run: |
+          bash -c "scp -i ${{ secrets.OCI_SSH_PRIVATE_KEY }} -r frontend/dist/* ubuntu@${{ secrets.OCI_COMPUTE_HOST }}:~/deploy/frontend"
+          bash -c "scp -i ${{ secrets.OCI_SSH_PRIVATE_KEY }} -r backend/build/libs/*.jar ubuntu@${{ secrets.OCI_COMPUTE_HOST }}:~/deploy/backend"
 
       - name: Restart services
         uses: appleboy/ssh-action@master
