@@ -41,19 +41,19 @@ jobs:
           ls -la backend/build/libs
 
       # 서버에 배포 (Frontend & Backend)
-      - name: Deploy to Oracle Compute Instance
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.OCI_COMPUTE_HOST }}
-          username: ubuntu
-          key: ${{ secrets.OCI_SSH_PRIVATE_KEY }}
-          source: |
-            frontend/dist/*
-            backend/build/libs/*.jar
-          target: "~/deploy"
-          overwrite: true
-          strip_components: 1
+      - name: Set up Docker container with rsync
+        uses: docker/setup-buildx-action@v2
 
+      - name: Deploy to Oracle Compute Instance using rsync
+        run: |
+          docker run --rm -v ${{ github.workspace }}:/workspace -e SSH_KEY="${{ secrets.OCI_SSH_PRIVATE_KEY }}" -e HOST="${{ secrets.OCI_COMPUTE_HOST }}" -e USER="ubuntu" \
+            ubuntu:latest bash -c "
+              mkdir -p /root/.ssh && \
+              echo \"$SSH_KEY\" > /root/.ssh/id_rsa && \
+              chmod 600 /root/.ssh/id_rsa && \
+              rsync -avz /workspace/frontend/dist/ $USER@$HOST:~/deploy/frontend/ && \
+              rsync -avz /workspace/backend/build/libs/*.jar $USER@$HOST:~/deploy/backend/
+            "
       - name: Restart services
         uses: appleboy/ssh-action@master
         with:
@@ -63,9 +63,9 @@ jobs:
           script: |
             # 프론트엔드 배포
             sudo rm -rf /var/www/frontend
-            sudo mv ~/deploy /var/www/frontend
+            sudo mv ~/deploy/frontend /var/www/frontend
             sudo systemctl restart nginx
 
             # 백엔드 실행
             pkill -f 'java -jar' || true
-            nohup java -jar ~/deploy/backend-*.jar > ~/deploy/backend.log 2>&1 &
+            nohup java -jar ~/deploy/backend/backend-*.jar > ~/deploy/backend/backend.log 2>&1 &
