@@ -35,6 +35,11 @@ jobs:
           rm -rf ~/.gradle/caches
           ./gradlew build -x test
 
+      - name: 파일 목록 확인
+        run: |
+          ls -la frontend/dist
+          ls -la backend/build/libs
+
       # 서버에 배포 (Frontend & Backend)
       - name: Deploy to Oracle Compute Instance
         uses: appleboy/scp-action@master
