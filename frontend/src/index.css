@@ -44,9 +44,9 @@
   .bg-circle-gradient {
     background-color: #ffffff;
     background-image:
-      radial-gradient(at top right, transparent 40%, var(--gradient-top-right) 90%),
+      radial-gradient(at top right, transparent 40%, var(--gradient-top-right) 85%),
       linear-gradient(to right, transparent 60%, var(--gradient-right) 100%),
-      radial-gradient(at bottom right, transparent 40%, var(--gradient-bottom-right) 70%);
+      radial-gradient(at bottom right, transparent 60%, var(--gradient-bottom-right) 80%);
   }
 
   .circle {
