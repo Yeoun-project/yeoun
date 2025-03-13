@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "baseUrl": "src",  // baseUrl은 src로 설정
+    "baseUrl": "./src",
     "paths": {
       "@pages/*": ["pages/*"],
       "@components/*": ["components/*"]
