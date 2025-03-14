@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.common.SuccessResponse;
 import com.example.demo.dto.request.SaveCommentRequestDto;
 import com.example.demo.jwt.JwtUtil;
 import com.example.demo.service.CommentService;
@@ -29,9 +30,6 @@ public class CommentController {
         // check user
         Long userId = JwtUtil.getUserIdFromAuthentication();
 
-        if(userId == null)
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-
         commentRequestDto.setUserId(userId);
         commentRequestDto.setQuestionId(questionId);
 
@@ -39,7 +37,7 @@ public class CommentController {
         commentService.saveComment(commentRequestDto);
 
         // response
-        return ResponseEntity.status(HttpStatus.CREATED).body("comment added");
+        return ResponseEntity.status(HttpStatus.CREATED).body(new SuccessResponse("Add comment success", null));
     }
 
     @PutMapping("/{commentId}")
@@ -47,16 +45,12 @@ public class CommentController {
 
         Long userId = JwtUtil.getUserIdFromAuthentication();
 
-        if(userId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
         commentRequestDto.setId(commentId);
         commentRequestDto.setUserId(userId);
 
         commentService.updateComment(commentRequestDto);
 
-        return ResponseEntity.status(HttpStatus.OK).body("comment updated");
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("Updated comment success", null));
     }
 
     @DeleteMapping("/{commentId}")
@@ -66,14 +60,14 @@ public class CommentController {
 
         commentService.deleteComment(commentId, userId);
 
-        return ResponseEntity.status(HttpStatus.OK).body("comment deleted");
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("deleted comment success", null));
     }
 
     // 신고하기
     @PostMapping("/report/{commentId}")
     public ResponseEntity<?> reportComment(@PathVariable("commentId") Long commentId) {
         // reportService.reportCommnet(commentId);
-        return ResponseEntity.status(HttpStatus.OK).body("comment reported");
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("not service", null));
     }
 
 }
