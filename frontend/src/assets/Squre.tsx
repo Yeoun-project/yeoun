@@ -7,7 +7,7 @@ const Squre = ({ size = 100 }: { size?: number }) => {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <g clip-path="url(#clip0_19_558)">
+      <g clipPath="url(#clip0_19_558)">
         <g filter="url(#filter0_dddddd_19_558)">
           <rect
             width="38.0128"
@@ -95,9 +95,9 @@ const Squre = ({ size = 100 }: { size?: number }) => {
           width="94.6511"
           height="61.3325"
           filterUnits="userSpaceOnUse"
-          color-interpolation-filters="sRGB"
+          colorInterpolationFilters="sRGB"
         >
-          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feColorMatrix
             in="SourceAlpha"
             type="matrix"
@@ -192,9 +192,9 @@ const Squre = ({ size = 100 }: { size?: number }) => {
           width="60.7655"
           height="87.172"
           filterUnits="userSpaceOnUse"
-          color-interpolation-filters="sRGB"
+          colorInterpolationFilters="sRGB"
         >
-          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feColorMatrix
             in="SourceAlpha"
             type="matrix"
@@ -289,9 +289,9 @@ const Squre = ({ size = 100 }: { size?: number }) => {
           width="60.7655"
           height="87.172"
           filterUnits="userSpaceOnUse"
-          color-interpolation-filters="sRGB"
+          colorInterpolationFilters="sRGB"
         >
-          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feColorMatrix
             in="SourceAlpha"
             type="matrix"
@@ -387,8 +387,8 @@ const Squre = ({ size = 100 }: { size?: number }) => {
           gradientUnits="userSpaceOnUse"
           gradientTransform="translate(41.2627 26.1397) rotate(-113.903) scale(82.9204 35.0728)"
         >
-          <stop stop-color="#EDA4D0" />
-          <stop offset="0.796674" stop-color="#F0F0F0" stop-opacity="0" />
+          <stop stopColor="#EDA4D0" />
+          <stop offset="0.796674" stopColor="#F0F0F0" stopOpacity="0" />
         </radialGradient>
         <radialGradient
           id="paint1_radial_19_558"
@@ -398,8 +398,8 @@ const Squre = ({ size = 100 }: { size?: number }) => {
           gradientUnits="userSpaceOnUse"
           gradientTransform="translate(20.2033 12.0327) rotate(118.163) scale(23.8468 122.656)"
         >
-          <stop stop-color="#F7D8FF" />
-          <stop offset="0.796674" stop-color="#F0F0F0" stop-opacity="0" />
+          <stop stopColor="#F7D8FF" />
+          <stop offset="0.796674" stopColor="#F0F0F0" stopOpacity="0" />
         </radialGradient>
         <radialGradient
           id="paint2_radial_19_558"
@@ -409,8 +409,8 @@ const Squre = ({ size = 100 }: { size?: number }) => {
           gradientUnits="userSpaceOnUse"
           gradientTransform="translate(13.1202 34.7453) rotate(-59.5801) scale(43.9025 68.6852)"
         >
-          <stop stop-color="#C0DEFF" />
-          <stop offset="0.796674" stop-color="#F0F0F0" stop-opacity="0" />
+          <stop stopColor="#C0DEFF" />
+          <stop offset="0.796674" stopColor="#F0F0F0" stopOpacity="0" />
         </radialGradient>
         <radialGradient
           id="paint3_radial_19_558"
@@ -420,8 +420,8 @@ const Squre = ({ size = 100 }: { size?: number }) => {
           gradientUnits="userSpaceOnUse"
           gradientTransform="translate(37.7413 21.4479) rotate(149.229) scale(35.1906 73.3942)"
         >
-          <stop stop-color="#FC90D1" />
-          <stop offset="0.796674" stop-color="#F0F0F0" stop-opacity="0" />
+          <stop stopColor="#FC90D1" />
+          <stop offset="0.796674" stopColor="#F0F0F0" stopOpacity="0" />
         </radialGradient>
         <radialGradient
           id="paint4_radial_19_558"
@@ -431,8 +431,8 @@ const Squre = ({ size = 100 }: { size?: number }) => {
           gradientUnits="userSpaceOnUse"
           gradientTransform="translate(4.46936 15.2772) rotate(30.4054) scale(48.366 67.3287)"
         >
-          <stop stop-color="#F3C5FF" />
-          <stop offset="0.796674" stop-color="#F0F0F0" stop-opacity="0" />
+          <stop stopColor="#F3C5FF" />
+          <stop offset="0.796674" stopColor="#F0F0F0" stopOpacity="0" />
         </radialGradient>
         <radialGradient
           id="paint5_radial_19_558"
@@ -442,8 +442,8 @@ const Squre = ({ size = 100 }: { size?: number }) => {
           gradientUnits="userSpaceOnUse"
           gradientTransform="translate(4.96596 42.4981) rotate(-22.0081) scale(48.742 74.962)"
         >
-          <stop stop-color="#AAD2FF" />
-          <stop offset="0.796674" stop-color="#F0F0F0" stop-opacity="0" />
+          <stop stopColor="#AAD2FF" />
+          <stop offset="0.796674" stopColor="#F0F0F0" stopOpacity="0" />
         </radialGradient>
         <radialGradient
           id="paint6_radial_19_558"
@@ -453,8 +453,8 @@ const Squre = ({ size = 100 }: { size?: number }) => {
           gradientUnits="userSpaceOnUse"
           gradientTransform="translate(7.42869 6.49349) rotate(39.4721) scale(133.166 72.5622)"
         >
-          <stop stop-color="#FF83CE" />
-          <stop offset="0.796674" stop-color="#F0F0F0" stop-opacity="0" />
+          <stop stopColor="#FF83CE" />
+          <stop offset="0.796674" stopColor="#F0F0F0" stopOpacity="0" />
         </radialGradient>
         <radialGradient
           id="paint7_radial_19_558"
@@ -464,8 +464,8 @@ const Squre = ({ size = 100 }: { size?: number }) => {
           gradientUnits="userSpaceOnUse"
           gradientTransform="translate(37.721 18.0077) rotate(160.301) scale(52.7464 180.014)"
         >
-          <stop stop-color="#F5CDFF" />
-          <stop offset="0.796674" stop-color="#F0F0F0" stop-opacity="0" />
+          <stop stopColor="#F5CDFF" />
+          <stop offset="0.796674" stopColor="#F0F0F0" stopOpacity="0" />
         </radialGradient>
         <radialGradient
           id="paint8_radial_19_558"
@@ -475,8 +475,8 @@ const Squre = ({ size = 100 }: { size?: number }) => {
           gradientUnits="userSpaceOnUse"
           gradientTransform="translate(4.44911 32.1466) rotate(-21.9118) scale(52.9911 82.4674)"
         >
-          <stop stop-color="#AAD2FF" />
-          <stop offset="0.796674" stop-color="#F0F0F0" stop-opacity="0" />
+          <stop stopColor="#AAD2FF" />
+          <stop offset="0.796674" stopColor="#F0F0F0" stopOpacity="0" />
         </radialGradient>
         <clipPath id="clip0_19_558">
           <rect width="100" height="100" fill="white" />
