@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 
+import Squre from '../../assets/Squre';
+
 import Circle from '../../components/circle/Circle';
 import TabNav from '../../components/TabNav';
 
@@ -9,6 +11,12 @@ const TodayQuestionPage = () => {
   return (
     <>
       <main className="flex min-h-[100svh] flex-col items-center justify-between p-6 pb-[100px]">
+        <div aria-hidden className="animate-spin-second absolute top-[15%] right-[10%]">
+          <Squre size={50} />
+        </div>
+        <div aria-hidden className="animate-spin-third absolute bottom-[25%] left-[10%]">
+          <Squre size={70} />
+        </div>
         <header className="w-full">
           {/* Top Nav */}
           <nav className="flex items-center justify-between">
