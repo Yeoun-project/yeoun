@@ -1,6 +1,8 @@
 package com.example.demo.jwt;
 
 import com.example.demo.entity.UserEntity;
+import com.example.demo.exception.CustomException;
+import com.example.demo.exception.ErrorCode;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -90,6 +92,10 @@ public class JwtUtil {
     }
 
     public static Long getUserIdFromAuthentication() {
-        return Long.parseLong((String) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        Long userId = Long.parseLong((String) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        if(userId == null) {
+            throw new CustomException(ErrorCode.UNAUTHORIZED, "user token is not found");
+        }
+        return userId;
     }
 }
