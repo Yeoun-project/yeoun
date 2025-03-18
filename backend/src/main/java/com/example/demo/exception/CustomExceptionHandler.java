@@ -30,7 +30,7 @@ public class CustomExceptionHandler {
 
         if (isMissingParams) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ErrorResponse("MISSING_PARAMETER", "필수 파라미터를 입력해주세요"));
+                    .body(new ErrorResponse("MISSING_PARAMETER", "필수 파라미터를 입력하세요"));
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ErrorResponse("INVALID_PARAMETER", "파라미터 값이 잘못되었습니다"));
