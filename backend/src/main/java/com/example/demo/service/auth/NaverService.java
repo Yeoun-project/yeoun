@@ -1,7 +1,7 @@
 package com.example.demo.service.auth;
 
-import com.example.demo.dto.response.NaverTokenResponseDto;
-import com.example.demo.dto.response.NaverUserInfoResponseDto;
+import com.example.demo.dto.response.auth.NaverTokenResponseDto;
+import com.example.demo.dto.response.auth.NaverUserInfoResponseDto;
 import com.example.demo.entity.UserEntity;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
