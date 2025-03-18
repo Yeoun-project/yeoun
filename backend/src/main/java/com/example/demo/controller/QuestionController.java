@@ -21,19 +21,18 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/question")
 public class QuestionController {
 
     private final QuestionService questionService;
 
-    @PostMapping
+    @PostMapping("/api/question")
     public ResponseEntity<?> addQuestion(@RequestBody @Valid AddQuestionRequestDto addQuestionRequestDto) {
         addQuestionRequestDto.setUserId(JwtUtil.getUserIdFromAuthentication());
         questionService.addNewQuestion(addQuestionRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(new SuccessResponse("Add question success", null));
     }
 
-    @GetMapping("/all")
+    @GetMapping("/api/question/all")
     public ResponseEntity<?> getAllQuestion() {
         List<QuestionEntity> allQuestions = questionService.getAllQuestions();
         List<QuestionResponseDto> questionResponseDtoList = new ArrayList<>();
@@ -53,7 +52,7 @@ public class QuestionController {
         return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("get all questions success", response));
     }
 
-    @GetMapping("/{questionId}")
+    @GetMapping("/api/question/{questionId}")
     public ResponseEntity<?> getQuestionDetails(@PathVariable("questionId") Long questionId) {
         QuestionEntity question = questionService.getQuestionWithCommentById(questionId);
 
