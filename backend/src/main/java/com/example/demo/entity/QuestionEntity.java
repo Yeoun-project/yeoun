@@ -27,9 +27,6 @@ public class QuestionEntity {
     private int heart;
 
     @Column
-    private final boolean isDisplayed = false;
-
-    @Column
     private final boolean isFixed = false;
 
     @ManyToOne
