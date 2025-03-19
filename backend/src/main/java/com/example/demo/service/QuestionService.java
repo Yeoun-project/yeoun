@@ -68,7 +68,7 @@ public class QuestionService {
             questionHistoryRepository.save(
                     QuestionHistoryEntity.builder()
                             .user(entityManager.getReference(UserEntity.class, userId))
-                            .question(entityManager.getReference(QuestionEntity.class, randomPopularityQuestion.get().getId()))
+                            .question(randomPopularityQuestion.get())
                             .build()
             );
 
