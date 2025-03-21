@@ -20,6 +20,8 @@ import org.springframework.security.web.authentication.logout.LogoutFilter;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+
     private final JwtAccessTokenFilter jwtAccessTokenFilter;
     private final JwtRefreshTokenFilter jwtRefreshTokenFilter;
     private final JwtAnonymousTokenFilter jwtAnonymousTokenFilter;
@@ -41,6 +43,9 @@ public class SecurityConfig {
                 .addFilterBefore(jwtAccessTokenFilter, LogoutFilter.class) // 1번쨰
                 .addFilterAfter(jwtRefreshTokenFilter, JwtAccessTokenFilter.class) // 2번째
                 .addFilterAfter(jwtAnonymousTokenFilter, JwtRefreshTokenFilter.class) //3번째
+
+                .exceptionHandling(ex -> ex
+                    .authenticationEntryPoint(customAuthenticationEntryPoint))
 
                 .build();
     }
