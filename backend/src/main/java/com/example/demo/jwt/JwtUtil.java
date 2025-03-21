@@ -101,6 +101,10 @@ public class JwtUtil {
     }
 
     public static Long getUserIdFromAuthentication() {
-        return (Long)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId = (Long)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(userId == null) {
+            throw new CustomException(ErrorCode.UNAUTHORIZED, "user token is not found");
+        }
+        return userId;
     }
 }
