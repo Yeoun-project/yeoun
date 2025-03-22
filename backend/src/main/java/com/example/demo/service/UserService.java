@@ -1,11 +1,9 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.UserEntity;
-import com.example.demo.exception.CustomException;
 import com.example.demo.jwt.JwtUtil;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.type.Role;
-import com.example.demo.util.CookieUtil;
 import com.example.demo.vo.UserRegisterInfoVo;
 import jakarta.transaction.Transactional;
 import java.util.Optional;
@@ -53,4 +51,5 @@ public class UserService {
                 .build()
             );
     }
+
 }

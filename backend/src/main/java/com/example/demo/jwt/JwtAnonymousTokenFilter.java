@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,18 +24,15 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @RequiredArgsConstructor
 public class JwtAnonymousTokenFilter extends OncePerRequestFilter {
 
+    @Value("${scheduler.user_history_delete_second}")
+    private Long userHistoryDeleteSecond;
+
     private final JwtUtil jwtUtil;
     private final UserService userService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
         FilterChain filterChain) throws ServletException, IOException {
-
-        // check url
-        if (request.getRequestURI().equals("/public/auth/login")) {
-            filterChain.doFilter(request, response);
-            return ;
-        }
 
         // check authentic from security context
         if (SecurityContextHolder.getContext().getAuthentication() != null) {
@@ -52,8 +50,8 @@ public class JwtAnonymousTokenFilter extends OncePerRequestFilter {
         }else {
             // get authentic from token
             Map<String, String> claims = jwtUtil.extractToken(anonymousToken, "role");
-            Role.getRole(claims.get("role")).getAuthorities().forEach(a ->log.info(a.getAuthority()));
             authentication = new UsernamePasswordAuthenticationToken(Long.valueOf(claims.get("subject")), null,  Role.getRole(claims.get("role")).getAuthorities());
+            CookieUtil.addCookie(response, "anonymousToken", anonymousToken,  userHistoryDeleteSecond);
         }
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -66,7 +64,7 @@ public class JwtAnonymousTokenFilter extends OncePerRequestFilter {
 
         String token = jwtUtil.generateAnonymousToken(newUser);
 
-        CookieUtil.addCookie(response, "anonymousToken", token,  3372036854775807L);
+        CookieUtil.addCookie(response, "anonymousToken", token,  userHistoryDeleteSecond);
 
         return new UsernamePasswordAuthenticationToken(newUser.getId(), null, newUser.getAuthorities());
     }

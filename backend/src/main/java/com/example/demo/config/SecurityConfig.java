@@ -4,6 +4,7 @@ import com.example.demo.exception.CustomAuthenticationEntryPoint;
 import com.example.demo.jwt.JwtAccessTokenFilter;
 import com.example.demo.jwt.JwtAnonymousTokenFilter;
 import com.example.demo.jwt.JwtRefreshTokenFilter;
+import com.example.demo.jwt.UserHistoryFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +26,7 @@ public class SecurityConfig {
     private final JwtAccessTokenFilter jwtAccessTokenFilter;
     private final JwtRefreshTokenFilter jwtRefreshTokenFilter;
     private final JwtAnonymousTokenFilter jwtAnonymousTokenFilter;
+    private final UserHistoryFilter userHistoryFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -43,6 +45,7 @@ public class SecurityConfig {
                 .addFilterBefore(jwtAccessTokenFilter, LogoutFilter.class) // 1번쨰
                 .addFilterAfter(jwtRefreshTokenFilter, JwtAccessTokenFilter.class) // 2번째
                 .addFilterAfter(jwtAnonymousTokenFilter, JwtRefreshTokenFilter.class) //3번째
+                .addFilterAfter(userHistoryFilter, JwtAnonymousTokenFilter.class) //3번째
 
                 .exceptionHandling(ex -> ex
                     .authenticationEntryPoint(customAuthenticationEntryPoint))
