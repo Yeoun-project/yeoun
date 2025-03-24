@@ -10,6 +10,8 @@ import java.util.Optional;
 
 public class CookieUtil {
 
+    private CookieUtil() {}
+
     public static void addCookie(HttpServletResponse response, String name, String value, Long maxAge) {
         ResponseCookie cookie = ResponseCookie.from(name, value)
                 .path("/")

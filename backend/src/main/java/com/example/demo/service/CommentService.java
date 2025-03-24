@@ -4,6 +4,8 @@ import com.example.demo.dto.request.SaveCommentRequestDto;
 import com.example.demo.entity.CommentEntity;
 import com.example.demo.entity.QuestionEntity;
 import com.example.demo.entity.UserEntity;
+import com.example.demo.exception.CustomException;
+import com.example.demo.exception.ErrorCode;
 import com.example.demo.repository.CommentRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
@@ -29,12 +31,12 @@ public class CommentService {
     @Transactional
     public void updateComment(SaveCommentRequestDto commentDto) {
         if(commentRepository.update(commentDto.getId(), commentDto.getContent(), commentDto.getUserId()) == 0)
-            throw new IllegalArgumentException(String.format("commentId(%d)'s Author is not userId(%d)", commentDto.getId(), commentDto.getUserId()));
+            throw new CustomException(ErrorCode.CONFLICT ,String.format("commentId(%d)'s Author is not userId(%d)", commentDto.getId(), commentDto.getUserId()));
     }
 
     @Transactional
     public void deleteComment(Long commentId, Long userId) {
         if(commentRepository.delete(commentId, userId) == 0)
-            throw new IllegalArgumentException(String.format("commentId(%d)'s Author is not userId(%d)", commentId, userId));
+            throw new CustomException(ErrorCode.CONFLICT ,String.format("commentId(%d)'s Author is not userId(%d)", commentId, userId));
     }
 }

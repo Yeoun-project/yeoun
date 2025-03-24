@@ -1,6 +1,8 @@
 package com.example.demo.jwt;
 
 import com.example.demo.entity.UserEntity;
+import com.example.demo.exception.CustomException;
+import com.example.demo.exception.ErrorCode;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -14,6 +16,7 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -57,6 +60,14 @@ public class JwtUtil {
                 .compact();
     }
 
+    public String generateAnonymousToken(UserEntity user) {
+        return Jwts.builder()
+            .setSubject(user.getId().toString())
+            .claim("role", user.getRole())
+            .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+            .compact();
+    }
+
     public Map<String, String> extractToken(String token, String... includedClaims) throws ExpiredJwtException {
         HashMap<String, String> claims = new HashMap<>();
 
@@ -90,6 +101,10 @@ public class JwtUtil {
     }
 
     public static Long getUserIdFromAuthentication() {
-        return Long.parseLong((String) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        Long userId = (Long)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(userId == null) {
+            throw new CustomException(ErrorCode.UNAUTHORIZED, "user token is not found");
+        }
+        return userId;
     }
 }

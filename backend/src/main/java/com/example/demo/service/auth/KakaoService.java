@@ -1,7 +1,7 @@
 package com.example.demo.service.auth;
 
-import com.example.demo.dto.response.KakaoTokenResponseDto;
-import com.example.demo.dto.response.KakaoUserInfoResponseDto;
+import com.example.demo.dto.response.auth.KakaoTokenResponseDto;
+import com.example.demo.dto.response.auth.KakaoUserInfoResponseDto;
 import com.example.demo.entity.UserEntity;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
