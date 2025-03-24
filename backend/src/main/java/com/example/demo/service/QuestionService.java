@@ -26,6 +26,7 @@ import java.util.List;
 public class QuestionService {
 
     private final EntityManager entityManager;
+    private final ForbiddenWordService forbiddenWordService;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final QuestionRepository questionRepository;
@@ -38,6 +39,8 @@ public class QuestionService {
 
         CategoryEntity category = categoryRepository.findById(dto.getCategoryId())
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_PARAMETER, "Invalid category ID"));
+
+        forbiddenWordService.validateForbiddenWord(dto.getContent());
 
         questionRepository.save(QuestionEntity.builder()
                 .content(dto.getContent())
