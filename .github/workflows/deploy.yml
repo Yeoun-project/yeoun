@@ -16,12 +16,9 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Output GitHub context
-        run: echo "${{ toJSON(github) }}"
-
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
-          context: ./backend
-          push: 'true'
+          context: "{{defaultContext}}:backend"
+          push: true
           tags: wheon06/yeoun-backend:latest
