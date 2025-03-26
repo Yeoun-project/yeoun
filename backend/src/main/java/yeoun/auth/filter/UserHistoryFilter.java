@@ -39,7 +39,7 @@ public class UserHistoryFilter extends OncePerRequestFilter {
             throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR, "UserHistoryFilter :: user_id is null error");
         }
 
-//        userHistoryService.addHistory(userId, JwtService.getIpFromRequest(request), request.getHeader("User-Agent"), request.getRequestURI());
+        userHistoryService.addHistory(userId, JwtService.getIpFromRequest(request), request.getHeader("User-Agent"), request.getRequestURI());
 
         filterChain.doFilter(request, response);
     }
