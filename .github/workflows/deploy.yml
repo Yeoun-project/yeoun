@@ -10,6 +10,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Set up application.yml
+        run: |
+          echo "${{ secrets.APPLICATION_YML }}" | base64 --decode > ./backend/src/main/resources/application.yml
+
       - name: Log in Docker Hub
         uses: docker/login-action@v3
         with:
