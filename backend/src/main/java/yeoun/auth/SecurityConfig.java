@@ -20,7 +20,6 @@ import org.springframework.security.web.authentication.logout.LogoutFilter;
 
 @Configuration
 @RequiredArgsConstructor
-@ComponentScan(basePackageClasses = {JwtService.class, JwtAccessTokenFilter.class})
 public class SecurityConfig {
 
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
