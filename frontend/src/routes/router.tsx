@@ -12,6 +12,8 @@ import MyActivityPage from '../pages/MyActivityPage.tsx';
 import TodayQuestionPage from '../pages/TodayQuestion/TodayQuestionPage.tsx';
 import TodayQuestionCommentPage from '../pages/TodayQuestion/TodayQuestionCommentPage.tsx';
 import TodayQuestionLayout from '../pages/TodayQuestion/TodayQuestionLayout.tsx';
+import MyTodayAnswersPage from '../pages/TodayQuestion/MyTodayAnswersPage.tsx';
+import MyTodayAnswerPage from '../pages/TodayQuestion/MyTodayAnswerPage.tsx';
 
 const router = createBrowserRouter([
   {
@@ -32,6 +34,14 @@ const router = createBrowserRouter([
           {
             path: '/today-question/comment',
             element: <TodayQuestionCommentPage />,
+          },
+          {
+            path: '/today-question/answers',
+            element: <MyTodayAnswersPage />,
+          },
+          {
+            path: '/today-question/:questionId',
+            element: <MyTodayAnswerPage />,
           },
         ],
       },
