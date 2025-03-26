@@ -12,6 +12,7 @@ jobs:
     steps:
       - name: Set up application.yml
         run: |
+          mkdir -p ./backend/src/main/resources
           echo "${{ secrets.APPLICATION_YML }}" | base64 --decode > ./backend/src/main/resources/application.yml
 
       - name: Log in Docker Hub
