@@ -41,7 +41,7 @@ jobs:
         with:
           host: ${{ secrets.OCI_COMPUTE_HOST }}
           username: ${{ secrets.OCI_SSH_USER }}
-          key: ${{ secrets.OCI_SSH_PRIVATE_KEY }}
+          password: ${{ secrets.SSH_PASSWORD }}
           port: ${{ secrets.OCI_SSH_PORT }}
           script: |
             echo "도커 허브로부터 이미지 Pull"
@@ -86,7 +86,7 @@ jobs:
       with:
         host: ${{ secrets.OCI_COMPUTE_HOST }}
         username: ${{ secrets.OCI_SSH_USER }}
-        key: ${{ secrets.OCI_SSH_PRIVATE_KEY }}
+        password: ${{ secrets.SSH_PASSWORD }}
         port: ${{ secrets.OCI_SSH_PORT }}
         script: |
           echo "도커 허브로부터 이미지 Pull"
