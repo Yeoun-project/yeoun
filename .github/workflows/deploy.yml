@@ -100,7 +100,7 @@ jobs:
           docker run -d \
             --name yeoun-back \
             -p 8080:8080 \
-            -e DB_HOST=${{ secrets.OCI_COMPUTE_HOST }} \
+            -e DB_HOST=${{ secrets.DB_HOST }} \
             -e DB_PORT=${{ secrets.DB_PORT }} \
             -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
             -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
