@@ -1,5 +1,11 @@
 package yeoun.comment.presentation;
 
+import java.util.List;
+import java.util.Map;
+import org.springframework.web.bind.annotation.GetMapping;
+import yeoun.comment.domain.CommentEntity;
+import yeoun.comment.dto.response.CommentDetailResponseDto;
+import yeoun.comment.dto.response.CommentResponse;
 import yeoun.common.SuccessResponse;
 import yeoun.comment.dto.request.SaveCommentRequest;
 import yeoun.auth.service.JwtService;
@@ -14,6 +20,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import yeoun.question.domain.QuestionEntity;
+import yeoun.question.dto.response.QuestionDetailResponse;
+import yeoun.question.dto.response.QuestionResponse;
 
 @RestController
 @RequestMapping("/api/comment")
@@ -61,6 +70,33 @@ public class CommentController {
         commentService.deleteComment(commentId, userId);
 
         return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("deleted comment success", null));
+    }
+
+    @GetMapping("/my")
+    public ResponseEntity<?> getMyComments() {
+        Long userId = JwtService.getUserIdFromAuthentication();
+
+        List<CommentEntity> comments = commentService.getCommentsByUserId(userId);
+
+        List<CommentDetailResponseDto> commentDetailDto = comments.stream()
+            .map(comment -> {
+                QuestionEntity question = comment.getQuestion();
+                return CommentDetailResponseDto.builder()
+                        .id(question.getId())
+                        .content(question.getContent())
+                        .categoryName(question.getCategory().getName())
+                        .createTime(question.getCreatedDateTime())
+                        .comment(
+                            CommentResponse.builder()
+                                .id(comment.getId())
+                                .content(comment.getContent())
+                                .createTime(comment.getCreatedDateTime())
+                                .build())
+                        .build();
+            })
+            .toList();
+
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("get my comments success" ,Map.of("questions", commentDetailDto)));
     }
 
     // 신고하기

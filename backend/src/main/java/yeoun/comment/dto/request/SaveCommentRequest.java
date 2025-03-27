@@ -1,5 +1,6 @@
 package yeoun.comment.dto.request;
 
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,6 +12,7 @@ public class SaveCommentRequest {
 
     public Long id;
 
+    @NotEmpty
     public String content;
 
     public Long userId;
