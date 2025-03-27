@@ -35,3 +35,21 @@ jobs:
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/yeoun-front:latest
             ${{ secrets.DOCKER_USERNAME }}/yeoun-front:${{ github.sha }}
+
+      - name: 서버에 SSH 접속
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.OCI_COMPUTE_HOST }}
+          username: ${{ secrets.OCI_SSH_USER }}
+          key: ${{ secrets.OCI_SSH_PRIVATE_KEY }}
+          port: ${{ secrets.OCI_SSH_PORT }}
+          script: |
+            echo "도커 허브로부터 이미지 Pull"
+            docker pull ${{ secrets.DOCKER_USERNAME }}/yeoun-front:latest
+            
+            echo "기존 컨테이너 중지 및 삭제"
+            docker stop yeoun-front || true
+            docker rm yeoun-front || true
+            
+            echo "새 컨테이너 시작"
+            docker run -d --name yeoun-front -p 80:80 ${{ secrets.DOCKER_USERNAME }}/yeoun-front:latest
