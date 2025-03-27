@@ -36,7 +36,7 @@ jobs:
             ${{ secrets.DOCKER_USERNAME }}/yeoun-front:latest
             ${{ secrets.DOCKER_USERNAME }}/yeoun-front:${{ github.sha }}
 
-      - name: 서버에 SSH 접속
+      - name: 서버에 SSH 접속 및 배포
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.OCI_COMPUTE_HOST }}
@@ -80,3 +80,29 @@ jobs:
         tags: |
           ${{ secrets.DOCKER_USERNAME }}/yeoun-back:latest
           ${{ secrets.DOCKER_USERNAME }}/yeoun-back:${{ github.sha }}
+
+    - name: 서버에 SSH 접속 및 배포
+      uses: appleboy/ssh-action@v1
+      with:
+        host: ${{ secrets.OCI_COMPUTE_HOST }}
+        username: ${{ secrets.OCI_SSH_USER }}
+        key: ${{ secrets.OCI_SSH_PRIVATE_KEY }}
+        port: ${{ secrets.OCI_SSH_PORT }}
+        script: |
+          echo "도커 허브로부터 이미지 Pull"
+          docker pull ${{ secrets.DOCKER_USERNAME }}/yeoun-back:latest
+              
+          echo "기존 컨테이너 중지 및 삭제"
+          docker stop yeoun-back || true
+          docker rm yeoun-back || true
+            
+          echo "새 컨테이너 시작"
+          docker run -d \
+            --name yeoun-back \
+            -p 8080:8080 \
+            -e DB_HOST=${{ secrets.OCI_COMPUTE_HOST }} \
+            -e DB_PORT=${{ secrets.DB_PORT }} \
+            -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+            -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
+            -e SPRING_PROFILES_ACTIVE=prod \
+            ${{ secrets.DOCKER_USERNAME }}/yeoun-back:latest
