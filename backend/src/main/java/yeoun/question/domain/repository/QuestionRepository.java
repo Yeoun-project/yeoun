@@ -17,7 +17,7 @@ public interface QuestionRepository extends JpaRepository<QuestionEntity, Long> 
     @Query("SELECT q FROM QuestionEntity q LEFT JOIN q.comments c GROUP BY q ORDER BY COUNT(c) DESC")
     List<QuestionEntity> findAllOrderByCommentsCountDesc();
 
-    @Query("SELECT q FROM QuestionEntity q LEFT JOIN FETCH q.comments WHERE q.id = :questionId")
+    @Query("SELECT q FROM QuestionEntity q LEFT JOIN FETCH q.comments left join fetch q.user WHERE q.id = :questionId")
     Optional<QuestionEntity> findQuestionWithCommentById(@Param("questionId") Long questionId);
 
     @Query("select q from QuestionEntity q left join fetch q.comments where q.user.id = :userId")

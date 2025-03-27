@@ -1,5 +1,6 @@
 package yeoun.question.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,17 +27,21 @@ public class QuestionDetailResponse {
 
     private Date createTime;
 
+    @JsonProperty("isAuthor")
+    private boolean isAuthor;
+
     private List<CommentResponse> comments;
 
     @Builder
     public QuestionDetailResponse(Long id, String content, int heart,int commentCount, String categoryName,
-                                  Date createTime, List<CommentResponse> comments) {
+                                  Date createTime, boolean isAuthor, List<CommentResponse> comments) {
         this.id = id;
         this.content = content;
         this.heart = heart;
         this.commentCount = commentCount;
         this.categoryName = categoryName;
         this.createTime = createTime;
+        this.isAuthor = isAuthor;
         this.comments = comments;
     }
 }

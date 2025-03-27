@@ -74,6 +74,7 @@ public class QuestionController {
 
     @GetMapping("/api/question/{questionId}")
     public ResponseEntity<?> getQuestionDetails(@PathVariable("questionId") Long questionId) {
+        Long userId = JwtService.getUserIdFromAuthentication();
         QuestionEntity question = questionService.getQuestionWithCommentById(questionId);
 
         List<CommentResponse> commentDtoList = question.getComments().stream()
@@ -92,6 +93,7 @@ public class QuestionController {
                         .commentCount(question.getComments().size())
                         .categoryName(question.getCategory().getName())
                         .createTime(question.getCreatedDateTime())
+                        .isAuthor(userId == question.getUser().getId())
                         .comments(commentDtoList)
                         .build());
 
