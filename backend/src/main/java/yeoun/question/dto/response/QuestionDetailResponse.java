@@ -20,6 +20,8 @@ public class QuestionDetailResponse {
 
     private int heart;
 
+    private int commentCount;
+
     private String categoryName;
 
     private Date createTime;
@@ -27,11 +29,12 @@ public class QuestionDetailResponse {
     private List<CommentResponse> comments;
 
     @Builder
-    public QuestionDetailResponse(Long id, String content, int heart, String categoryName,
+    public QuestionDetailResponse(Long id, String content, int heart,int commentCount, String categoryName,
                                   Date createTime, List<CommentResponse> comments) {
         this.id = id;
         this.content = content;
         this.heart = heart;
+        this.commentCount = commentCount;
         this.categoryName = categoryName;
         this.createTime = createTime;
         this.comments = comments;

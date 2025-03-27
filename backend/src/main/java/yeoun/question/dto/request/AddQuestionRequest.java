@@ -11,6 +11,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class AddQuestionRequest {
 
+    public Long id;
+
     @NotEmpty
     public String content;
 
