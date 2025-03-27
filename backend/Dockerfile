@@ -14,6 +14,8 @@ WORKDIR /app
 
 COPY --from=build /app/build/libs/*.jar app.jar
 
+COPY src/main/resources/keystore.p12 /app/resources/keystore.p12
+
 EXPOSE 8080
 
 CMD ["java", "-jar", "/app/app.jar"]
