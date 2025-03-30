@@ -20,6 +20,7 @@ public class ForbiddenWordService {
 
     public void validateForbiddenWord(String content) {
         String forbiddenWordsPattern = getForbiddenWordsPattern();
+        if (forbiddenWordsPattern.isEmpty()) return;
         if (Pattern.compile(forbiddenWordsPattern).matcher(content).find()) {
             throw new CustomException(ErrorCode.BAD_REQUEST, "질문 내용에 금지어가 포함되어 있습니다");
         }
