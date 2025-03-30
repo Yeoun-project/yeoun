@@ -90,7 +90,7 @@ jobs:
       with:
         host: ${{ secrets.OCI_COMPUTE_HOST }}
         username: ${{ secrets.OCI_SSH_USER }}
-        password: ${{ secrets.SSH_PASSWORD }}
+        key: ${{ secrets.OCI_SSH_PRIVATE_KEY }}
         port: ${{ secrets.OCI_SSH_PORT }}
         script: |
           echo "도커 허브로부터 이미지 Pull"
@@ -109,7 +109,7 @@ jobs:
             -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
             -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
             -e OCI_COMPUTE_HOST=${{ secrets.OCI_COMPUTE_HOST }} \
-            -e KEYSTORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }} \
+            -e OCI_SSH_PRIVATE_KEY=${{ secrets.OCI_SSH_PRIVATE_KEY }} \
             -e GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }} \
             -e GOOGLE_SECRET=${{ secrets.GOOGLE_SECRET }} \
             -e NAVER_CLIENT_ID=${{ secrets.NAVER_CLIENT_ID }} \
