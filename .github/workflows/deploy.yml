@@ -74,6 +74,11 @@ jobs:
       run: |
         echo "${{ secrets.KEYSTORE_B64 }}" | base64 -d > ./backend/src/main/resources/keystore.p12
 
+    - name: 인증서 파일 확인 (디버깅용)
+      run: |
+        ls -l ./backend/src/main/resources
+        file ./backend/src/main/resources/keystore.p12
+
     - name: 백엔드 이미지 빌드 및 푸시
       uses: docker/build-push-action@v4
       with:
