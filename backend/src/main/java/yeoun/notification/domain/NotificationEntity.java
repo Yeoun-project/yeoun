@@ -24,13 +24,10 @@ public class NotificationEntity {
     private Long id;
 
     @Column(nullable = false)
-    private String content;
+    private NotificationType notificationType;
 
     @Column(nullable = false)
     private boolean isRead;
-
-    @Column(nullable = false)
-    private NotificationType notificationType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -43,10 +40,9 @@ public class NotificationEntity {
     private final Date sentDateTime = new Date();
 
     @Builder
-    public NotificationEntity(Long id, String content, boolean isRead,
+    public NotificationEntity(Long id, boolean isRead,
         NotificationType notificationType, UserEntity receiver, QuestionEntity question) {
         this.id = id;
-        this.content = content;
         this.isRead = isRead;
         this.notificationType = notificationType;
         this.receiver = receiver;

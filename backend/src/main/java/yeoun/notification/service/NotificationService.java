@@ -1,8 +1,11 @@
 package yeoun.notification.service;
 
+import java.util.Optional;
+import yeoun.notification.domain.NotificationType;
 import yeoun.notification.dto.response.NotificationResponse;
 import yeoun.notification.domain.NotificationEntity;
 import yeoun.question.domain.QuestionEntity;
+import yeoun.question.domain.repository.QuestionRepository;
 import yeoun.user.domain.UserEntity;
 import yeoun.exception.CustomException;
 import yeoun.exception.ErrorCode;
@@ -27,6 +30,7 @@ public class NotificationService {
     private final Long SEE_RECONNECTION_TIME = 1000 * 10L; // 10초
 
     private final NotificationRepository notificationRepository;
+    private final QuestionRepository questionRepository;
     private final EntityManager entityManager;
 
     private static HashMap<Long, SseEmitter> emitterMap = new HashMap<>();
@@ -47,36 +51,65 @@ public class NotificationService {
         return emitter;
     }
 
+    @Transactional
     public List<NotificationEntity> getAllNotifications(Long userId) {
-        return notificationRepository.getAllNotifications(userId);
+        List<NotificationEntity> notifications = notificationRepository.getUnReadNotifications(userId);
+        readAll(notifications);
+        return notifications;
+    }
+
+    private void readAll(List<NotificationEntity> notifications) {
+        List<Long> notificationIds = notifications.stream().map(NotificationEntity::getId).toList();
+        notificationRepository.setReadAll(notificationIds);
     }
 
     @Transactional
-    public QuestionEntity readNotification(Long userId, Long notificationId) {
-        if (notificationRepository.readNotification(userId, notificationId) != 1)
-            throw new CustomException(ErrorCode.CONFLICT ,String.format("notificationId(%d)'s Author is not userId(%d)", notificationId, userId));
+    public QuestionEntity getQuestionByNotification(Long userId, Long notificationId) {
+        Optional<NotificationEntity> notificationOptional = notificationRepository.getNotificationQuestionById(notificationId);
 
-        return notificationRepository.getNotificationQuestionById(notificationId);
+        if(notificationOptional.isEmpty()) {
+            throw new CustomException(ErrorCode.NOT_FOUND, "notification not found");
+        }
+
+        NotificationEntity notification = notificationOptional.get();
+
+        if(notification.getReceiver().getId() != userId) {
+            throw new CustomException(ErrorCode.BAD_REQUEST, "not notification receiver");
+        }
+
+        removeNotification(notificationId);
+
+        return notification.getQuestion();
     }
 
-    // Sse 관련 함수들
-    public void addNotification(Long userId, NotificationResponse data) {
-        sendSSEData(emitterMap.get(userId), data);
+    private void removeNotification(Long notificationId) {
+        notificationRepository.removeById(notificationId);
+    }
+
+    @Transactional
+    public void addNotification(Long userId, NotificationType type, Long questionId) {
+        Optional<QuestionEntity> question = questionRepository.findById(questionId);
+
+        if(question.isEmpty())
+            throw new CustomException(ErrorCode.NOT_FOUND, "question not found");
 
         notificationRepository.save(
             NotificationEntity.builder()
-                .notificationType(data.getType())
-                .content(data.getContent())
+                .notificationType(type)
+                .question(question.get())
                 .receiver(entityManager.getReference(UserEntity.class, userId))
                 .isRead(false)
                 .build()
         );
+
+        sendSSEData(emitterMap.get(userId), type.getContent(question.get().getContent()));
     }
 
+    // Sse 관련 함수들
     public void sendAllNotifications(SseEmitter emitter, Long userId) {
         List<NotificationEntity> entityList = notificationRepository.getAllNotifications(userId);
         List<NotificationResponse> data = entityList.stream()
-            .map(entity -> new NotificationResponse(entity.getId(), entity.getContent(), entity.getNotificationType()))
+            .map(entity -> NotificationResponse.of(entity))
             .toList();
 
         sendSSEData(emitter, data);

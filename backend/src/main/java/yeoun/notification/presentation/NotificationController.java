@@ -1,5 +1,10 @@
 package yeoun.notification.presentation;
 
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import yeoun.common.SuccessResponse;
 import yeoun.notification.dto.response.NotificationResponse;
 import yeoun.question.dto.response.QuestionResponse;
 import yeoun.notification.domain.NotificationEntity;
@@ -40,33 +45,28 @@ public class NotificationController {
         List<NotificationEntity> entityList = notificationService.getAllNotifications(userId);
 
         List<NotificationResponse> dtoList = entityList.stream()
-                .map(e->new NotificationResponse(e.getId(), e.getContent(), e.getNotificationType()))
+                .map(e-> NotificationResponse.of(e))
                 .toList();
 
-        return ResponseEntity.ok().body(dtoList);
+        Map<String, Object> response = Map.of("notifications", dtoList);
+
+        return ResponseEntity.ok().body(new SuccessResponse("success get all notifications", response));
     }
 
     @GetMapping("/{notificationId}")
-    public ResponseEntity<?> readNotification(@PathVariable Long notificationId) {
+    public void readNotification(@PathVariable("notificationId") Long notificationId, HttpServletResponse response)
+        throws IOException {
         Long userId = JwtService.getUserIdFromAuthentication();
 
-        QuestionEntity question = notificationService.readNotification(userId, notificationId);
+        QuestionEntity question = notificationService.getQuestionByNotification(userId, notificationId);
 
-        QuestionResponse dto = QuestionResponse.builder()
-                .id(question.getId())
-                .content(question.getContent())
-                .heart(question.getHeart())
-                .categoryName(question.getCategory().getName())
-                .commentCount(question.getComments().size())
-                .createTime(question.getCreatedDateTime())
-                .build();
-
-        return ResponseEntity.ok().body(dto);
+        response.sendRedirect("front question url / " + question.getId());
+        return;
     }
 
     @PostMapping("/test")
     public ResponseEntity<?> testAddNotification() {
-        notificationService.addNotification(JwtService.getUserIdFromAuthentication(), new NotificationResponse("content", NotificationType.COMMENT));
+        notificationService.addNotification(JwtService.getUserIdFromAuthentication(), NotificationType.COMMENT, 1l);
         return ResponseEntity.ok().build();
     }
 }

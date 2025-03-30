@@ -1,5 +1,6 @@
 package yeoun.notification.dto.response;
 
+import yeoun.notification.domain.NotificationEntity;
 import yeoun.notification.domain.NotificationType;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,18 +13,11 @@ public class NotificationResponse {
 
     private String content;
 
-    private NotificationType type;
-
-    public NotificationResponse(String content, NotificationType type) {
-        this.content = content; this.type = type;
-    }
-    public NotificationResponse(Long id, String content, NotificationType type) {
-        this.content = content; this.type = type; this.id = id;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("{'content':'%s', 'type':'%s'}", content, type.type);
+    public static NotificationResponse of(NotificationEntity entity) {
+        NotificationResponse response = new NotificationResponse();
+        response.id = entity.getId();
+        response.content = entity.getNotificationType().getContent(entity.getQuestion().getContent());
+        return response;
     }
 
 }
