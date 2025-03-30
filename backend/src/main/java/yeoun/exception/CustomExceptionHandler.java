@@ -60,7 +60,6 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(Exception.class) // 정의해두지 않은 Exception 은 일단 500으로 처리
     public ResponseEntity<?> handleAllException(Exception e) {
-        e.printStackTrace();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponse(ErrorCode.INTERNAL_SERVER_ERROR.getCode(), e.getLocalizedMessage()));
     }
 
