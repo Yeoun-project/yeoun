@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import Squre from '../../assets/Squre';
 
@@ -6,6 +6,8 @@ import Circle from '../../components/circle/Circle';
 import TabNav from '../../components/TabNav';
 
 const TodayQuestionPage = () => {
+  const navigate = useNavigate();
+
   //useLoaderData
 
   return (
@@ -14,7 +16,7 @@ const TodayQuestionPage = () => {
         <div aria-hidden className="animate-spin-second absolute top-[15%] right-[10%]">
           <Squre size={50} />
         </div>
-        <div aria-hidden className="animate-spin-third absolute bottom-[25%] left-[10%]">
+        <div aria-hidden className="animate-spin-third absolute bottom-[23%] left-[8%]">
           <Squre size={70} />
         </div>
         <header className="w-full">
@@ -26,13 +28,22 @@ const TodayQuestionPage = () => {
               className="size-6 bg-[url(/icons/settings.svg)] bg-no-repeat"
             />
 
-            <button className="bg-circle-gradient bg-clip-text text-transparent">
+            <button
+              onClick={() => navigate('/today-question/answers')}
+              className="text-gradient cursor-pointer bg-clip-text"
+            >
               내 여운 기록
             </button>
           </nav>
         </header>
+
+        {/* Question */}
         <Link to={'/today-question/comment'}>
-          <Circle>다시 태어난다면, 당신은 어떻게 살고 싶나요?</Circle>
+          <Circle size={300} animate>
+            <p className="text-blur px-12 text-xl break-keep text-black">
+              다시 태어난다면, 당신은 어떻게 살고 싶나요?
+            </p>
+          </Circle>
         </Link>
         <p>질문을 눌러 답변을 달아주세요!</p>
       </main>
