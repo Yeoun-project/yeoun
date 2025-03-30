@@ -1,5 +1,6 @@
 package yeoun.exception;
 
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import yeoun.common.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,8 +52,15 @@ public class CustomExceptionHandler {
                 .body(new ErrorResponse(ErrorCode.NOT_FOUND.getCode(), "요청 URL에 대한 HTTP 메소드가 올바르지 않습니다"));
     }
 
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
+        return ResponseEntity.status(ErrorCode.NOT_FOUND.getHttpStatusCode())
+                .body(new ErrorResponse(ErrorCode.NOT_FOUND.getCode(), "요청 URL을 찾을 수 없습니다"));
+    }
+
     @ExceptionHandler(Exception.class) // 정의해두지 않은 Exception 은 일단 500으로 처리
     public ResponseEntity<?> handleAllException(Exception e) {
+        e.printStackTrace();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponse(ErrorCode.INTERNAL_SERVER_ERROR.getCode(), e.getLocalizedMessage()));
     }
 
