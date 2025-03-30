@@ -11,11 +11,17 @@ import java.util.List;
 
 @Repository
 public interface QuestionRepository extends JpaRepository<QuestionEntity, Long> {
+    @Query("select q from QuestionEntity q left join fetch q.user where q.id = :id")
+    Optional<QuestionEntity> findQuestionById(@Param("id") long id);
+
     @Query("SELECT q FROM QuestionEntity q LEFT JOIN q.comments c GROUP BY q ORDER BY COUNT(c) DESC")
     List<QuestionEntity> findAllOrderByCommentsCountDesc();
 
-    @Query("SELECT q FROM QuestionEntity q LEFT JOIN FETCH q.comments WHERE q.id = :questionId")
+    @Query("SELECT q FROM QuestionEntity q LEFT JOIN FETCH q.comments left join fetch q.user WHERE q.id = :questionId")
     Optional<QuestionEntity> findQuestionWithCommentById(@Param("questionId") Long questionId);
+
+    @Query("select q from QuestionEntity q left join fetch q.comments where q.user.id = :userId")
+    List<QuestionEntity> findByUserId(@Param("userId")Long userId);
 
     // 이전에 조회된 적 없는 고정 질문들 중 랜덤 1개의 질문 조회
     @Query("""
@@ -48,4 +54,5 @@ public interface QuestionRepository extends JpaRepository<QuestionEntity, Long> 
             """)
     Optional<QuestionEntity> findRandomPopularityQuestionExcludingHistory(@Param("userId") Long userId);
 
+    Optional<QuestionEntity> getQuestionEntityById(Long id);
 }
