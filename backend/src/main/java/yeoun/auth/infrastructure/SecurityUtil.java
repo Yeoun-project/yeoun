@@ -11,7 +11,7 @@ public class SecurityUtil {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication != null &&
                 authentication.getAuthorities().stream()
-                        .noneMatch(a -> a.getAuthority().equals("ROLE_ANONYMOUS"));
+                        .anyMatch(a -> a.getAuthority().equals("ROLE_USER"));
     }
 
 }
