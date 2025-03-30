@@ -37,7 +37,7 @@ jobs:
             ${{ secrets.DOCKER_USERNAME }}/yeoun-front:${{ github.sha }}
 
       - name: 서버에 SSH 접속 및 배포
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.OCI_COMPUTE_HOST }}
           username: ${{ secrets.OCI_SSH_USER }}
@@ -86,7 +86,7 @@ jobs:
           ${{ secrets.DOCKER_USERNAME }}/yeoun-back:${{ github.sha }}
 
     - name: 서버에 SSH 접속 및 배포
-      uses: appleboy/ssh-action@master
+      uses: appleboy/ssh-action@v1
       with:
         host: ${{ secrets.OCI_COMPUTE_HOST }}
         username: ${{ secrets.OCI_SSH_USER }}
@@ -109,7 +109,6 @@ jobs:
             -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
             -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
             -e OCI_COMPUTE_HOST=${{ secrets.OCI_COMPUTE_HOST }} \
-            -e OCI_SSH_PRIVATE_KEY=${{ secrets.OCI_SSH_PRIVATE_KEY }} \
             -e GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }} \
             -e GOOGLE_SECRET=${{ secrets.GOOGLE_SECRET }} \
             -e NAVER_CLIENT_ID=${{ secrets.NAVER_CLIENT_ID }} \
