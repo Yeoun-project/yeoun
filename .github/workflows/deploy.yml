@@ -37,7 +37,7 @@ jobs:
             ${{ secrets.DOCKER_USERNAME }}/yeoun-front:${{ github.sha }}
 
       - name: 서버에 SSH 접속 및 배포
-        uses: appleboy/ssh-action@v1
+        uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.OCI_COMPUTE_HOST }}
           username: ${{ secrets.OCI_SSH_USER }}
@@ -86,7 +86,7 @@ jobs:
           ${{ secrets.DOCKER_USERNAME }}/yeoun-back:${{ github.sha }}
 
     - name: 서버에 SSH 접속 및 배포
-      uses: appleboy/ssh-action@v1
+      uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.OCI_COMPUTE_HOST }}
         username: ${{ secrets.OCI_SSH_USER }}
