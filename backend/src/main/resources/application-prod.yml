@@ -5,7 +5,7 @@ kakao:
 naver:
   client_id: ${NAVER_CLIENT_ID}
   redirect_uri: https://${OCI_COMPUTE_HOST}:8080/public/auth/login/naver
-  client_secret: kpeoZeCkFI
+  client_secret: ${NAVER_CLIENT_SECRET}
 
 google:
   client_id: ${GOOGLE_CLIENT_ID}
