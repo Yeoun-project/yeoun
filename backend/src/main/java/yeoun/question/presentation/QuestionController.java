@@ -1,11 +1,10 @@
 package yeoun.question.presentation;
 
-import jakarta.websocket.server.PathParam;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.security.core.context.SecurityContextHolder;
+import yeoun.common.ErrorResponse;
 import yeoun.common.SuccessResponse;
-import yeoun.question.domain.CategoryEntity;
-import yeoun.question.domain.repository.CategoryRepository;
+import yeoun.exception.CustomException;
+import yeoun.exception.ErrorCode;
 import yeoun.question.dto.request.AddQuestionRequest;
 import yeoun.comment.dto.response.CommentResponse;
 import yeoun.question.dto.response.QuestionDetailResponse;
@@ -35,12 +34,18 @@ public class QuestionController {
 
     private final QuestionService questionService;
     private final TodayQuestionService todayQuestionService;
-    private final UserService userService;
 
     @PostMapping("/api/question")
     public ResponseEntity<?> addQuestion(@RequestBody @Valid AddQuestionRequest addQuestionRequest) {
         addQuestionRequest.setUserId(JwtService.getUserIdFromAuthentication());
-        questionService.addNewQuestion(addQuestionRequest);
+
+        try {
+            questionService.addNewQuestion(addQuestionRequest);
+        } catch (CustomException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ErrorResponse(ErrorCode.BAD_REQUEST.getCode(), e.getLocalizedMessage(), e.getData()));
+        }
+
         return ResponseEntity.status(HttpStatus.CREATED).body(new SuccessResponse("Add question success", null));
     }
 
