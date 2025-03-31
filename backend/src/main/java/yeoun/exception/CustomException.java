@@ -1,5 +1,8 @@
 package yeoun.exception;
 
+import lombok.Getter;
+
+@Getter
 public class CustomException extends RuntimeException {
 
     protected ErrorCode errorCode;
