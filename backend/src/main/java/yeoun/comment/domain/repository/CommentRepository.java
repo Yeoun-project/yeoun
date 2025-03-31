@@ -1,5 +1,7 @@
 package yeoun.comment.domain.repository;
 
+import java.util.List;
+import java.util.Optional;
 import yeoun.comment.domain.CommentEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -10,11 +12,16 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CommentRepository extends JpaRepository<CommentEntity, Long> {
 
-    @Modifying
-    @Query(value = "update comment set content = :content where id = :commentId and user_id = :userId", nativeQuery = true)
-    int update(@Param("commentId") Long commentId, @Param("content") String content, @Param("userId") Long userId);
+    @Query("select c from CommentEntity c where c.user.id = :userId and c.question.id = :questionId")
+    Optional<CommentEntity> getCommentByUserId(@Param("userId") Long userId, @Param("questionId")Long questionId);
+
+    @Query("select c from CommentEntity c left join fetch c.user left join fetch c.question where c.id = :id")
+    Optional<CommentEntity> getCommentById(@Param("id") Long id);
 
     @Modifying
-    @Query(value = "delete from comment where id = :commentId and user_id = :userId", nativeQuery = true)
-    int delete(@Param("commentId") Long commentId, @Param("userId") Long userId);
+    @Query("delete from CommentEntity c where c.id = :id")
+    void deleteById(@Param("id") Long id);
+
+    @Query("select c from CommentEntity c left join fetch c.question where c.user.id = :userId")
+    List<CommentEntity> getCommentsById(@Param("userId") Long userId);
 }

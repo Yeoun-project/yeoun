@@ -39,9 +39,6 @@ public class CommentEntity {
     @CreatedDate
     private final Date createdDateTime = new Date();
 
-    @Column
-    private Date deletedDateTime;
-
     @Builder
     public CommentEntity(Long id, String content, UserEntity user, QuestionEntity question) {
         this.id = id;
