@@ -118,6 +118,7 @@ jobs:
             -e GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }} \
             -e GOOGLE_SECRET=${{ secrets.GOOGLE_SECRET }} \
             -e NAVER_CLIENT_ID=${{ secrets.NAVER_CLIENT_ID }} \
+            -e NAVER_CLIENT_SECRET=${{ secrets.NAVER_CLIENT_SECRET }} \
             -e KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }} \
             -e SPRING_PROFILES_ACTIVE=prod \
             ${{ secrets.DOCKER_USERNAME }}/yeoun-back:latest
