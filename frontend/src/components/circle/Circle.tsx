@@ -1,26 +1,69 @@
-import React from 'react';
+import MainCircle from './MainCircle';
+import CircleTopLayer from './CircleTopLayer';
+import CircleMiddleLayer from './CircleMiddleLayer';
+import CircleBottomLayer from './CircleBottomLayer';
 
-interface CircleProps {
-  children?: React.ReactNode;
-}
+import QuestionCategory from '../../type/questionCategory';
 
-const Circle = ({ children }: CircleProps) => {
+import { CircleGradientColors, CircleProps } from './CircleProps';
+
+const getGradientColors = (category: QuestionCategory): CircleGradientColors => {
+  const gradientColors = {
+    selfReflection: {
+      bottomLeft: '#AAFFBA',
+      right: '#DBFC90',
+      topLeft: '#C5FFDF',
+    },
+    relationships: {
+      bottomLeft: '#AAEDFF',
+      right: '#C090FC',
+      topLeft: '#C8C5FF',
+    },
+    valuesAndBeliefs: {
+      bottomLeft: '#AAD2FF',
+      right: '#FC90D1',
+      topLeft: '#F3C5FF',
+    },
+    dreamsAndGoals: {
+      bottomLeft: '#2D449D',
+      right: '#4A60B5',
+      topLeft: '#A4A8B2',
+    },
+    memories: {
+      bottomLeft: '#FFCCA7',
+      right: '#FFDDA6',
+      topLeft: '#FFD798',
+    },
+    challengesAndCourage: {
+      bottomLeft: '#F9FFAA',
+      right: '#FCE390',
+      topLeft: '#FFE7C5',
+    },
+    mindAndEmotions: {
+      bottomLeft: '#FFC3AA',
+      right: '#FC9092',
+      topLeft: '#FFC9C5',
+    },
+  };
+  return gradientColors[category];
+};
+
+const Circle = ({ size = 150, category = 'valuesAndBeliefs', children, animate }: CircleProps) => {
+  const gradientColors = getGradientColors(category);
   return (
-    <div className="relative rounded-full bg-white min-w-[130px] min-h-[130px] max-w-[300px] size-auto inline-flex items-center justify-center">
-      <div className="aspect-square circle bg-circle-gradient">
-        <p className="max-w-[230px] text-xl p-4 items-center justify-center text-black drop-shadow-md text-center break-keep [text-shadow:_0px_0px_3px_rgb(255,255,255)]">
+    <div
+      style={{ width: `${size}px`, height: `${size}px` }}
+      className={`relative flex items-center justify-center`}
+    >
+      {children && (
+        <div className="z-6 flex h-auto w-full items-center justify-center text-center">
           {children}
-        </p>
-      </div>
-      <div className="circle-layer-container animate-spin-first">
-        <div className="bg-circle-gradient circle-layer skew-4 scale-109 animate-pulse-second" />
-      </div>
-      <div className="circle-layer-container animate-spin-second">
-        <div className="bg-circle-gradient circle-layer animate-pulse scale-107 skew-3" />
-      </div>
-      <div className="circle-layer-container animate-spin-third">
-        <div className="bg-circle-gradient circle-layer scale-105 skew-2" />
-      </div>
+        </div>
+      )}
+      <MainCircle size={size} colors={gradientColors} />
+      <CircleTopLayer size={size + size / 10} colors={gradientColors} animate={animate} />
+      <CircleMiddleLayer size={size + size / 10} colors={gradientColors} animate={animate} />
+      <CircleBottomLayer size={size + size / 10} colors={gradientColors} animate={animate} />
     </div>
   );
 };

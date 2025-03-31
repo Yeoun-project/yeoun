@@ -34,7 +34,7 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .formLogin(formLoginConfigurer -> formLoginConfigurer.disable())
+                .formLogin(AbstractHttpConfigurer::disable)
                 // security 자체 로그인 기능 disable
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/public/**").permitAll()

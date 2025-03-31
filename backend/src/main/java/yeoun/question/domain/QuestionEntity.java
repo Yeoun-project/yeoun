@@ -51,7 +51,8 @@ public class QuestionEntity {
     private Date deletedDateTime;
 
     @Builder
-    public QuestionEntity(String content, int heart, UserEntity user, CategoryEntity category) {
+    public QuestionEntity(Long id, String content, int heart, UserEntity user, CategoryEntity category) {
+        this.id = id;
         this.content = content;
         this.heart = heart;
         this.user = user;
