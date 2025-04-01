@@ -71,6 +71,10 @@ dist-ssr
 .env.production.local
 .env.local
 
+
 # mkcert pemkey
 localhost-key.pem
 localhost.pem
+
+backend/gradlew.bat
+
