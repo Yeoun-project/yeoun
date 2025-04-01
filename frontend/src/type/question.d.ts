@@ -8,3 +8,8 @@ export interface Question {
   categoryName: QuestionCategory;
   createTime: string;
 }
+
+export interface TodayQuestion {
+  id: number;
+  content: string;
+}
