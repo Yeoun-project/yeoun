@@ -4,11 +4,12 @@ import Squre from '../../assets/Squre';
 
 import Circle from '../../components/circle/Circle';
 import TabNav from '../../components/TabNav';
+import useGetTodayQuestion from '../../hooks/queries/useGetTodayQuestion';
 
 const TodayQuestionPage = () => {
   const navigate = useNavigate();
 
-  //useLoaderData
+  const { data: todayQuestion } = useGetTodayQuestion();
 
   return (
     <>
@@ -40,9 +41,7 @@ const TodayQuestionPage = () => {
         {/* Question */}
         <Link to={'/today-question/comment'}>
           <Circle size={300} animate>
-            <p className="text-blur px-12 text-xl break-keep text-black">
-              다시 태어난다면, 당신은 어떻게 살고 싶나요?
-            </p>
+            <p className="text-blur text-2xl break-keep text-black">{todayQuestion!.content}</p>
           </Circle>
         </Link>
         <p>질문을 눌러 답변을 달아주세요!</p>
