@@ -27,7 +27,7 @@ public class QuestionService {
     private final QuestionRepository questionRepository;
 
     @Transactional
-    public void addNewQuestion(AddQuestionRequest dto) {
+    public void addNewQuestion(AddQuestionRequest dto) throws CustomException {
         UserEntity user = userRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_PARAMETER, "Invalid user ID"));
 
