@@ -10,8 +10,12 @@ import MyActivityPage from '../pages/MyActivityPage.tsx';
 
 // 오늘의 질문
 import TodayQuestionPage from '../pages/TodayQuestion/TodayQuestionPage.tsx';
-import TodayQuestionCommentPage from '../pages/TodayQuestion/TodayQuestionCommentPage.tsx';
-import TodayQuestionLayout from '../pages/TodayQuestion/TodayQuestionLayout.tsx';
+import TodayQuestionCommentPage, {
+  action as TodayQuestionAction,
+} from '../pages/TodayQuestion/TodayQuestionCommentPage.tsx';
+import TodayQuestionLayout, {
+  loader as TodayQestionLoader,
+} from '../pages/TodayQuestion/TodayQuestionLayout.tsx';
 import MyTodayAnswersPage from '../pages/TodayQuestion/MyTodayAnswersPage.tsx';
 import MyTodayAnswerPage from '../pages/TodayQuestion/MyTodayAnswerPage.tsx';
 
@@ -25,7 +29,9 @@ const router = createBrowserRouter([
       {
         path: '/today-question',
         element: <TodayQuestionLayout />,
+        loader: TodayQestionLoader,
         id: 'today-question',
+        hydrateFallbackElement: <></>,
         children: [
           {
             index: true,
@@ -34,6 +40,7 @@ const router = createBrowserRouter([
           {
             path: '/today-question/comment',
             element: <TodayQuestionCommentPage />,
+            action: TodayQuestionAction,
           },
           {
             path: '/today-question/answers',
