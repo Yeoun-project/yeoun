@@ -1,5 +1,7 @@
 package yeoun.auth;
 
+import org.springframework.context.annotation.ComponentScan;
+import yeoun.auth.service.JwtService;
 import yeoun.exception.CustomAuthenticationEntryPoint;
 import yeoun.auth.filter.JwtAccessTokenFilter;
 import yeoun.auth.filter.JwtAnonymousTokenFilter;

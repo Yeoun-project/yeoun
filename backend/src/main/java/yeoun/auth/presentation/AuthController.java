@@ -16,6 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping("/public/auth")
 @RequiredArgsConstructor
@@ -32,12 +34,12 @@ public class AuthController {
     private final JwtService jwtService;
 
     @GetMapping("/login/kakao")
-    public ResponseEntity<?> kakaoLogin(@RequestParam("code") String code, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<?> kakaoLogin(@RequestParam("code") String code, HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
             UserEntity user = kakaoService.getUserFromKakao(code);
-
             generateAndAddTokenCookie(user, request, response);
 
+            response.sendRedirect("http://15.164.232.1/today-question");
             return ResponseEntity.ok(new SuccessResponse("Login successful by Kakao", null));
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("", "Access denied"));
@@ -45,12 +47,12 @@ public class AuthController {
     }
 
     @GetMapping("/login/naver")
-    public ResponseEntity<?> naverLogin(@RequestParam("code") String code, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<?> naverLogin(@RequestParam("code") String code, HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
             UserEntity user = naverService.getUserFromNaver(code);
-
             generateAndAddTokenCookie(user, request, response);
 
+            response.sendRedirect("http://15.164.232.1/today-question");
             return ResponseEntity.ok(new SuccessResponse("Login successful by Naver", null));
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("", "Access denied"));
@@ -58,12 +60,12 @@ public class AuthController {
     }
 
     @GetMapping("/login/google")
-    public ResponseEntity<?> googleLogin(@RequestParam("code") String code, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<?> googleLogin(@RequestParam("code") String code, HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
             UserEntity user = googleService.getUserFromGoogle(code);
-
             generateAndAddTokenCookie(user, request, response);
 
+            response.sendRedirect("http://15.164.232.1/today-question");
             return ResponseEntity.ok(new SuccessResponse("Login successful by Google", null));
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("", "Access denied"));

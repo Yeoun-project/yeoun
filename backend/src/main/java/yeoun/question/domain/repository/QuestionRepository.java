@@ -49,7 +49,7 @@ public interface QuestionRepository extends JpaRepository<QuestionEntity, Long> 
                 SELECT h.question.id FROM QuestionHistoryEntity h
                 WHERE h.user.id = :userId AND h.question.id = q.id
             )
-            GROUP BY q.id HAVING COUNT(c.id) >= 10
+            GROUP BY q.id HAVING COUNT(c.id) >= 15
             ORDER BY FUNCTION('UUID') LIMIT 1
             """)
     Optional<QuestionEntity> findRandomPopularityQuestionExcludingHistory(@Param("userId") Long userId);
