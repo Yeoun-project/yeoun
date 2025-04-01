@@ -38,13 +38,7 @@ public class QuestionController {
     @PostMapping("/api/question")
     public ResponseEntity<?> addQuestion(@RequestBody @Valid AddQuestionRequest addQuestionRequest) {
         addQuestionRequest.setUserId(JwtService.getUserIdFromAuthentication());
-
-        try {
-            questionService.addNewQuestion(addQuestionRequest);
-        } catch (CustomException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ErrorResponse(ErrorCode.BAD_REQUEST.getCode(), e.getLocalizedMessage(), e.getData()));
-        }
+        questionService.addNewQuestion(addQuestionRequest);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new SuccessResponse("Add question success", null));
     }
