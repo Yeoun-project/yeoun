@@ -1,27 +1,34 @@
-import { useState } from 'react';
+/* eslint-disable react-refresh/only-export-components */
 
+import { useState } from 'react';
 import BackArrow from '../../components/common/BackArrow';
 import Squre from '../../assets/Squre';
+import useGetTodayQuestion from '../../hooks/queries/useGetTodayQuestion';
+import { ActionFunctionArgs, Form } from 'react-router-dom';
+
+import { addTodayQuestionComment } from '../../services/api/question/todayQuestion';
 
 const TodayQuestionCommentPage = () => {
   const [value, setValue] = useState<string>('');
 
+  const { data: todayQuestion } = useGetTodayQuestion();
+
   return (
     <>
       <main className="-z-1 flex min-h-[100svh] flex-col items-center justify-between p-6">
-        <div>
+        <div className="w-full">
           {/* Header */}
           <div className="mb-16">
             <BackArrow label="작성취소" />
           </div>
 
-          {/* Form */}
-          <form className="relative z-10 w-full" id="today-question">
-            {/* Question */}
-            <p className="text-gradient mb-6 bg-clip-text text-center text-2xl/10 break-keep">
-              다시 태어난다면, 당신은 어떻게 살고싶나요?
-            </p>
+          {/* Question */}
+          <p className="text-gradient mb-6 bg-clip-text text-center text-2xl/10 break-keep">
+            {todayQuestion?.content}
+          </p>
 
+          {/* Form */}
+          <Form method="post" className="relative z-10 w-full" id="today-question">
             {/* Answer Input */}
             <textarea
               value={value}
@@ -35,13 +42,13 @@ const TodayQuestionCommentPage = () => {
             <div className="font-desc w-full text-right text-sm">{`${value.length || 0} / 500`}</div>
 
             {/* Background Squre */}
-            <div aria-hidden className="animate-spin-second absolute top-[15%] right-[-5%] -z-10">
+            <div aria-hidden className="animate-spin-second absolute top-[-15%] right-[-5%] -z-10">
               <Squre size={60} />
             </div>
             <div aria-hidden className="animate-spin-third absolute bottom-[-5%] left-[-5%] -z-10">
               <Squre size={100} />
             </div>
-          </form>
+          </Form>
         </div>
 
         {/* Form Submit Button */}
@@ -57,3 +64,15 @@ const TodayQuestionCommentPage = () => {
 };
 
 export default TodayQuestionCommentPage;
+
+export const action = async ({ request }: ActionFunctionArgs) => {
+  const comment = (await request.formData()).get('comment') as string;
+  try {
+    const response = await addTodayQuestionComment(comment);
+    console.log(response);
+  } catch (error) {
+    console.log(error);
+  }
+
+  return undefined;
+};
