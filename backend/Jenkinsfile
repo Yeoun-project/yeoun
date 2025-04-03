@@ -2,18 +2,18 @@ pipeline {
 	agent any
 
 	parameters {
-		string(name: 'OCI_COMPUTE_HOST', description: 'OCI Public IP')
-		string(name: 'DB_HOST', description: 'Database Host')
-        password(name: 'DB_PASSWORD', description: 'Database Password')
-        string(name: 'DB_PORT', description: 'Database Port', defaultValue: '3306')
-        string(name: 'KAKAO_CLIENT_ID', description: 'Kakao Client ID')
-        string(name: 'NAVER_CLIENT_ID', description: 'Naver Client ID')
-        password(name: 'NAVER_CLIENT_SECRET', description: 'Naver Client Secret')
-        string(name: 'GOOGLE_CLIENT_ID', description: 'Google Client ID')
-        password(name: 'GOOGLE_SECRET', description: 'Google Client Secret')
-        password(name: 'JWT_SECRET', description: 'JWT Secret Key')
-        password(name: 'KEYSTORE_B64', description: 'Base64-encoded keystore.p12')
-        password(name: 'KEYSTORE_PASSWORD', description: 'Keystore Password')
+		string(name: 'OCI_COMPUTE_HOST')
+		string(name: 'DB_HOST',)
+        password(name: 'DB_PASSWORD')
+        string(name: 'DB_PORT')
+        string(name: 'KAKAO_CLIENT_ID')
+        string(name: 'NAVER_CLIENT_ID')
+        password(name: 'NAVER_CLIENT_SECRET')
+        string(name: 'GOOGLE_CLIENT_ID')
+        password(name: 'GOOGLE_SECRET')
+        password(name: 'JWT_SECRET')
+        password(name: 'KEYSTORE_B64')
+        password(name: 'KEYSTORE_PASSWORD')
     }
 
 	stages {
@@ -26,21 +26,34 @@ pipeline {
 		stage('Setup Keystore') {
 			steps {
 				sh '''
-					echo "$KEYSTORE_B64" | base64 -d > ./backend/src/main/resources/keystore.p12
+					echo "$KEYSTORE_B64" | base64 -d > backend/src/main/resources/keystore.p12
 				'''
 			}
 		}
 
-		stage('Docker Build') {
+        stage('Build with Gradle') {
 			steps {
-				sh 'docker build -t yeoun-back:latest ./backend'
+				sh '''
+                    cd backend
+                    chmod +x ./gradlew
+                    ./gradlew clean build
+                '''
             }
-		}
+        }
+
+        stage('Docker Build') {
+			steps {
+				sh '''
+                    docker build -t yeoun-back:latest ./backend
+                '''
+            }
+        }
 
 		stage('Deploy') {
 			steps {
 				sh '''
                     docker rm -f yeoun-back || true
+
                     docker run -d \
                     --name yeoun-back \
                     -p 7070:8080 \
