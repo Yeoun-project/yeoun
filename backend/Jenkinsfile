@@ -41,7 +41,7 @@ pipeline {
 
                     docker run -d \
                     --name yeoun-back \
-                    -p 7070:8080 \
+                    -p 8080:8080 \
                     -e DB_HOST=$DB_HOST \
                     -e DB_PORT=$DB_PORT \
                     -e DB_PASSWORD=$DB_PASSWORD \
