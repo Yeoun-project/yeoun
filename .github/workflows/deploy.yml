@@ -21,5 +21,5 @@ jobs:
             java-version: '21'
             distribution: 'temurin'
 
-        - name: 스프링부트 테스트코드 실행
+        - name: 스프링 부트 테스트코드 실행
           run: ./gradlew test
