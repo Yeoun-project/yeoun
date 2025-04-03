@@ -1,21 +1,6 @@
 pipeline {
 	agent any
 
-	parameters {
-		string(name: 'OCI_COMPUTE_HOST')
-		string(name: 'DB_HOST',)
-        password(name: 'DB_PASSWORD')
-        string(name: 'DB_PORT')
-        string(name: 'KAKAO_CLIENT_ID')
-        string(name: 'NAVER_CLIENT_ID')
-        password(name: 'NAVER_CLIENT_SECRET')
-        string(name: 'GOOGLE_CLIENT_ID')
-        password(name: 'GOOGLE_SECRET')
-        password(name: 'JWT_SECRET')
-        password(name: 'KEYSTORE_B64')
-        password(name: 'KEYSTORE_PASSWORD')
-    }
-
 	stages {
 		stage('Checkout') {
 			steps {
