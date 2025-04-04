@@ -41,7 +41,11 @@ pipeline {
 					stages {
 						stage('Setup Backend Keystore') {
 							steps {
-								sh 'echo "$KEYSTORE_B64" | base64 -d > backend/src/main/resources/keystore.p12'
+								withCredentials([
+									string(credentialsId: 'yeoun-back-keystore-b64', variable: 'KEYSTORE_B64')
+								] ) {
+									sh 'echo "$KEYSTORE_B64" | base64 -d > backend/src/main/resources/keystore.p12'
+								}
 							}
 						}
 
@@ -53,7 +57,21 @@ pipeline {
 
 						stage('Backend Deploy') {
 							steps {
-								sh '''
+								withCredentials([
+									string(credentialsId: 'yeoun-back-jwt-secret', variable: 'JWT_SECRET'),
+									string(credentialsId: 'yeoun-back-db-host', variable: 'DB_HOST'),
+									string(credentialsId: 'yeoun-back-db-port', variable: 'DB_PORT'),
+									string(credentialsId: 'yeoun-back-db-password', variable: 'DB_PASSWORD'),
+									string(credentialsId: 'yeoun-back-jwt-secret', variable: 'JWT_SECRET'),
+									string(credentialsId: 'yeoun-back-oci-compute-host', variable: 'OCI_COMPUTE_HOST'),
+									string(credentialsId: 'yeoun-back-google-client-id', variable: 'GOOGLE_CLIENT_ID'),
+									string(credentialsId: 'yeoun-back-google-client-secret', variable: 'GOOGLE_SECRET'),
+									string(credentialsId: 'yeoun-back-naver-client-id', variable: 'NAVER_CLIENT_ID'),
+									string(credentialsId: 'yeoun-back-naver-client-secret', variable: 'NAVER_CLIENT_SECRET'),
+									string(credentialsId: 'yeoun-back-kakao-client-id', variable: 'KAKAO_CLIENT_ID'),
+									string(credentialsId: 'yeoun-back-keystore-password', variable: 'KEYSTORE_PASSWORD')
+								] ){
+									sh '''
 									docker rm -f yeoun-back || true
 
 									docker run -d \
@@ -73,6 +91,7 @@ pipeline {
 									-e SPRING_PROFILES_ACTIVE=prod \
 									yeoun-back:latest
 								'''
+								}
 							}
 						}
 					}
