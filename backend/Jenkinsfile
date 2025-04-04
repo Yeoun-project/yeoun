@@ -8,29 +8,29 @@ pipeline {
             }
 		}
 
+		//stage('Check Changes') {
+		//	steps {
+		//		script {
+		//			def changes = sh(script: "git diff --name-only origin/main", returnStdout: true).trim()
+		//
+		//			if (!changes.contains('backend/')) {
+		//				echo "No changes in backend/, skipping build."
+		//				currentBuild.result = 'SUCCESS'
+		//				error("No backend changes.")
+		//			}
+		//		}
+		//	}
+		//}
+
 		stage('Setup Keystore') {
 			steps {
-				sh '''
-					echo "$KEYSTORE_B64" | base64 -d > backend/src/main/resources/keystore.p12
-				'''
+				sh 'echo "$KEYSTORE_B64" | base64 -d > backend/src/main/resources/keystore.p12'
 			}
 		}
 
-        stage('Build with Gradle') {
-			steps {
-				sh '''
-                    cd backend
-                    chmod +x ./gradlew
-                    ./gradlew clean build
-                '''
-            }
-        }
-
         stage('Docker Build') {
 			steps {
-				sh '''
-                    docker build -t yeoun-back:latest ./backend
-                '''
+				sh 'docker build -t yeoun-back:latest ./backend'
             }
         }
 

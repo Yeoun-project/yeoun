@@ -6,7 +6,7 @@ COPY . /app
 
 RUN chmod +x ./gradlew
 
-RUN ./gradlew build
+RUN ./gradlew clean build
 
 FROM openjdk:21-slim
 

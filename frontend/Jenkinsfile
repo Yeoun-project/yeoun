@@ -1,0 +1,47 @@
+pipeline {
+	agent any
+
+    stages {
+		stage('Checkout') {
+			steps {
+				git url: 'https://github.com/wheon06/yeoun.git', branch: 'main'
+            }
+        }
+
+		//stage('Check Changes') {
+		//	steps {
+		//		script {
+		//			def changes = sh(script: "git diff --name-only origin/main", returnStdout: true).trim()
+		//			if (!changes.contains('frontend/')) {
+		//				echo "No changes in frontend/, skipping build."
+        //                currentBuild.result = 'SUCCESS'
+        //                error("No frontend changes.")
+        //            }
+		//		}
+		//	}
+		//}
+
+        stage('Docker Build') {
+			steps {
+				sh '''
+					docker build \
+					-f frontend/Dockerfile \
+					-t yeoun-front:latest .
+				'''
+            }
+        }
+
+        stage('Deploy') {
+			steps {
+				sh '''
+                    docker rm -f yeoun-front || true
+
+                    docker run -d \
+                    --name yeoun-front \
+                    -p 80:80 \
+                    yeoun-front:latest
+                '''
+            }
+        }
+    }
+}
