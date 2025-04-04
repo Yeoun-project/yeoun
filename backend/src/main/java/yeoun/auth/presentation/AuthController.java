@@ -75,8 +75,8 @@ public class AuthController {
         }
     }
 
-    @PostMapping()
-    public ResponseEntity<?> check() {
+    @PostMapping("/me")
+    public ResponseEntity<?> checkIsLoggedIn() {
         Authentication authentic = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentic == null)
