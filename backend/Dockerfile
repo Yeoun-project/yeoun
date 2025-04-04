@@ -6,13 +6,13 @@ COPY . /app
 
 RUN chmod +x ./gradlew
 
-RUN ./gradlew build
+RUN ./gradlew clean build
 
 FROM openjdk:21-slim
 
 WORKDIR /app
 
-COPY --from=build /app/build/libs/*.jar app.jar
+COPY --from=build /app/build/libs/*SNAPSHOT.jar app.jar
 
 COPY src/main/resources/keystore.p12 /app/resources/keystore.p12
 
