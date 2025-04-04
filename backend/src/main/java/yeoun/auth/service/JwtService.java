@@ -1,5 +1,8 @@
 package yeoun.auth.service;
 
+import java.util.Optional;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import yeoun.user.domain.UserEntity;
 import yeoun.exception.CustomException;
 import yeoun.exception.ErrorCode;
@@ -105,5 +108,23 @@ public class JwtService {
             throw new CustomException(ErrorCode.UNAUTHORIZED, "user token is not found");
         }
         return userId;
+    }
+
+    public static Optional<Long> getAnonymousTokenAuthentication() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        log.info("getAnonymousTokenAuthentication");
+
+        if(authentication == null) {
+            return Optional.empty();
+        }
+
+        log.info(authentication.getCredentials().toString() +"\n" + authentication.toString());
+
+        if(((String) (((UsernamePasswordAuthenticationToken)authentication).getCredentials()) ).equals("anonymousToken")) {
+            return Optional.of((Long)authentication.getPrincipal());
+        }
+
+        return Optional.empty();
     }
 }
