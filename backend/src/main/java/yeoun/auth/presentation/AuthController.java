@@ -85,7 +85,8 @@ public class AuthController {
     }
 
     private void removeAnonymousToken(HttpServletResponse response) {
-        CookieUtil.addCookie(response, "anonymousToken", null, 0L);
+        if(JwtService.getAnonymousTokenAuthentication() != null)
+            CookieUtil.addCookie(response, "anonymousToken", null, 0L);
     }
 
 }

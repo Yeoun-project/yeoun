@@ -27,7 +27,13 @@ public class UserHistoryFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        // 모든 접근 client가 Anonymous로 인한 authentication을 가지고 있어야 함
+
+        if (request.getRequestURI().contains("/public/auth/login")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        // 로그인을 제외한 모든 접근 client가 Anonymous로 인한 authentication을 가지고 있어야 함
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) {
             throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR, "UserHistoryFilter :: no authentication error"); // 로직상 실행되어서는 안되는 exception발생
