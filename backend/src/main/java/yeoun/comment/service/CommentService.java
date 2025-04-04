@@ -6,6 +6,7 @@ import yeoun.auth.service.JwtService;
 import yeoun.comment.dto.request.SaveCommentRequest;
 import yeoun.comment.domain.CommentEntity;
 import yeoun.question.domain.QuestionEntity;
+import yeoun.question.domain.repository.QuestionRepository;
 import yeoun.user.domain.UserEntity;
 import yeoun.exception.CustomException;
 import yeoun.exception.ErrorCode;
@@ -21,15 +22,26 @@ public class CommentService {
 
     private final EntityManager entityManager;
     private final CommentRepository commentRepository;
+    private final QuestionRepository questionRepository;
 
     public CommentEntity saveComment(SaveCommentRequest commentDto) {
         Long userId = JwtService.getUserIdFromAuthentication();
         commentDto.setUserId(userId);
 
+        if(commentDto.getContent().length() >= 50)
+            throw new CustomException(ErrorCode.TOO_LONG_PARAMETER);
+
         Optional<CommentEntity> comment = commentRepository.getCommentByUserId(userId, commentDto.getQuestionId());
+        Optional<QuestionEntity> question = questionRepository.findQuestionById(commentDto.getQuestionId());
 
         if(comment.isPresent())
             throw new CustomException(ErrorCode.ALREADY_EXIST, "이미 존재합니다");
+
+        if(question.isEmpty())
+            throw new CustomException(ErrorCode.NOT_FOUND, "question not found");
+
+        if(question.get().getUser().getId() == userId)
+            throw new CustomException(ErrorCode.CONFLICT, "질문의 작성자입니다");
 
         return commentRepository.save(CommentEntity.builder()
                 .id(commentDto.getId())

@@ -49,28 +49,28 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.CREATED).body(new SuccessResponse("Add comment success", null));
     }
 
-    @PutMapping("/{commentId}")
-    public ResponseEntity<?> updateComment(@PathVariable("commentId") Long commentId, @RequestBody SaveCommentRequest commentRequestDto) {
-
-        Long userId = JwtService.getUserIdFromAuthentication();
-
-        commentRequestDto.setId(commentId);
-        commentRequestDto.setUserId(userId);
-
-        commentService.updateComment(commentRequestDto);
-
-        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("Updated comment success", null));
-    }
-
-    @DeleteMapping("/{commentId}")
-    public ResponseEntity<?> deleteComment(@PathVariable("commentId") Long commentId) {
-
-        Long userId = JwtService.getUserIdFromAuthentication();
-
-        commentService.deleteComment(commentId, userId);
-
-        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("deleted comment success", null));
-    }
+//    @PutMapping("/{commentId}")
+//    public ResponseEntity<?> updateComment(@PathVariable("commentId") Long commentId, @RequestBody SaveCommentRequest commentRequestDto) {
+//
+//        Long userId = JwtService.getUserIdFromAuthentication();
+//
+//        commentRequestDto.setId(commentId);
+//        commentRequestDto.setUserId(userId);
+//
+//        commentService.updateComment(commentRequestDto);
+//
+//        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("Updated comment success", null));
+//    }
+//
+//    @DeleteMapping("/{commentId}")
+//    public ResponseEntity<?> deleteComment(@PathVariable("commentId") Long commentId) {
+//
+//        Long userId = JwtService.getUserIdFromAuthentication();
+//
+//        commentService.deleteComment(commentId, userId);
+//
+//        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("deleted comment success", null));
+//    }
 
     @GetMapping("/my")
     public ResponseEntity<?> getMyComments() {
@@ -86,24 +86,17 @@ public class CommentController {
                         .content(question.getContent())
                         .categoryName(question.getCategory().getName())
                         .createTime(question.getCreatedDateTime())
-                        .comment(
-                            CommentResponse.builder()
-                                .id(comment.getId())
-                                .content(comment.getContent())
-                                .createTime(comment.getCreatedDateTime())
-                                .build())
+//                        .comment(
+//                            CommentResponse.builder()
+//                                .id(comment.getId())
+//                                .content(comment.getContent())
+//                                .createTime(comment.getCreatedDateTime())
+//                                .build())
                         .build();
             })
             .toList();
 
         return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("get my comments success" ,Map.of("questions", commentDetailDto)));
-    }
-
-    // 신고하기
-    @PostMapping("/report/{commentId}")
-    public ResponseEntity<?> reportComment(@PathVariable("commentId") Long commentId) {
-        // reportService.reportCommnet(commentId);
-        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("not service", null));
     }
 
 }

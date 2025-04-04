@@ -22,6 +22,6 @@ public class CommentDetailResponseDto {
 
     private Date createTime;
 
-    private CommentResponse comment;
+    // private CommentResponse comment;
 
 }
