@@ -73,7 +73,7 @@ dist-ssr
 
 
 # mkcert pemkey
-localhost-key.pem
+localhost.key.pem
 localhost.pem
 
 backend/gradlew.bat
