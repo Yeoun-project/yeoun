@@ -113,15 +113,11 @@ public class JwtService {
     public static Optional<Long> getAnonymousTokenAuthentication() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        log.info("getAnonymousTokenAuthentication");
-
         if(authentication == null) {
             return Optional.empty();
         }
 
-        log.info(authentication.getCredentials().toString() +"\n" + authentication.toString());
-
-        if(((String) (((UsernamePasswordAuthenticationToken)authentication).getCredentials()) ).equals("anonymousToken")) {
+        if(authentication.getCredentials().equals("anonymousToken")) {
             return Optional.of((Long)authentication.getPrincipal());
         }
 

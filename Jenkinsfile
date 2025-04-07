@@ -4,7 +4,7 @@ pipeline {
 	stages {
 		stage('Checkout') {
 			steps {
-				git url: 'https://github.com/Yeoun-project/yeoun.git', branch: 'main'
+				git url: 'https://github.com/Yeoun-project/yeoun.git', branch: 'develop'
             }
 		}
 
