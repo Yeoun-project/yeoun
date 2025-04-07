@@ -1,6 +1,8 @@
 package yeoun.question.dto.response;
 
+import java.util.Date;
 import lombok.*;
+import yeoun.comment.dto.response.CommentResponse;
 
 @Getter
 @Setter
@@ -9,10 +11,12 @@ import lombok.*;
 @NoArgsConstructor
 public class TodayQuestionResponse {
 
-    private Long id;
+    private Long id; // questionHistoryId
+
+    private Date created_at;
 
     private String content;
 
-    // 추후 필요한 요구 데이터 확장을 위해 DTO 분리
+    private String comment;
 
 }

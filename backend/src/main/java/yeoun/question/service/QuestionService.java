@@ -1,9 +1,12 @@
 package yeoun.question.service;
 
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
+import yeoun.question.domain.repository.CategoryResponseDao;
 import yeoun.question.dto.request.AddQuestionRequest;
 import yeoun.question.domain.CategoryEntity;
 import yeoun.question.domain.QuestionEntity;
+import yeoun.question.dto.response.CategoryResponseDto;
 import yeoun.user.domain.UserEntity;
 import yeoun.exception.CustomException;
 import yeoun.exception.ErrorCode;
@@ -19,6 +22,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class QuestionService {
 
     private final ForbiddenWordService forbiddenWordService;
@@ -97,7 +101,23 @@ public class QuestionService {
         return questionRepository.findByUserId(userId);
     }
 
-    public List<CategoryEntity> getAllCategories() {
-        return categoryRepository.findAll();
+    public List<CategoryResponseDto> getAllCategories() {
+        //List<CategoryEntity> categories = categoryRepository.findAll();
+        List<CategoryResponseDao> daoList = questionRepository.findCategoriesWithCount();
+        return daoList
+            .stream()
+            .map(dao-> {
+                return CategoryResponseDto
+                    .builder()
+                    .id(dao.getCategory().getId())
+                    .name(dao.getCategory().getName())
+                    .questionCount(dao.getCount())
+                    .build();
+            })
+            .toList();
+    }
+
+    public List<QuestionEntity> getAllQuestionsByCategory(Long categoryId) {
+        return questionRepository.findAllByCategoryId(categoryId);
     }
 }

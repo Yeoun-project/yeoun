@@ -30,6 +30,8 @@ public class QuestionDetailResponse {
     @JsonProperty("isAuthor")
     private boolean isAuthor;
 
+    private CommentResponse myComment;
+
     private List<CommentResponse> comments;
 
     @Builder

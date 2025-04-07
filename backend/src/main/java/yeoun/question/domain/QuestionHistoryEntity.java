@@ -33,9 +33,14 @@ public class QuestionHistoryEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private QuestionEntity question;
 
+    @Column(columnDefinition = "varchar(500)")
+    private String comment;
+
     @Builder
-    public QuestionHistoryEntity(UserEntity user, QuestionEntity question) {
+    public QuestionHistoryEntity(Long id, UserEntity user, QuestionEntity question, String comment) {
+        this.id = id;
         this.user = user;
         this.question = question;
+        this.comment = comment;
     }
 }

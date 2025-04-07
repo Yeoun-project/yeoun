@@ -1,12 +1,12 @@
 package yeoun.question.presentation;
 
 import jakarta.servlet.http.HttpServletRequest;
-import yeoun.common.ErrorResponse;
+import yeoun.comment.dto.request.SaveCommentRequest;
 import yeoun.common.SuccessResponse;
-import yeoun.exception.CustomException;
-import yeoun.exception.ErrorCode;
+import yeoun.question.domain.QuestionHistoryEntity;
 import yeoun.question.dto.request.AddQuestionRequest;
 import yeoun.comment.dto.response.CommentResponse;
+import yeoun.question.dto.response.CategoryResponseDto;
 import yeoun.question.dto.response.QuestionDetailResponse;
 import yeoun.question.dto.response.QuestionResponse;
 import yeoun.question.dto.response.TodayQuestionResponse;
@@ -21,7 +21,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import yeoun.question.service.TodayQuestionService;
-import yeoun.user.service.UserService;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,7 +32,6 @@ import java.util.Map;
 public class QuestionController {
 
     private final QuestionService questionService;
-    private final TodayQuestionService todayQuestionService;
 
     @PostMapping("/api/question")
     public ResponseEntity<?> addQuestion(@RequestBody @Valid AddQuestionRequest addQuestionRequest) {
@@ -43,19 +41,19 @@ public class QuestionController {
         return ResponseEntity.status(HttpStatus.CREATED).body(new SuccessResponse("Add question success", null));
     }
 
-    @PutMapping("/api/question/{questionId}")
-    public ResponseEntity<?> updateQuestion(@RequestBody @Valid AddQuestionRequest addQuestionRequest, @PathVariable("questionId") Long questionId) {
-        addQuestionRequest.setUserId(JwtService.getUserIdFromAuthentication());
-        addQuestionRequest.setId(questionId);
-        questionService.updateQuestion(addQuestionRequest);
-        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("Edit question success", null));
-    }
+//    @PutMapping("/api/question/{questionId}")
+//    public ResponseEntity<?> updateQuestion(@RequestBody @Valid AddQuestionRequest addQuestionRequest, @PathVariable("questionId") Long questionId) {
+//        addQuestionRequest.setUserId(JwtService.getUserIdFromAuthentication());
+//        addQuestionRequest.setId(questionId);
+//        questionService.updateQuestion(addQuestionRequest);
+//        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("Edit question success", null));
+//    }
 
-    @DeleteMapping("/api/question/{questionId}")
-    public ResponseEntity<?> deleteQuestion(@PathVariable("questionId") Long questionId) {
-        questionService.deleteQuestion(questionId,JwtService.getUserIdFromAuthentication());
-        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("Deleted question success", null));
-    }
+//    @DeleteMapping("/api/question/{questionId}")
+//    public ResponseEntity<?> deleteQuestion(@PathVariable("questionId") Long questionId) {
+//        questionService.deleteQuestion(questionId,JwtService.getUserIdFromAuthentication());
+//        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("Deleted question success", null));
+//    }
 
     @GetMapping("/api/question/all")
     public ResponseEntity<?> getAllQuestion() {
@@ -80,15 +78,8 @@ public class QuestionController {
         Long userId = JwtService.getUserIdFromAuthentication();
         QuestionEntity question = questionService.getQuestionWithCommentById(questionId);
 
-        List<CommentResponse> commentDtoList = question.getComments().stream()
-                .map(comment -> CommentResponse.builder()
-                        .id(comment.getId())
-                        .content(comment.getContent())
-                        .createTime(comment.getCreatedDateTime())
-                        .build())
-                .toList();
 
-        Map<String, Object> response = Map.of("question",
+        QuestionDetailResponse questionDetail =
                 QuestionDetailResponse.builder()
                         .id(question.getId())
                         .content(question.getContent())
@@ -97,8 +88,31 @@ public class QuestionController {
                         .categoryName(question.getCategory().getName())
                         .createTime(question.getCreatedDateTime())
                         .isAuthor(userId == question.getUser().getId())
-                        .comments(commentDtoList)
-                        .build());
+                        .build();
+
+        List<CommentResponse> commentDtoList = new ArrayList<>();
+        question.getComments().forEach(comment -> {
+            if(comment.getUser().getId() == userId){
+                questionDetail.setMyComment(CommentResponse.builder()
+                    .id(comment.getId())
+                    .content(comment.getContent())
+                    .createTime(comment.getCreatedDateTime())
+                    .build()
+                );
+            }
+            else{
+                commentDtoList.add(CommentResponse.builder()
+                    .id(comment.getId())
+                    .content(comment.getContent())
+                    .createTime(comment.getCreatedDateTime())
+                    .build()
+                );
+            }
+        });
+
+        questionDetail.setComments(commentDtoList);
+
+        Map<String, Object> response = Map.of("question", questionDetail);
 
         return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("get question detail success",response));
     }
@@ -127,32 +141,23 @@ public class QuestionController {
         return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("get all categories success", response));
     }
 
-    @GetMapping("/public/question/today")
-    public ResponseEntity<?> getTodayQuestionGuest(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        if (SecurityUtil.isLoggedIn()) response.sendRedirect("/api/question/today");
+    @GetMapping("api/category/{categoryId}")
+    public ResponseEntity<?> getQuestionCategories(@PathVariable("categoryId")Long categoryId) {
+        List<QuestionEntity> questions = questionService.getAllQuestionsByCategory(categoryId);
 
-        Long userId = JwtService.getUserIdFromAuthentication();
+        List<QuestionResponse> questionResponseList = questions.stream()
+            .map(question -> QuestionResponse.builder()
+                .id(question.getId())
+                .content(question.getContent())
+                .heart(question.getHeart())
+                .categoryName(question.getCategory().getName())
+                .commentCount(question.getComments().size())
+                .createTime(question.getCreatedDateTime())
+                .build())
+            .toList();
 
-        QuestionEntity todayQuestion = todayQuestionService.getTodayQuestionGuest(userId);
-        return ResponseEntity.status(HttpStatus.OK).body(
-                new SuccessResponse("Get today's question for guest success", TodayQuestionResponse.builder()
-                        .id(todayQuestion.getId())
-                        .content(todayQuestion.getContent())
-                        .build())
-        );
-    }
-
-    @GetMapping("/api/question/today")
-    public ResponseEntity<?> getTodayQuestionMember() {
-        Long userId = JwtService.getUserIdFromAuthentication();
-        QuestionEntity todayQuestion = todayQuestionService.getTodayQuestionMember(userId);
-
-        return ResponseEntity.status(HttpStatus.OK).body(
-                new SuccessResponse("Get today's question for member success", TodayQuestionResponse.builder()
-                        .id(todayQuestion.getId())
-                        .content(todayQuestion.getContent())
-                        .build())
-        );
+        Map<String, Object> response = Map.of("questions", questionResponseList);
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("get all questions success", response));
     }
 
 }
