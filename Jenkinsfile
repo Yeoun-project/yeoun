@@ -31,7 +31,6 @@ pipeline {
 									--name yeoun-front \
 									-p 80:80 \
 									-v ~/certbot:/var/www/certbot \
-                                    -v ~/yeoun/frontend/nginx.conf:/etc/nginx/conf.d/default.conf:ro \
 									yeoun-front:latest
 								'''
 							}
