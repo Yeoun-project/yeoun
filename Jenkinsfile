@@ -29,8 +29,9 @@ pipeline {
 
 									docker run -d \
 									--name yeoun-front \
-									-p 80:80 \
-									-v /home/ubuntu/certbot:/var/www/certbot \
+									-p 80:80 -p 443:443 \
+									-v /etc/letsencrypt:/etc/letsencrypt \
+                                    -v /home/ubuntu/certbot:/var/www/certbot \
 									yeoun-front:latest
 								'''
 							}
