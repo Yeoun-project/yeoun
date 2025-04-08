@@ -21,6 +21,7 @@ pipeline {
 					                string(credentialsId: 'yeoun-front-vite-oauth-naver', variable: 'VITE_OAUTH_NAVER'),
 					            ]) {
 					                sh '''
+					                    cat frontend/.env.production
                                         cat <<EOF > frontend/.env.production
                                         VITE_API_BASE_URL=$VITE_API_BASE_URL
 
