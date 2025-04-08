@@ -12,6 +12,12 @@ export default defineConfig(({ mode }: ConfigEnv) => {
   const isDev = mode === 'development';
 
   return {
+    define: {
+      'import.meta.env.VITE_API_BASE_URL': JSON.stringify(env.VITE_API_BASE_URL),
+      'import.meta.env.VITE_OAUTH_GOOGLE': JSON.stringify(env.VITE_OAUTH_GOOGLE),
+      'import.meta.env.VITE_OAUTH_KAKAO': JSON.stringify(env.VITE_OAUTH_KAKAO),
+      'import.meta.env.VITE_OAUTH_NAVER': JSON.stringify(env.VITE_OAUTH_NAVER),
+    },
     server: {
       https: isDev ? { key: env.VITE_PEM_KEY_PATH, cert: env.VITE_PEM_CERT_PATH } : undefined,
       proxy: {
