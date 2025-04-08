@@ -12,7 +12,7 @@ public interface QuestionHistoryRepository extends JpaRepository<QuestionHistory
     // 오늘의 질문 조회
     @Query("""
             SELECT qh FROM QuestionHistoryEntity qh
-            LEFT JOIN FETCH qh.question q 
+            LEFT JOIN FETCH qh.question q
             WHERE DATE(qh.createdDateTime) = CURRENT_DATE and qh.user.id = :userId
             """)
     Optional<QuestionHistoryEntity> findTodayQuestion(@Param("userId") Long userId);
@@ -23,7 +23,11 @@ public interface QuestionHistoryRepository extends JpaRepository<QuestionHistory
         + "where qh.id = :id")
     Optional<QuestionHistoryEntity> findById(@Param("id") Long id);
 
-    @Query("select qh from QuestionHistoryEntity qh left join fetch qh.question where qh.user.id = :userId order by qh.createdDateTime desc")
+    @Query("""
+        select qh from QuestionHistoryEntity qh 
+        left join fetch qh.question q
+        where qh.user.id = :userId and qh.comment is not null order by qh.createdDateTime desc
+        """)
     List<QuestionHistoryEntity> findAllByUserId(@Param("userId") long userId);
 
     @Query("select qh from QuestionHistoryEntity qh "

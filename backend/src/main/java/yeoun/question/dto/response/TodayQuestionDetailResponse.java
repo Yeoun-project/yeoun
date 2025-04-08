@@ -1,6 +1,5 @@
 package yeoun.question.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Date;
 import lombok.*;
 
@@ -9,7 +8,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TodayQuestionResponse {
+public class TodayQuestionDetailResponse {
 
     private Long id; // questionHistoryId
 
@@ -17,7 +16,6 @@ public class TodayQuestionResponse {
 
     private String content;
 
-    @JsonProperty("isComment")
-    private Boolean isComment;
+    private String comment;
 
 }

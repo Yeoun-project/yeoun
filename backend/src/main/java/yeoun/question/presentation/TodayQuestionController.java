@@ -19,6 +19,8 @@ import yeoun.auth.service.JwtService;
 import yeoun.comment.dto.request.SaveCommentRequest;
 import yeoun.common.SuccessResponse;
 import yeoun.question.domain.QuestionHistoryEntity;
+import yeoun.question.dto.response.TodayQuestionDetailResponse;
+import yeoun.question.dto.response.TodayQuestionListResponse;
 import yeoun.question.dto.response.TodayQuestionResponse;
 import yeoun.question.service.TodayQuestionService;
 
@@ -41,7 +43,7 @@ public class TodayQuestionController {
                 .id(todayQuestion.getId())
                 .created_at(todayQuestion.getCreatedDateTime())
                 .content(todayQuestion.getQuestion().getContent())
-                .comment(todayQuestion.getComment())
+                .isComment(todayQuestion.getComment() != null)
                 .build())
         );
     }
@@ -56,7 +58,7 @@ public class TodayQuestionController {
                 .id(todayQuestion.getId())
                 .created_at(todayQuestion.getCreatedDateTime())
                 .content(todayQuestion.getQuestion().getContent())
-                .comment(todayQuestion.getComment())
+                .isComment(todayQuestion.getComment() != null)
                 .build())
         );
     }
@@ -76,11 +78,10 @@ public class TodayQuestionController {
         List<QuestionHistoryEntity> questionHistories = todayQuestionService.getAllMyTodayQuestions(JwtService.getUserIdFromAuthentication());
         Map<String, Object> response = Map.of("questions",
             questionHistories.stream().map( qh->
-                TodayQuestionResponse
+                TodayQuestionListResponse
                     .builder()
                     .id(qh.getId())
                     .created_at(qh.getCreatedDateTime())
-                    .comment(qh.getComment())
                     .content(qh.getQuestion().getContent())
                     .build()
             ).toList()
@@ -93,8 +94,8 @@ public class TodayQuestionController {
     public ResponseEntity<?> getMyTodayQuestion(@PathVariable("questionHistoryId") Long questionHistoryId) {
         QuestionHistoryEntity questionHistory = todayQuestionService.getMyTodayQuestion(JwtService.getUserIdFromAuthentication(), questionHistoryId);
 
-        TodayQuestionResponse response =
-            TodayQuestionResponse
+        TodayQuestionDetailResponse response =
+            TodayQuestionDetailResponse
                 .builder()
                 .id(questionHistory.getId())
                 .created_at(questionHistory.getCreatedDateTime())
