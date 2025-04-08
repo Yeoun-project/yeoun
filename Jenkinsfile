@@ -12,6 +12,27 @@ pipeline {
 			parallel {
 				stage('Frontend') {
 					stages {
+					    stage('Frontend Generate Env') {
+					        steps {
+					            withCredentials([
+					                string(credentialsId: 'yeoun-front-vite-api-base-url', variable: 'VITE_API_BASE_URL'),
+					                string(credentialsId: 'yeoun-front-vite-oauth-google', variable: 'VITE_OAUTH_GOOGLE'),
+					                string(credentialsId: 'yeoun-front-vite-oauth-kakao', variable: 'VITE_OAUTH_KAKAO'),
+					                string(credentialsId: 'yeoun-front-vite-oauth-naver', variable: 'VITE_OAUTH_NAVER'),
+					            ]) {
+					                sh '''
+                                        cat <<EOF > frontend/.env.production
+                                        VITE_API_BASE_URL=$VITE_API_BASE_URL
+
+                                        VITE_OAUTH_GOOGLE=$VITE_OAUTH_GOOGLE
+                                        VITE_OAUTH_KAKAO=$VITE_OAUTH_KAKAO
+                                        VITE_OAUTH_NAVER=$VITE_OAUTH_NAVER
+                                        EOF
+					                '''
+					            }
+					        }
+					    }
+
 						stage('Frontend Build') {
 							steps {
 								sh '''

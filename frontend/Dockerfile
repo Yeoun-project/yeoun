@@ -9,7 +9,7 @@ RUN npm ci
 
 COPY frontend/ .
 
-RUN npm run build
+RUN npm run build -- --mode=production
 
 FROM nginx:alpine
 
