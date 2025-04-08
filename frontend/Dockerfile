@@ -10,7 +10,7 @@ RUN npm ci
 COPY frontend/ .
 
 COPY frontend/.env.production .env.production
-
+RUN cat .env.production
 RUN npm run build -- --mode=production
 
 FROM nginx:alpine
