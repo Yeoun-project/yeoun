@@ -1,5 +1,7 @@
 package yeoun.user.service;
 
+import lombok.extern.slf4j.Slf4j;
+import yeoun.auth.infrastructure.CookieUtil;
 import yeoun.user.domain.UserEntity;
 import yeoun.auth.service.JwtService;
 import yeoun.user.domain.repository.UserRepository;
@@ -13,23 +15,25 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserService {
 
     private final UserRepository userRepository;
 
     @Transactional
     public UserEntity registerByUserInfo(UserRegisterInfoVo vo) {
-        // get anonymous authentication from security context
-        Optional<UserEntity> anonymousUser = userRepository.findById(JwtService.getUserIdFromAuthentication());
-        Long anonymousUserId = null;
+        Long userId = null;
+        Optional<Long> tokenId = JwtService.getAnonymousTokenAuthentication();
 
-        if (anonymousUser.isPresent())
-            anonymousUserId = anonymousUser.get().getId();
-
+        if(tokenId.isPresent()) {
+            log.info(tokenId.get().toString());
+            userId = tokenId.get();
+        }
+        log.info("test");
 
         String uuid = UUID.randomUUID().toString();
         UserEntity newUser = UserEntity.builder()
-                .id(anonymousUserId)
+                .id(userId)
                 .oAuthPlatform(vo.getOAuthPlatform())
                 .oAuthId(vo.getOAuthId())
                 .name(vo.getName())

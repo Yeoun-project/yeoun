@@ -43,16 +43,19 @@ public class JwtAnonymousTokenFilter extends OncePerRequestFilter {
 
         // check anonymous token
         String anonymousToken = CookieUtil.getTokenFromCookies("anonymousToken", request);
-        Authentication authentication;
+        Authentication authentication = null;
 
         if(anonymousToken == null || anonymousToken.isEmpty()) {
             // generate new authentic and publish new Token
+            if (request.getRequestURI().contains("/public/auth/login")) {
+                filterChain.doFilter(request, response);
+                return;
+            }
             authentication = generateNewAuthentication(request, response);
         }else {
             // get authentic from token
             Map<String, String> claims = jwtService.extractToken(anonymousToken, "role");
-            authentication = new UsernamePasswordAuthenticationToken(Long.valueOf(claims.get("subject")), null,  Role.getRole(claims.get("role")).getAuthorities());
-            CookieUtil.addCookie(response, "anonymousToken", anonymousToken,  userHistoryDeleteSecond);
+            authentication = new UsernamePasswordAuthenticationToken(Long.valueOf(claims.get("subject")), "anonymousToken",  Role.getRole(claims.get("role")).getAuthorities());
         }
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -67,7 +70,7 @@ public class JwtAnonymousTokenFilter extends OncePerRequestFilter {
 
         CookieUtil.addCookie(response, "anonymousToken", token,  userHistoryDeleteSecond);
 
-        return new UsernamePasswordAuthenticationToken(newUser.getId(), null, newUser.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(newUser.getId(), "anonymousToken", newUser.getAuthorities());
     }
 
 }

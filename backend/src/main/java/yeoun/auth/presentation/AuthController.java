@@ -1,5 +1,8 @@
 package yeoun.auth.presentation;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import yeoun.common.ErrorResponse;
 import yeoun.common.SuccessResponse;
 import yeoun.user.domain.UserEntity;
@@ -72,6 +75,19 @@ public class AuthController {
         }
     }
 
+    @PostMapping("/me")
+    public ResponseEntity<?> checkIsLoggedIn() {
+        Authentication authentic = SecurityContextHolder.getContext().getAuthentication();
+
+        if(authentic == null)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("", "Not User"));
+
+        if(authentic.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_USER")))
+            return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("User", null));
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("", "Not User"));
+    }
+
     private void generateAndAddTokenCookie(UserEntity user, HttpServletRequest request, HttpServletResponse response) {
         String ip = JwtService.getIpFromRequest(request);
 
@@ -85,7 +101,8 @@ public class AuthController {
     }
 
     private void removeAnonymousToken(HttpServletResponse response) {
-        CookieUtil.addCookie(response, "anonymousToken", null, 0L);
+        if(JwtService.getAnonymousTokenAuthentication() != null)
+            CookieUtil.addCookie(response, "anonymousToken", null, 0L);
     }
 
 }
