@@ -76,14 +76,12 @@ pipeline {
 									string(credentialsId: 'yeoun-back-db-host', variable: 'DB_HOST'),
 									string(credentialsId: 'yeoun-back-db-port', variable: 'DB_PORT'),
 									string(credentialsId: 'yeoun-back-db-password', variable: 'DB_PASSWORD'),
-									string(credentialsId: 'yeoun-back-jwt-secret', variable: 'JWT_SECRET'),
 									string(credentialsId: 'yeoun-back-oci-compute-host', variable: 'OCI_COMPUTE_HOST'),
 									string(credentialsId: 'yeoun-back-google-client-id', variable: 'GOOGLE_CLIENT_ID'),
 									string(credentialsId: 'yeoun-back-google-client-secret', variable: 'GOOGLE_SECRET'),
 									string(credentialsId: 'yeoun-back-naver-client-id', variable: 'NAVER_CLIENT_ID'),
 									string(credentialsId: 'yeoun-back-naver-client-secret', variable: 'NAVER_CLIENT_SECRET'),
-									string(credentialsId: 'yeoun-back-kakao-client-id', variable: 'KAKAO_CLIENT_ID'),
-									string(credentialsId: 'yeoun-back-keystore-password', variable: 'KEYSTORE_PASSWORD')
+									string(credentialsId: 'yeoun-back-kakao-client-id', variable: 'KAKAO_CLIENT_ID')
 								] ){
 									sh '''
 									docker rm -f yeoun-back || true
@@ -97,7 +95,6 @@ pipeline {
 									-e DB_PASSWORD=$DB_PASSWORD \
 									-e JWT_SECRET=$JWT_SECRET \
 									-e OCI_COMPUTE_HOST=$OCI_COMPUTE_HOST \
-									-e KEYSTORE_PASSWORD=$KEYSTORE_PASSWORD \
 									-e GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID \
 									-e GOOGLE_SECRET=$GOOGLE_SECRET \
 									-e NAVER_CLIENT_ID=$NAVER_CLIENT_ID \
