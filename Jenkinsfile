@@ -62,16 +62,6 @@ pipeline {
 
 				stage('Backend') {
 					stages {
-						stage('Setup Backend Keystore') {
-							steps {
-								withCredentials([
-									string(credentialsId: 'yeoun-back-keystore-b64', variable: 'KEYSTORE_B64')
-								] ) {
-									sh 'echo "$KEYSTORE_B64" | base64 -d > backend/src/main/resources/keystore.p12'
-								}
-							}
-						}
-
 						stage('Backend Build') {
 							steps {
 								sh 'docker build -t yeoun-back:latest ./backend'
