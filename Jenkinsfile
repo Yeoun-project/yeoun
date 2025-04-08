@@ -30,6 +30,8 @@ pipeline {
 									docker run -d \
 									--name yeoun-front \
 									-p 80:80 \
+									-v /home/ubuntu/certbot:/var/www/certbot \
+                                     -v /home/ubuntu/yeoun/frontend/nginx.conf:/etc/nginx/conf.d/default.conf \
 									yeoun-front:latest
 								'''
 							}
