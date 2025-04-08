@@ -1,47 +1,71 @@
 package yeoun.question.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import yeoun.comment.dto.response.CommentResponse;
+import lombok.*;
 
 import java.util.Date;
 import java.util.List;
 
 @Getter
-@Setter
-@NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class QuestionDetailResponse {
 
-    private Long id;
+    private Question question;
 
-    private String content;
+    private MyComment myComment;
 
-    private int heart;
+    private List<Comment> comments;
 
-    private int commentCount;
-
-    private String categoryName;
-
-    private Date createTime;
-
-    @JsonProperty("isAuthor")
-    private boolean isAuthor;
-
-    private List<CommentResponse> comments;
-
+    @Getter
     @Builder
-    public QuestionDetailResponse(Long id, String content, int heart,int commentCount, String categoryName,
-                                  Date createTime, boolean isAuthor, List<CommentResponse> comments) {
-        this.id = id;
-        this.content = content;
-        this.heart = heart;
-        this.commentCount = commentCount;
-        this.categoryName = categoryName;
-        this.createTime = createTime;
-        this.isAuthor = isAuthor;
-        this.comments = comments;
+    @AllArgsConstructor
+    public static class Question {
+
+        private Long id;
+
+        private String content;
+
+        private int heart;
+
+        private int commentCount;
+
+        private String categoryName;
+
+        private Date createTime;
+
+        @JsonProperty("isAuthor")
+        private boolean author;
+
     }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    public static class MyComment {
+
+        private Long id;
+
+        private String content;
+
+        private Date createTime;
+
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    public static class Comment {
+
+        private Long id;
+
+        private String content;
+
+        private Date createTime;
+
+        @JsonProperty("isLike")
+        private boolean like;
+
+    }
+
 }

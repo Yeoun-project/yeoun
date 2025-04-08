@@ -1,8 +1,9 @@
 package yeoun.question.presentation;
 
+import yeoun.comment.service.CommentLikeService;
+import yeoun.comment.service.CommentService;
 import yeoun.common.SuccessResponse;
 import yeoun.question.dto.request.AddQuestionRequest;
-import yeoun.comment.dto.response.CommentResponse;
 import yeoun.question.dto.response.QuestionDetailResponse;
 import yeoun.question.dto.response.QuestionResponse;
 import yeoun.question.domain.QuestionEntity;
@@ -41,7 +42,7 @@ public class QuestionController {
 
     @DeleteMapping("/api/question/{questionId}")
     public ResponseEntity<?> deleteQuestion(@PathVariable("questionId") Long questionId) {
-        questionService.deleteQuestion(questionId,JwtService.getUserIdFromAuthentication());
+        questionService.deleteQuestion(questionId, JwtService.getUserIdFromAuthentication());
         return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("Deleted question success", null));
     }
 
@@ -65,30 +66,8 @@ public class QuestionController {
 
     @GetMapping("/api/question/{questionId}")
     public ResponseEntity<?> getQuestionDetails(@PathVariable("questionId") Long questionId) {
-        Long userId = JwtService.getUserIdFromAuthentication();
-        QuestionEntity question = questionService.getQuestionWithCommentById(questionId);
-
-        List<CommentResponse> commentDtoList = question.getComments().stream()
-                .map(comment -> CommentResponse.builder()
-                        .id(comment.getId())
-                        .content(comment.getContent())
-                        .createTime(comment.getCreatedDateTime())
-                        .build())
-                .toList();
-
-        Map<String, Object> response = Map.of("question",
-                QuestionDetailResponse.builder()
-                        .id(question.getId())
-                        .content(question.getContent())
-                        .heart(question.getHeart())
-                        .commentCount(question.getComments().size())
-                        .categoryName(question.getCategory().getName())
-                        .createTime(question.getCreatedDateTime())
-                        .isAuthor(userId == question.getUser().getId())
-                        .comments(commentDtoList)
-                        .build());
-
-        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("get question detail success",response));
+        QuestionDetailResponse questionDetail = questionService.getQuestionDetail(questionId, JwtService.getUserIdFromAuthentication());
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("get question detail success", questionDetail));
     }
 
     @GetMapping("/api/question/my")

@@ -75,4 +75,8 @@ public class CommentService {
     public List<CommentEntity> getCommentsByUserId(Long userId) {
         return commentRepository.getCommentsById(userId);
     }
+
+    public CommentEntity getMyCommentByQuestionId(Long userId, Long questionId) {
+        return commentRepository.getCommentByUserIdAndQuestionId(userId, questionId).orElse(null);
+    }
 }

@@ -24,4 +24,14 @@ public interface CommentRepository extends JpaRepository<CommentEntity, Long> {
 
     @Query("select c from CommentEntity c left join fetch c.question where c.user.id = :userId")
     List<CommentEntity> getCommentsById(@Param("userId") Long userId);
+
+    @Query("""
+            SELECT c FROM CommentEntity c
+            WHERE c.question.id = :questionId AND c.user.id = :userId
+            ORDER BY c.createdDateTime DESC
+            """)
+    Optional<CommentEntity> getCommentByUserIdAndQuestionId(
+            @Param("userId") Long userId,
+            @Param("questionId") Long questionId
+    );
 }
