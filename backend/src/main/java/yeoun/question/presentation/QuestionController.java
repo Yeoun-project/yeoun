@@ -1,5 +1,8 @@
 package yeoun.question.presentation;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.web.PageableDefault;
 import yeoun.common.SuccessResponse;
 import yeoun.question.dto.request.AddQuestionRequest;
 import yeoun.comment.dto.response.CommentResponse;
@@ -41,13 +44,16 @@ public class QuestionController {
 
     @DeleteMapping("/api/question/{questionId}")
     public ResponseEntity<?> deleteQuestion(@PathVariable("questionId") Long questionId) {
-        questionService.deleteQuestion(questionId,JwtService.getUserIdFromAuthentication());
+        questionService.deleteQuestion(questionId, JwtService.getUserIdFromAuthentication());
         return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("Deleted question success", null));
     }
 
     @GetMapping("/api/question/all")
-    public ResponseEntity<?> getAllQuestion() {
-        List<QuestionEntity> allQuestions = questionService.getAllQuestions();
+    public ResponseEntity<?> getAllQuestion(
+            @RequestParam(required = false) String category,
+            @PageableDefault() final Pageable pageable
+    ) {
+        Slice<QuestionEntity> allQuestions = questionService.getAllQuestions(category, pageable);
         List<QuestionResponse> questionResponseList = allQuestions.stream()
                 .map(question -> QuestionResponse.builder()
                         .id(question.getId())
@@ -59,7 +65,10 @@ public class QuestionController {
                         .build())
                 .toList();
 
-        Map<String, Object> response = Map.of("questions", questionResponseList);
+        Map<String, Object> response = Map.of(
+                "questions", questionResponseList,
+                "hasNext", allQuestions.hasNext()
+        );
         return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("get all questions success", response));
     }
 
@@ -88,7 +97,7 @@ public class QuestionController {
                         .comments(commentDtoList)
                         .build());
 
-        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("get question detail success",response));
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("get question detail success", response));
     }
 
     @GetMapping("/api/question/my")
