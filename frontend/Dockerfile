@@ -7,9 +7,9 @@ COPY package-lock.json ./
 
 RUN npm ci
 
-COPY frontend/.env.production .env.production
-
 COPY frontend/ .
+
+COPY frontend/.env.production .env.production
 
 RUN npm run build -- --mode=production
 
