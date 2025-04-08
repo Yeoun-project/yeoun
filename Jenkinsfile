@@ -50,6 +50,7 @@ pipeline {
 
 									docker run -d \
 									--name yeoun-front \
+									--network yeoun-network \
 									-p 80:80 -p 443:443 \
 									-v /etc/letsencrypt:/etc/letsencrypt \
                                     -v /home/ubuntu/certbot:/var/www/certbot \
@@ -89,6 +90,7 @@ pipeline {
 
 									docker run -d \
 									--name yeoun-back \
+									--network yeoun-network \
 									-p 8080:8080 \
 									-e DB_HOST=$DB_HOST \
 									-e DB_PORT=$DB_PORT \
