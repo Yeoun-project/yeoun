@@ -1,17 +1,34 @@
 /* eslint-disable react-refresh/only-export-components */
 
 import { useState } from 'react';
-import BackArrow from '../../components/common/BackArrow';
-import Squre from '../../assets/Squre';
-import useGetTodayQuestion from '../../hooks/queries/useGetTodayQuestion';
-import { ActionFunctionArgs, Form } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+
+import useAuthStore from '../../store/useAuthStore';
 
 import { addTodayQuestionComment } from '../../services/api/question/todayQuestion';
 
+import useGetTodayQuestion from '../../hooks/queries/useGetTodayQuestion';
+
+import BackArrow from '../../components/common/BackArrow';
+import CommentForm from '../../components/form/CommentForm';
+
 const TodayQuestionCommentPage = () => {
+  const navigate = useNavigate();
+
   const [value, setValue] = useState<string>('');
 
-  const { data: todayQuestion } = useGetTodayQuestion();
+  const { userType } = useAuthStore();
+  const { data: todayQuestion } = useGetTodayQuestion(userType);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      await addTodayQuestionComment(userType, value);
+      return navigate('/today-question');
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <>
@@ -22,33 +39,13 @@ const TodayQuestionCommentPage = () => {
             <BackArrow label="작성취소" />
           </div>
 
-          {/* Question */}
-          <p className="text-gradient mb-6 bg-clip-text text-center text-2xl/10 break-keep">
-            {todayQuestion?.content}
-          </p>
-
-          {/* Form */}
-          <Form method="post" className="relative z-10 w-full" id="today-question">
-            {/* Answer Input */}
-            <textarea
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
-              name="comment"
-              id="comment"
-              maxLength={500}
-              className="font-desc z-30 h-[270px] w-full resize-none rounded-sm border border-white/50 bg-white/10 p-4 backdrop-blur-xs outline-none placeholder:text-white"
-              placeholder="답변을 작성해주세요"
-            />
-            <div className="font-desc w-full text-right text-sm">{`${value.length || 0} / 500`}</div>
-
-            {/* Background Squre */}
-            <div aria-hidden className="animate-spin-second absolute top-[-15%] right-[-5%] -z-10">
-              <Squre size={60} />
-            </div>
-            <div aria-hidden className="animate-spin-third absolute bottom-[-5%] left-[-5%] -z-10">
-              <Squre size={100} />
-            </div>
-          </Form>
+          <CommentForm
+            formId="today-question"
+            question={todayQuestion!.content}
+            commentValue={value}
+            onChange={(e) => setValue(e.target.value)}
+            onSubmit={handleSubmit}
+          />
         </div>
 
         {/* Form Submit Button */}
@@ -64,15 +61,3 @@ const TodayQuestionCommentPage = () => {
 };
 
 export default TodayQuestionCommentPage;
-
-export const action = async ({ request }: ActionFunctionArgs) => {
-  const comment = (await request.formData()).get('comment') as string;
-  try {
-    const response = await addTodayQuestionComment(comment);
-    console.log(response);
-  } catch (error) {
-    console.log(error);
-  }
-
-  return undefined;
-};
