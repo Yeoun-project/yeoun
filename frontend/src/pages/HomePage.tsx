@@ -1,43 +1,15 @@
 import { useNavigate } from 'react-router-dom';
-
 import BackGroundCubeImage from '../assets/background-cube.svg?react';
 
-import useAuthStore from '../store/useAuthStore';
-
-import checkAuth from '../services/api/auth/checkAuth';
-
 const HomePage = () => {
-  const { setUserType, userType } = useAuthStore();
-
   const navigate = useNavigate();
-
-  const handleClick = async () => {
-    // 비회원
-    if (userType === 'Guest') {
-      return navigate('/today-question');
-    }
-
-    // 회원
-    if (userType === 'User') {
-      try {
-        await checkAuth();
-        setUserType('User');
-        return navigate('/today-question');
-      } catch {
-        setUserType(null);
-        return navigate('/login');
-      }
-    }
-
-    // 로그인하지 않았을 때
-    if (!userType) {
-      return navigate('/login');
-    }
+  const handleClick = () => {
+    navigate('/login');
   };
 
   return (
     <main className="relative flex min-h-[100svh] flex-col justify-between pt-8 pb-5">
-      <div className="relative space-y-6 px-6 after:absolute after:top-[calc(100%-67px)] after:left-0 after:h-[1px] after:w-[40%] after:bg-white/70 after:content-['']">
+      <div className="relative space-y-6 px-6 after:absolute after:top-[calc(100%-93px)] after:left-0 after:h-[1px] after:w-[40%] after:bg-white/70 after:content-['']">
         <p className="text-gradient text-2xl/9">
           하루의 끝,
           <br />
@@ -45,10 +17,14 @@ const HomePage = () => {
           <br />
           당신만의 여운을 남기세요
         </p>
-        <p className="font-desc text-sm/loose">
-          매일 답하고 기록을 쌓아보세요.
+        <p className="font-desc text-sm">
+          매일 주어지는 질문에 답하고
           <br />
-          질문을 남기고 답변을 받아보세요.
+          나만의 기록을 쌓아보세요
+          <br />
+          다른 사람에게 의미있는 질문을 던지고
+          <br />
+          그들의 답변을 들어보세요
         </p>
       </div>
 

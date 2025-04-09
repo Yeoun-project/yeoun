@@ -1,10 +1,6 @@
 package yeoun.question.domain.repository;
 
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import yeoun.question.domain.QuestionEntity;
-
-import java.time.LocalDateTime;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -18,35 +14,8 @@ public interface QuestionRepository extends JpaRepository<QuestionEntity, Long> 
     @Query("select q from QuestionEntity q left join fetch q.user where q.id = :id")
     Optional<QuestionEntity> findQuestionById(@Param("id") long id);
 
-    @Query("""
-            SELECT q FROM QuestionEntity q
-            LEFT JOIN q.comments c
-              ON c.createdDateTime BETWEEN :start AND :end
-            WHERE q.isFixed = false
-            GROUP BY q
-            ORDER BY COUNT(c) DESC, q.createdDateTime ASC
-        """)
-    Slice<QuestionEntity> findAllOrderByCommentsCount(
-            @Param("start") LocalDateTime start,
-            @Param("end") LocalDateTime end,
-            Pageable pageable
-    );
-
-    @Query("""
-            SELECT q FROM QuestionEntity q
-            LEFT JOIN q.comments c
-              ON c.createdDateTime BETWEEN :start AND :end
-            WHERE q.isFixed = false
-            AND q.category.name = :category
-            GROUP BY q
-            ORDER BY COUNT(c) DESC, q.createdDateTime ASC
-            """)
-    Slice<QuestionEntity> findAllByCategoryAndTodayComments(
-            @Param("category") String category,
-            @Param("start") LocalDateTime start,
-            @Param("end") LocalDateTime end,
-            Pageable pageable
-    );
+    @Query("SELECT q FROM QuestionEntity q LEFT JOIN q.comments c GROUP BY q ORDER BY COUNT(c) DESC")
+    List<QuestionEntity> findAllOrderByCommentsCountDesc();
 
     @Query("SELECT q FROM QuestionEntity q LEFT JOIN FETCH q.comments left join fetch q.user WHERE q.id = :questionId")
     Optional<QuestionEntity> findQuestionWithCommentById(@Param("questionId") Long questionId);
