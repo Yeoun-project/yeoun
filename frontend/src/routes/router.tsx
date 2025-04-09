@@ -15,13 +15,11 @@ import LoginPage from '../pages/login/LoginPage.tsx';
 import LoginFallback from '../pages/login/LoginFallback.tsx';
 
 // 오늘의 질문
-import TodayQuestionPage from '../pages/todayQuestion/TodayQuestionPage.tsx';
-import TodayQuestionCommentPage, {
-  action as TodayQuestionAction,
-} from '../pages/todayQuestion/TodayQuestionCommentPage.tsx';
 import TodayQuestionLayout, {
   loader as TodayQestionLoader,
 } from '../pages/todayQuestion/TodayQuestionLayout.tsx';
+import TodayQuestionPage from '../pages/todayQuestion/TodayQuestionPage.tsx';
+import TodayQuestionCommentPage from '../pages/todayQuestion/TodayQuestionCommentPage.tsx';
 import MyTodayAnswersPage from '../pages/todayQuestion/MyTodayAnswersPage.tsx';
 import MyTodayAnswerPage from '../pages/todayQuestion/MyTodayAnswerPage.tsx';
 
@@ -31,6 +29,7 @@ const router = createBrowserRouter([
     element: <App />,
     children: [
       { index: true, element: <HomePage /> },
+      { path: '/setting', element: <SettingPage /> },
       {
         path: '/login',
         element: <LoginPage />,
@@ -53,7 +52,6 @@ const router = createBrowserRouter([
           {
             path: '/today-question/comment',
             element: <TodayQuestionCommentPage />,
-            action: TodayQuestionAction,
           },
           {
             path: '/today-question/answers',
@@ -69,7 +67,6 @@ const router = createBrowserRouter([
         element: <PrivateRoute />,
         children: [
           { path: '/question', element: <QuestionPage /> },
-          { path: '/settings', element: <SettingPage /> },
           { path: '/my-activity', element: <MyActivityPage /> },
         ],
       },
