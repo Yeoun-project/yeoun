@@ -5,6 +5,7 @@ import TabNav from "../components/TabNav";
 
 const SettingPage = () => {
   const [activate, setActivate] = useState(true);
+  const [isLogin, setLogin] = useState(false);
 
   return (
     <>
@@ -18,15 +19,15 @@ const SettingPage = () => {
         </header>
         <ul className="w-full font-desc">
           <li
-            onClick={() => {}}
+            onClick={() => { setLogin(!isLogin); }}
             className="border-b border-[#AAAAAA] cursor-pointer overflow-hidden"
           >
             <div className="px-6 py-4.5 transition-transform duration-150 active:shadow-inner">
-              로그아웃
+              {isLogin ? "로그아웃" : "로그인"}
             </div>
           </li>
 
-          <li className="flex flex-row justify-between items-center border-b border-[#AAAAAA]">
+          {isLogin && <li className="flex flex-row justify-between items-center border-b border-[#AAAAAA]">
             <div className="px-6 py-4.5">
               알림
             </div>
@@ -43,7 +44,7 @@ const SettingPage = () => {
                 </div>
               </button>
             </div>
-          </li>
+          </li>}
           <li className="flex flex-row justify-between px-6 py-4.5 border-b border-[#AAAAAA]">
             <div>
               버전정보
