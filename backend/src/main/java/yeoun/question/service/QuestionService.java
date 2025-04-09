@@ -1,9 +1,17 @@
 package yeoun.question.service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
+
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import yeoun.question.dto.request.AddQuestionRequest;
 import yeoun.question.domain.CategoryEntity;
 import yeoun.question.domain.QuestionEntity;
+import yeoun.question.dto.response.QuestionDetailResponse;
+import yeoun.question.dto.response.QuestionListResponse;
+import yeoun.question.dto.response.QuestionResponse;
 import yeoun.user.domain.UserEntity;
 import yeoun.exception.CustomException;
 import yeoun.exception.ErrorCode;
@@ -40,7 +48,6 @@ public class QuestionService {
                 .content(dto.getContent())
                 .user(user)
                 .category(category)
-                .heart(0)
                 .build()
         );
     }
@@ -67,7 +74,6 @@ public class QuestionService {
                 .content(dto.getContent())
                 .user(question.getUser())
                 .category(category)
-                .heart(question.getHeart())
                 .build());
     }
 
@@ -84,20 +90,51 @@ public class QuestionService {
         questionRepository.delete(question);
     }
 
-    public List<QuestionEntity> getAllQuestions() {
-        return questionRepository.findAllOrderByCommentsCountDesc();
+    public QuestionListResponse getAllQuestions(String category, Pageable pageable) {
+        LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
+        LocalDateTime endOfDay = startOfDay.plusDays(1);
+
+        Slice<QuestionEntity> questionSlice;
+        if (category == null || category.isBlank()) {
+            questionSlice = questionRepository.findAllOrderByCommentsCount(startOfDay, endOfDay, pageable);
+        } else {
+            questionSlice = questionRepository.findAllByCategoryAndTodayComments(category, startOfDay, endOfDay, pageable);
+        }
+
+        List<QuestionResponse> questionResponseList = questionSlice.stream()
+                .map(QuestionResponse::of)
+                .toList();
+
+        return new QuestionListResponse(questionResponseList, questionSlice.hasNext());
     }
 
-    public QuestionEntity getQuestionWithCommentById(Long id) {
-        return questionRepository.findQuestionWithCommentById(id)
+    public QuestionDetailResponse getQuestionDetail(Long userId, Long questionId) {
+        QuestionEntity question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_PARAMETER, "Invalid question ID"));
+        Boolean isAuthor = question.getUser().getId().equals(userId);
+        return QuestionDetailResponse.of(question, isAuthor);
     }
 
-    public List<QuestionEntity> getQuestionsByUserId(long userId) {
-        return questionRepository.findByUserId(userId);
+    @Transactional
+    public QuestionListResponse getMyQuestions(Long userId, Pageable pageable) {
+        // todo 추후 여기도 페이징 조회 처리
+        List<QuestionEntity> questions = questionRepository.findByUserId(userId);
+        List<QuestionResponse> questionResponses = questions.stream()
+                .map(QuestionResponse::of)
+                .toList();
+        return new QuestionListResponse(questionResponses, false);
     }
 
     public List<CategoryEntity> getAllCategories() {
         return categoryRepository.findAll();
+    }
+
+    public Slice<QuestionEntity> getQuestionUserAnswered(Long userId, String category, Pageable pageable) {
+        return questionRepository.findAllCommentedQuestionsByUserIdAndCategory(userId, category, pageable);
+    }
+
+    @Transactional
+    public Boolean isExistQuestion(Long questionId) {
+        return questionRepository.findQuestionById(questionId).isPresent();
     }
 }

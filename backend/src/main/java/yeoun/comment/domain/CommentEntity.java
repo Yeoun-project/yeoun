@@ -11,6 +11,7 @@ import org.springframework.data.annotation.CreatedDate;
 import yeoun.user.domain.UserEntity;
 import yeoun.question.domain.QuestionEntity;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -26,6 +27,9 @@ public class CommentEntity {
     @Column(nullable = false)
     private String content;
 
+    @Column(nullable = false)
+    private Long likeCount;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id")
@@ -37,7 +41,7 @@ public class CommentEntity {
     private QuestionEntity question;
 
     @CreatedDate
-    private final Date createdDateTime = new Date();
+    private final LocalDateTime createTime = LocalDateTime.now();
 
     @Builder
     public CommentEntity(Long id, String content, UserEntity user, QuestionEntity question) {

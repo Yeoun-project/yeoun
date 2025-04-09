@@ -10,6 +10,7 @@ import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.data.annotation.CreatedDate;
 import yeoun.user.domain.UserEntity;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -23,7 +24,7 @@ public class QuestionHistoryEntity {
     private Long id;
 
     @CreatedDate
-    private final Date createdDateTime = new Date();
+    private final LocalDateTime createTime = LocalDateTime.now();
 
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)

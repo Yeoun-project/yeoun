@@ -11,6 +11,8 @@ import org.springframework.data.annotation.CreatedDate;
 import yeoun.comment.domain.CommentEntity;
 import yeoun.user.domain.UserEntity;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -27,9 +29,6 @@ public class QuestionEntity {
     @Column(nullable = false)
     private String content;
 
-    @Column(nullable = false)
-    private int heart;
-
     @Column
     private final boolean isFixed = false;
 
@@ -45,16 +44,15 @@ public class QuestionEntity {
     private List<CommentEntity> comments;
 
     @CreatedDate
-    private final Date createdDateTime = new Date();
+    private final LocalDateTime createTime = LocalDateTime.now();
 
     @Column
-    private Date deletedDateTime;
+    private LocalDateTime deleteTime;
 
     @Builder
-    public QuestionEntity(Long id, String content, int heart, UserEntity user, CategoryEntity category) {
+    public QuestionEntity(Long id, String content, UserEntity user, CategoryEntity category) {
         this.id = id;
         this.content = content;
-        this.heart = heart;
         this.user = user;
         this.category = category;
     }
