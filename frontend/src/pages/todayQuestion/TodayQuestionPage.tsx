@@ -27,7 +27,7 @@ const TodayQuestionPage = () => {
           <nav className="flex items-center justify-between">
             <Link
               aria-label="설정 바로가기"
-              to="/settings"
+              to="/setting"
               className="size-6 bg-[url(/icons/settings.svg)] bg-no-repeat"
             />
 
