@@ -14,7 +14,7 @@ export default defineConfig(({ mode }: ConfigEnv) => {
   return {
     server: {
       https: isDev ? { key: env.VITE_PEM_KEY_PATH, cert: env.VITE_PEM_CERT_PATH } : undefined,
-      proxy: {
+      proxy: isDev ? {
         '/public': {
           target: env.VITE_API_BASE_URL,
           changeOrigin: true,
@@ -26,7 +26,7 @@ export default defineConfig(({ mode }: ConfigEnv) => {
           changeOrigin: true,
           secure: false,
         },
-      },
+      } : undefined,
 
       cors: true,
     },

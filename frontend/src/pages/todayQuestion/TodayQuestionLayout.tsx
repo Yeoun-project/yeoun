@@ -27,7 +27,7 @@ export const loader = async (): Promise<TodayQuestion | Response> => {
   const { state } = JSON.parse(authStorage);
 
   const todayQuestion = await queryClient.fetchQuery({
-    queryKey: ['today-question'],
+    queryKey: [state.userType, 'today-question'],
     queryFn: async () => await getTodayQuestion(state.userType),
   });
 
