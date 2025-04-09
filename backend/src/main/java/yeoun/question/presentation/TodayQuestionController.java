@@ -23,10 +23,7 @@ public class TodayQuestionController {
 
     @GetMapping("/public/question/today")
     public ResponseEntity<?> getTodayQuestionGuest(HttpServletResponse response) throws IOException {
-        if (SecurityUtil.isLoggedIn()) response.sendRedirect("/api/question/today");
-
         Long userId = JwtService.getUserIdFromAuthentication();
-
         QuestionEntity todayQuestion = todayQuestionService.getTodayQuestionGuest(userId);
         return ResponseEntity.status(HttpStatus.OK).body(
                 new SuccessResponse("Get today's question for guest success", TodayQuestionResponse.builder()
