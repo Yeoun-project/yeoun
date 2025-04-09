@@ -1,5 +1,10 @@
 package yeoun.comment.presentation;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.web.bind.annotation.*;
+import yeoun.comment.dto.response.CommentListResponse;
 import yeoun.common.SuccessResponse;
 import yeoun.comment.dto.request.SaveCommentRequest;
 import yeoun.auth.service.JwtService;
@@ -7,13 +12,6 @@ import yeoun.comment.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/comment")
@@ -21,6 +19,17 @@ import org.springframework.web.bind.annotation.RestController;
 public class CommentController {
 
     private final CommentService commentService;
+
+    @GetMapping("/all/{questionId}")
+    public ResponseEntity<SuccessResponse> getAllComments(
+            @PathVariable Long questionId,
+            @PageableDefault(sort = "createTime", direction = Sort.Direction.ASC) Pageable pageable
+    ) {
+        Long userId = JwtService.getUserIdFromAuthentication();
+        CommentListResponse response = commentService.getAllComments(questionId, userId, pageable);
+
+        return ResponseEntity.ok(new SuccessResponse("success get all comments", response));
+    }
 
     @PostMapping("/{questionId}")
     public ResponseEntity<?> addComment(

@@ -1,39 +1,35 @@
 package yeoun.question.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import yeoun.question.domain.QuestionEntity;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
-@Setter
-@NoArgsConstructor
+@Builder
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class QuestionDetailResponse {
 
-    private Long id;
+    private final Long id;
+    private final String content;
+    private final int commentCount;
+    private final String categoryName;
+    private final LocalDateTime createTime;
+    private final Boolean isAuthor;
 
-    private String content;
+    public static QuestionDetailResponse of(
+            final QuestionEntity question,
+            final Boolean isAuthor
+    ) {
 
-    private int commentCount;
-
-    private String categoryName;
-
-    private Date createTime;
-
-    @JsonProperty("isAuthor")
-    private boolean isAuthor;
-
-    @Builder
-    public QuestionDetailResponse(Long id, String content,int commentCount, String categoryName,
-                                  Date createTime, boolean isAuthor) {
-        this.id = id;
-        this.content = content;
-        this.commentCount = commentCount;
-        this.categoryName = categoryName;
-        this.createTime = createTime;
-        this.isAuthor = isAuthor;
+        return QuestionDetailResponse.builder()
+                .id(question.getId())
+                .content(question.getContent())
+                .commentCount(question.getComments().size())
+                .categoryName(question.getCategory().getName())
+                .createTime(question.getCreateTime())
+                .isAuthor(isAuthor)
+                .build();
     }
+
 }

@@ -57,7 +57,7 @@ public class NotificationController {
                 .content(question.getContent())
                 .categoryName(question.getCategory().getName())
                 .commentCount(question.getComments().size())
-                .createTime(question.getCreatedDateTime())
+                .createTime(question.getCreateTime())
                 .build();
 
         return ResponseEntity.ok().body(dto);

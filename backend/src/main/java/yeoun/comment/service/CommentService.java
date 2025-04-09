@@ -1,11 +1,18 @@
 package yeoun.comment.service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import yeoun.auth.service.JwtService;
 import yeoun.comment.dto.request.SaveCommentRequest;
 import yeoun.comment.domain.CommentEntity;
+import yeoun.comment.dto.response.CommentListResponse;
+import yeoun.comment.dto.response.CommentResponse;
 import yeoun.question.domain.QuestionEntity;
+import yeoun.question.service.QuestionService;
 import yeoun.user.domain.UserEntity;
 import yeoun.exception.CustomException;
 import yeoun.exception.ErrorCode;
@@ -20,8 +27,10 @@ import org.springframework.stereotype.Service;
 public class CommentService {
 
     private final EntityManager entityManager;
+    private final QuestionService questionService;
     private final CommentRepository commentRepository;
 
+    @Transactional
     public CommentEntity saveComment(SaveCommentRequest commentDto) {
         Long userId = JwtService.getUserIdFromAuthentication();
         commentDto.setUserId(userId);
@@ -66,10 +75,40 @@ public class CommentService {
         if(commentOptional.isEmpty())
             throw new CustomException(ErrorCode.NOT_FOUND, "존재하지 않습니다");
 
-        if(commentOptional.get().getUser().getId() != userId)
+        if(!Objects.equals(commentOptional.get().getUser().getId(), userId))
             throw new CustomException(ErrorCode.BAD_REQUEST, "작성자가 아닙니다");
 
         commentRepository.deleteById(commentId);
+    }
+
+    @Transactional
+    public CommentListResponse getAllComments(Long questionId, Long userId, Pageable pageable) {
+        Boolean isExistQuestion = questionService.isExistQuestion(questionId);
+        if(!isExistQuestion) throw new CustomException(ErrorCode.INVALID_PARAMETER, "Invalid question id");
+
+        Optional<CommentEntity> myCommentOpt = commentRepository.findTopByUserIdAndQuestionId(userId, questionId);
+        CommentResponse myCommentResponse = myCommentOpt
+                .map(comment -> CommentResponse.of(comment, false))
+                .orElse(null);
+
+        Slice<CommentEntity> comments = commentRepository.getAllCommentByQuestionExcludeMyself(questionId, userId, pageable);
+        final List<CommentResponse> commentResponses = getCommentResponses(comments.toList());
+
+        return new CommentListResponse(
+                myCommentResponse,
+                commentResponses,
+                comments.hasNext()
+        );
+    }
+
+    private List<CommentResponse> getCommentResponses(final List<CommentEntity> comments) {
+        // 좋아요 유무 찾기
+
+        return comments.stream()
+                .map(comment -> CommentResponse.of(
+                        comment,
+                        false // 좋아요 정보
+                )).toList();
     }
 
 }

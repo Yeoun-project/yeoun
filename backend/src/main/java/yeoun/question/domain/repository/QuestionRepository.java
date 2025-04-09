@@ -21,10 +21,10 @@ public interface QuestionRepository extends JpaRepository<QuestionEntity, Long> 
     @Query("""
             SELECT q FROM QuestionEntity q
             LEFT JOIN q.comments c
-              ON c.createdDateTime BETWEEN :start AND :end
+              ON c.createTime BETWEEN :start AND :end
             WHERE q.isFixed = false
             GROUP BY q
-            ORDER BY COUNT(c) DESC, q.createdDateTime ASC
+            ORDER BY COUNT(c) DESC, q.createTime ASC
         """)
     Slice<QuestionEntity> findAllOrderByCommentsCount(
             @Param("start") LocalDateTime start,
@@ -35,11 +35,11 @@ public interface QuestionRepository extends JpaRepository<QuestionEntity, Long> 
     @Query("""
             SELECT q FROM QuestionEntity q
             LEFT JOIN q.comments c
-              ON c.createdDateTime BETWEEN :start AND :end
+              ON c.createTime BETWEEN :start AND :end
             WHERE q.isFixed = false
             AND q.category.name = :category
             GROUP BY q
-            ORDER BY COUNT(c) DESC, q.createdDateTime ASC
+            ORDER BY COUNT(c) DESC, q.createTime ASC
             """)
     Slice<QuestionEntity> findAllByCategoryAndTodayComments(
             @Param("category") String category,
@@ -47,9 +47,6 @@ public interface QuestionRepository extends JpaRepository<QuestionEntity, Long> 
             @Param("end") LocalDateTime end,
             Pageable pageable
     );
-
-    @Query("SELECT q FROM QuestionEntity q LEFT JOIN FETCH q.comments left join fetch q.user WHERE q.id = :questionId")
-    Optional<QuestionEntity> findQuestionWithCommentById(@Param("questionId") Long questionId);
 
     @Query("select q from QuestionEntity q left join fetch q.comments where q.user.id = :userId")
     List<QuestionEntity> findByUserId(@Param("userId")Long userId);
@@ -68,7 +65,7 @@ public interface QuestionRepository extends JpaRepository<QuestionEntity, Long> 
     @Query("""
             SELECT q FROM QuestionEntity q
             LEFT JOIN QuestionHistoryEntity h ON q.id = h.question.id AND h.user.id = :userId
-            WHERE DATE(h.createdDateTime) = CURRENT_DATE
+            WHERE DATE(h.createTime) = CURRENT_DATE
             """)
     Optional<QuestionEntity> findTodayQuestion(@Param("userId") Long userId);
 
