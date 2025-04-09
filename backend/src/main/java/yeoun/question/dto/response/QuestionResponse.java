@@ -15,8 +15,6 @@ public class QuestionResponse {
 
     private String content;
 
-    private int heart;
-
     private int commentCount;
 
     private String categoryName;

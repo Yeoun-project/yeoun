@@ -111,4 +111,8 @@ public class QuestionService {
     public List<CategoryEntity> getAllCategories() {
         return categoryRepository.findAll();
     }
+
+    public Slice<QuestionEntity> getQuestionUserAnswered(Long userId, String category, Pageable pageable) {
+        return questionRepository.findAllCommentedQuestionsByUserIdAndCategory(userId, category, pageable);
+    }
 }

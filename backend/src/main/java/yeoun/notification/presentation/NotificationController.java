@@ -55,7 +55,6 @@ public class NotificationController {
         QuestionResponse dto = QuestionResponse.builder()
                 .id(question.getId())
                 .content(question.getContent())
-                .heart(question.getHeart())
                 .categoryName(question.getCategory().getName())
                 .commentCount(question.getComments().size())
                 .createTime(question.getCreatedDateTime())

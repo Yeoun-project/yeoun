@@ -2,10 +2,10 @@ package yeoun.question.presentation;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import yeoun.common.SuccessResponse;
 import yeoun.question.dto.request.AddQuestionRequest;
-import yeoun.comment.dto.response.CommentResponse;
 import yeoun.question.dto.response.QuestionDetailResponse;
 import yeoun.question.dto.response.QuestionResponse;
 import yeoun.question.domain.QuestionEntity;
@@ -58,7 +58,6 @@ public class QuestionController {
                 .map(question -> QuestionResponse.builder()
                         .id(question.getId())
                         .content(question.getContent())
-                        .heart(question.getHeart())
                         .categoryName(question.getCategory().getName())
                         .commentCount(question.getComments().size())
                         .createTime(question.getCreatedDateTime())
@@ -77,24 +76,14 @@ public class QuestionController {
         Long userId = JwtService.getUserIdFromAuthentication();
         QuestionEntity question = questionService.getQuestionWithCommentById(questionId);
 
-        List<CommentResponse> commentDtoList = question.getComments().stream()
-                .map(comment -> CommentResponse.builder()
-                        .id(comment.getId())
-                        .content(comment.getContent())
-                        .createTime(comment.getCreatedDateTime())
-                        .build())
-                .toList();
-
         Map<String, Object> response = Map.of("question",
                 QuestionDetailResponse.builder()
                         .id(question.getId())
                         .content(question.getContent())
-                        .heart(question.getHeart())
                         .commentCount(question.getComments().size())
                         .categoryName(question.getCategory().getName())
                         .createTime(question.getCreatedDateTime())
                         .isAuthor(userId == question.getUser().getId())
-                        .comments(commentDtoList)
                         .build());
 
         return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("get question detail success", response));
@@ -108,14 +97,36 @@ public class QuestionController {
                 .map(question -> QuestionResponse.builder()
                         .id(question.getId())
                         .content(question.getContent())
-                        .heart(question.getHeart())
                         .categoryName(question.getCategory().getName())
                         .commentCount(question.getComments().size())
                         .createTime(question.getCreatedDateTime())
                         .build())
                 .toList();
+
         Map<String, Object> response = Map.of("questions", questionResponseList);
         return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("get my questions success", response));
+    }
+
+    @GetMapping("/api/question/commented-by-me")
+    public ResponseEntity<?> getCommentedQuestions(
+            @RequestParam(required = false) String category,
+            @PageableDefault(sort = "createdDateTime", direction = Sort.Direction.DESC) final Pageable pageable
+    ) {
+        Slice<QuestionEntity> questionSlice = questionService.getQuestionUserAnswered(JwtService.getUserIdFromAuthentication(), category, pageable);
+
+        List<QuestionResponse> questionResponses = questionSlice.stream().map(question -> QuestionResponse.builder()
+                .id(question.getId())
+                .content(question.getContent())
+                .commentCount(question.getComments().size())
+                .categoryName(question.getCategory().getName())
+                .createTime(question.getCreatedDateTime())
+                .build()).toList();
+
+        Map<String, Object> response = Map.of(
+                "questions", questionResponses,
+                "hasNext", questionSlice.hasNext()
+        );
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("get questions success", response));
     }
 
     @GetMapping("/api/category")

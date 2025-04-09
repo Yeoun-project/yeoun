@@ -72,7 +72,4 @@ public class CommentService {
         commentRepository.deleteById(commentId);
     }
 
-    public List<CommentEntity> getCommentsByUserId(Long userId) {
-        return commentRepository.getCommentsById(userId);
-    }
 }

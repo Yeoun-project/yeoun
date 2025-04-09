@@ -85,5 +85,15 @@ public interface QuestionRepository extends JpaRepository<QuestionEntity, Long> 
             """)
     Optional<QuestionEntity> findRandomPopularityQuestionExcludingHistory(@Param("userId") Long userId);
 
-    Optional<QuestionEntity> getQuestionEntityById(Long id);
+    @Query("""
+            SELECT DISTINCT q FROM QuestionEntity q
+            JOIN q.comments c
+            WHERE c.user.id = :userId
+            AND (:category IS NULL OR q.category.name = :category)
+            """)
+    Slice<QuestionEntity> findAllCommentedQuestionsByUserIdAndCategory(
+            @Param("userId") Long userId,
+            @Param("category") String category,
+            Pageable pageable
+    );
 }
