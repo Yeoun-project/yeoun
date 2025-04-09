@@ -66,21 +66,11 @@ public class QuestionController {
     }
 
     @GetMapping("/api/question/my")
-    public ResponseEntity<?> getMyQuestion() {
-        List<QuestionEntity> myQuestions = questionService.getQuestionsByUserId(JwtService.getUserIdFromAuthentication());
-
-        List<QuestionResponse> questionResponseList = myQuestions.stream()
-                .map(question -> QuestionResponse.builder()
-                        .id(question.getId())
-                        .content(question.getContent())
-                        .categoryName(question.getCategory().getName())
-                        .commentCount(question.getComments().size())
-                        .createTime(question.getCreateTime())
-                        .build())
-                .toList();
-
-        Map<String, Object> response = Map.of("questions", questionResponseList);
-        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("get my questions success", response));
+    public ResponseEntity<?> getMyQuestion(@PageableDefault() final Pageable pageable) {
+        Long userId = JwtService.getUserIdFromAuthentication();
+        QuestionListResponse questionListResponse = questionService.getMyQuestions(userId, pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new SuccessResponse("get my questions success", questionListResponse));
     }
 
     @GetMapping("/api/question/commented-by-me")

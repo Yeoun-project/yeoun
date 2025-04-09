@@ -115,8 +115,14 @@ public class QuestionService {
         return QuestionDetailResponse.of(question, isAuthor);
     }
 
-    public List<QuestionEntity> getQuestionsByUserId(long userId) {
-        return questionRepository.findByUserId(userId);
+    @Transactional
+    public QuestionListResponse getMyQuestions(Long userId, Pageable pageable) {
+        // todo 추후 여기도 페이징 조회 처리
+        List<QuestionEntity> questions = questionRepository.findByUserId(userId);
+        List<QuestionResponse> questionResponses = questions.stream()
+                .map(QuestionResponse::of)
+                .toList();
+        return new QuestionListResponse(questionResponses, false);
     }
 
     public List<CategoryEntity> getAllCategories() {
