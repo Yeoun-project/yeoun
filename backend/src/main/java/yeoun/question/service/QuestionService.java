@@ -1,6 +1,11 @@
 package yeoun.question.service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
+
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import yeoun.question.dto.request.AddQuestionRequest;
 import yeoun.question.domain.CategoryEntity;
 import yeoun.question.domain.QuestionEntity;
@@ -84,8 +89,14 @@ public class QuestionService {
         questionRepository.delete(question);
     }
 
-    public List<QuestionEntity> getAllQuestions() {
-        return questionRepository.findAllOrderByCommentsCountDesc();
+    public Slice<QuestionEntity> getAllQuestions(String category, Pageable pageable) {
+        LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
+        LocalDateTime endOfDay = startOfDay.plusDays(1);
+
+        if (category == null || category.isBlank()) {
+            return questionRepository.findAllOrderByCommentsCount(startOfDay, endOfDay, pageable);
+        }
+        return questionRepository.findAllByCategoryAndTodayComments(category, startOfDay, endOfDay, pageable);
     }
 
     public QuestionEntity getQuestionWithCommentById(Long id) {
