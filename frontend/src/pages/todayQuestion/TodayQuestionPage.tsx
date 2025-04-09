@@ -2,14 +2,16 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import Squre from '../../assets/Squre';
 
+import useGetTodayQuestion from '../../hooks/queries/useGetTodayQuestion';
+
 import Circle from '../../components/circle/Circle';
 import TabNav from '../../components/TabNav';
-import useGetTodayQuestion from '../../hooks/queries/useGetTodayQuestion';
+import useAuthStore from '../../store/useAuthStore';
 
 const TodayQuestionPage = () => {
   const navigate = useNavigate();
-
-  const { data: todayQuestion } = useGetTodayQuestion();
+  const { userType } = useAuthStore();
+  const { data: todayQuestion } = useGetTodayQuestion(userType);
 
   return (
     <>
@@ -33,7 +35,7 @@ const TodayQuestionPage = () => {
               onClick={() => navigate('/today-question/answers')}
               className="text-gradient cursor-pointer bg-clip-text"
             >
-              내 여운 기록
+              답변목록
             </button>
           </nav>
         </header>
@@ -41,7 +43,7 @@ const TodayQuestionPage = () => {
         {/* Question */}
         <Link to={'/today-question/comment'}>
           <Circle size={300} animate>
-            <p className="text-blur text-2xl break-keep text-black">{todayQuestion!.content}</p>
+            <p className="text-blur px-8 text-xl break-keep text-black">{todayQuestion!.content}</p>
           </Circle>
         </Link>
         <p>질문을 눌러 답변을 달아주세요!</p>
