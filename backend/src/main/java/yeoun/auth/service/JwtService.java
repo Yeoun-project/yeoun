@@ -1,6 +1,9 @@
 package yeoun.auth.service;
 
-import yeoun.user.domain.UserEntity;
+import java.util.Optional;
+
+import org.springframework.security.core.Authentication;
+import yeoun.user.domain.User;
 import yeoun.exception.CustomException;
 import yeoun.exception.ErrorCode;
 import io.jsonwebtoken.Claims;
@@ -40,7 +43,7 @@ public class JwtService {
         return Keys.hmacShaKeyFor(secretKey.getBytes());
     }
 
-    public String generateAccessToken(UserEntity user, String ip) {
+    public String generateAccessToken(User user, String ip) {
         return Jwts.builder()
                 .setSubject(user.getId().toString())
                 .claim("ip", ip)
@@ -50,7 +53,7 @@ public class JwtService {
                 .compact();
     }
 
-    public String generateRefreshToken(UserEntity user) {
+    public String generateRefreshToken(User user) {
         return Jwts.builder()
                 .setSubject(user.getId().toString())
                 .claim("uuid", user.getUuid())
@@ -59,7 +62,7 @@ public class JwtService {
                 .compact();
     }
 
-    public String generateAnonymousToken(UserEntity user) {
+    public String generateAnonymousToken(User user) {
         return Jwts.builder()
             .setSubject(user.getId().toString())
             .claim("role", user.getRole())
@@ -105,5 +108,19 @@ public class JwtService {
             throw new CustomException(ErrorCode.UNAUTHORIZED, "user token is not found");
         }
         return userId;
+    }
+
+    public static Optional<Long> getAnonymousTokenAuthentication() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if(authentication == null) {
+            return Optional.empty();
+        }
+
+        if(authentication.getCredentials().equals("anonymousToken")) {
+            return Optional.of((Long)authentication.getPrincipal());
+        }
+
+        return Optional.empty();
     }
 }

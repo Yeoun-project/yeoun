@@ -1,11 +1,10 @@
 package yeoun.comment.presentation;
 
-import java.util.List;
-import java.util.Map;
-import org.springframework.web.bind.annotation.GetMapping;
-import yeoun.comment.domain.CommentEntity;
-import yeoun.comment.dto.response.CommentDetailResponseDto;
-import yeoun.comment.dto.response.CommentResponse;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.web.bind.annotation.*;
+import yeoun.comment.dto.response.CommentListResponse;
 import yeoun.common.SuccessResponse;
 import yeoun.comment.dto.request.SaveCommentRequest;
 import yeoun.auth.service.JwtService;
@@ -13,16 +12,6 @@ import yeoun.comment.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import yeoun.question.domain.QuestionEntity;
-import yeoun.question.dto.response.QuestionDetailResponse;
-import yeoun.question.dto.response.QuestionResponse;
 
 @RestController
 @RequestMapping("/api/comment")
@@ -30,6 +19,17 @@ import yeoun.question.dto.response.QuestionResponse;
 public class CommentController {
 
     private final CommentService commentService;
+
+    @GetMapping("/all/{questionId}")
+    public ResponseEntity<SuccessResponse> getAllComments(
+            @PathVariable Long questionId,
+            @PageableDefault(sort = "createTime", direction = Sort.Direction.ASC) Pageable pageable
+    ) {
+        Long userId = JwtService.getUserIdFromAuthentication();
+        CommentListResponse response = commentService.getAllComments(questionId, userId, pageable);
+
+        return ResponseEntity.ok(new SuccessResponse("success get all comments", response));
+    }
 
     @PostMapping("/{questionId}")
     public ResponseEntity<?> addComment(
@@ -70,33 +70,6 @@ public class CommentController {
         commentService.deleteComment(commentId, userId);
 
         return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("deleted comment success", null));
-    }
-
-    @GetMapping("/my")
-    public ResponseEntity<?> getMyComments() {
-        Long userId = JwtService.getUserIdFromAuthentication();
-
-        List<CommentEntity> comments = commentService.getCommentsByUserId(userId);
-
-        List<CommentDetailResponseDto> commentDetailDto = comments.stream()
-            .map(comment -> {
-                QuestionEntity question = comment.getQuestion();
-                return CommentDetailResponseDto.builder()
-                        .id(question.getId())
-                        .content(question.getContent())
-                        .categoryName(question.getCategory().getName())
-                        .createTime(question.getCreatedDateTime())
-                        .comment(
-                            CommentResponse.builder()
-                                .id(comment.getId())
-                                .content(comment.getContent())
-                                .createTime(comment.getCreatedDateTime())
-                                .build())
-                        .build();
-            })
-            .toList();
-
-        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("get my comments success" ,Map.of("questions", commentDetailDto)));
     }
 
     // 신고하기

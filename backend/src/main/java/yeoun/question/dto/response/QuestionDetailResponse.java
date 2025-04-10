@@ -1,24 +1,28 @@
 package yeoun.question.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import yeoun.comment.dto.response.CommentResponse;
+import lombok.*;
+import yeoun.question.domain.Question;
 
-import java.util.Date;
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Getter
-@Setter
-@NoArgsConstructor
+@Builder
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class QuestionDetailResponse {
 
-    private Long id;
+    private final Long id;
+    private final String content;
+    private final int commentCount;
+    private final String categoryName;
+    private final LocalDateTime createTime;
+    private final Boolean isAuthor;
 
-    private String content;
+    public static QuestionDetailResponse of(
+            final Question question,
+            final Boolean isAuthor
+    ) {
 
+<<<<<<< HEAD
     private int heart;
 
     private int commentCount;
@@ -45,5 +49,16 @@ public class QuestionDetailResponse {
         this.createTime = createTime;
         this.isAuthor = isAuthor;
         this.comments = comments;
+=======
+        return QuestionDetailResponse.builder()
+                .id(question.getId())
+                .content(question.getContent())
+                .commentCount(question.getComments().size())
+                .categoryName(question.getCategory().getName())
+                .createTime(question.getCreateTime())
+                .isAuthor(isAuthor)
+                .build();
+>>>>>>> d9428e8662699a05123a5a72f56aeffa81e9b6ca
     }
+
 }

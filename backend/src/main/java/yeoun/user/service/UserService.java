@@ -1,6 +1,9 @@
 package yeoun.user.service;
 
-import yeoun.user.domain.UserEntity;
+import lombok.extern.slf4j.Slf4j;
+import yeoun.exception.CustomException;
+import yeoun.exception.ErrorCode;
+import yeoun.user.domain.User;
 import yeoun.auth.service.JwtService;
 import yeoun.user.domain.repository.UserRepository;
 import yeoun.user.domain.Role;
@@ -13,23 +16,24 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserService {
 
     private final UserRepository userRepository;
 
     @Transactional
-    public UserEntity registerByUserInfo(UserRegisterInfoVo vo) {
-        // get anonymous authentication from security context
-        Optional<UserEntity> anonymousUser = userRepository.findById(JwtService.getUserIdFromAuthentication());
-        Long anonymousUserId = null;
+    public User registerByUserInfo(UserRegisterInfoVo vo) {
+        Long userId = null;
+        Optional<Long> tokenId = JwtService.getAnonymousTokenAuthentication();
 
-        if (anonymousUser.isPresent())
-            anonymousUserId = anonymousUser.get().getId();
-
+        if(tokenId.isPresent()) {
+            log.info(tokenId.get().toString());
+            userId = tokenId.get();
+        }
 
         String uuid = UUID.randomUUID().toString();
-        UserEntity newUser = UserEntity.builder()
-                .id(anonymousUserId)
+        User newUser = User.builder()
+                .id(userId)
                 .oAuthPlatform(vo.getOAuthPlatform())
                 .oAuthId(vo.getOAuthId())
                 .name(vo.getName())
@@ -43,13 +47,18 @@ public class UserService {
     }
 
     @Transactional
-    public UserEntity registerAnonymousUser() {
+    public User registerAnonymousUser() {
         return userRepository.save(
-            UserEntity.builder()
+            User.builder()
                 .role(Role.ANONYMOUS.name())
                 .name("비회원")
                 .build()
             );
+    }
+
+    public void validateUser(Long userId) {
+        userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_PARAMETER, "유저 정보가 잘못 되었습니다"));
     }
 
 }

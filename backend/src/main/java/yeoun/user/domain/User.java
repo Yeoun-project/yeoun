@@ -2,8 +2,8 @@ package yeoun.user.domain;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Date;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -18,10 +18,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Entity
 @Table(name = "user")
 @Getter
-@SQLDelete(sql = "UPDATE user SET deleted_date_time = CURRENT_TIMESTAMP WHERE id = ?") // soft delete
-@SQLRestriction("deleted_date_time IS NULL") // 지워지지 않은 레코드에 대한 조건
+@SQLDelete(sql = "UPDATE user SET delete_time = CURRENT_TIMESTAMP WHERE id = ?") // soft delete
+@SQLRestriction("delete_time IS NULL") // 지워지지 않은 레코드에 대한 조건
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserEntity implements UserDetails {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,13 +49,13 @@ public class UserEntity implements UserDetails {
     private String uuid;
 
     @CreatedDate
-    private final Date createdDateTime = new Date();
+    private final LocalDateTime createTime = LocalDateTime.now();
 
     @Column
-    private Date deletedDateTime;
+    private LocalDateTime deleteTime;
 
     @Builder
-    public UserEntity(Long id, String oAuthId, String oAuthPlatform, String name, String email, String phone, String role, String uuid) {
+    public User(Long id, String oAuthId, String oAuthPlatform, String name, String email, String phone, String role, String uuid) {
         this.id = id;
         this.oAuthId = oAuthId;
         this.oAuthPlatform = oAuthPlatform;

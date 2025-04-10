@@ -1,26 +1,31 @@
 package yeoun.question.dto.response;
 
 import lombok.*;
+import yeoun.question.domain.Question;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
-@Setter
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class QuestionResponse {
 
-    private Long id;
+    final private Long id;
+    final private String content;
+    final private int commentCount;
+    final private String categoryName;
+    final private LocalDateTime createTime;
 
-    private String content;
-
-    private int heart;
-
-    private int commentCount;
-
-    private String categoryName;
-
-    private Date createTime;
+    public static QuestionResponse of(
+            Question question
+    ) {
+        return QuestionResponse.builder()
+                .id(question.getId())
+                .content(question.getContent())
+                .commentCount(question.getComments().size())
+                .categoryName(question.getCategory().getName())
+                .createTime(question.getCreateTime())
+                .build();
+    }
 
 }

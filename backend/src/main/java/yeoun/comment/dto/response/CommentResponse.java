@@ -1,29 +1,32 @@
 package yeoun.comment.dto.response;
 
-import jakarta.validation.constraints.NotNull;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import yeoun.comment.domain.Comment;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
-@Setter
-@NoArgsConstructor
+@Builder
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class CommentResponse {
 
-    @NotNull
-    private Long id;
+    private final Long id;
+    private final String content;
+    private final Long likeCount;
+    private final Boolean isLike;
+    private final LocalDateTime createTime;
 
-    private String content;
-
-    private Date createTime;
-
-    @Builder
-    public CommentResponse(Long id, String content, Date createTime) {
-        this.id = id;
-        this.content = content;
-        this.createTime = createTime;
+    public static CommentResponse of(
+            final Comment comment,
+            final Boolean isLike
+    ) {
+        return CommentResponse.builder()
+                .id(comment.getId())
+                .content(comment.getContent())
+                .isLike(isLike)
+                .likeCount(comment.getLikeCount())
+                .createTime(comment.getCreateTime())
+                .build();
     }
+
 }

@@ -9,10 +9,12 @@ import mkcert from 'vite-plugin-mkcert';
 
 export default defineConfig(({ mode }: ConfigEnv) => {
   const env = loadEnv(mode, process.cwd(), '');
+  const isDev = mode === 'development';
+
   return {
     server: {
-      https: { key: env.VITE_PEM_KEY_PATH, cert: env.VITE_PEM_CERT_PATH },
-      proxy: {
+      https: isDev ? { key: env.VITE_PEM_KEY_PATH, cert: env.VITE_PEM_CERT_PATH } : undefined,
+      proxy: isDev ? {
         '/public': {
           target: env.VITE_API_BASE_URL,
           changeOrigin: true,
@@ -24,7 +26,7 @@ export default defineConfig(({ mode }: ConfigEnv) => {
           changeOrigin: true,
           secure: false,
         },
-      },
+      } : undefined,
 
       cors: true,
     },

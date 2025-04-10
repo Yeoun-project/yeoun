@@ -1,7 +1,7 @@
 package yeoun.user.service;
 
-import yeoun.user.domain.UserEntity;
-import yeoun.user.domain.UserHistoryEntity;
+import yeoun.user.domain.User;
+import yeoun.user.domain.UserHistory;
 import yeoun.user.domain.repository.UserHistoryRepository;
 import yeoun.user.domain.repository.UserRepository;
 import jakarta.persistence.EntityManager;
@@ -26,9 +26,9 @@ public class UserHistoryService {
 
     public void addHistory(Long userId, String ip, String agent, String uri) {
         userHistoryRepository.save(
-            UserHistoryEntity
+            UserHistory
                     .builder()
-                    .user(entityManager.getReference(UserEntity.class, userId))
+                    .user(entityManager.getReference(User.class, userId))
                     .agent(agent)
                     .ip(ip)
                     .uri(uri)

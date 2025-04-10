@@ -2,7 +2,7 @@ package yeoun.auth.service;
 
 import yeoun.auth.vo.KakaoToken;
 import yeoun.auth.vo.KakaoUserInfo;
-import yeoun.user.domain.UserEntity;
+import yeoun.user.domain.User;
 import yeoun.user.domain.repository.UserRepository;
 import yeoun.user.service.UserService;
 import yeoun.util.FormattingUtil;
@@ -33,7 +33,7 @@ public class KakaoService {
     private final UserService userService;
     private final UserRepository userRepository;
 
-    public UserEntity getUserFromKakao(String code) {
+    public User getUserFromKakao(String code) {
 
         KakaoToken kakaoToken = WebClient.create(KAUTH_TOKEN_URL_HOST).post()
                 .uri(uriBuilder -> uriBuilder
@@ -51,7 +51,7 @@ public class KakaoService {
                 .block();
 
         KakaoUserInfo kakaoUserInfo = getUserInfo(kakaoToken.getAccessToken());
-        Optional<UserEntity> findUser = userRepository.findByOAuthId(kakaoUserInfo.getId());
+        Optional<User> findUser = userRepository.findByOAuthId(kakaoUserInfo.getId());
 
         return findUser.orElseGet(() -> userService.registerByUserInfo(
                 UserRegisterInfoVo.builder()

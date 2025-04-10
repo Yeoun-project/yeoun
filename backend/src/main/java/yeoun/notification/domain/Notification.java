@@ -1,5 +1,6 @@
-package yeoun.comment.domain;
+package yeoun.notification.domain;
 
+import yeoun.question.domain.Question;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -8,16 +9,15 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.data.annotation.CreatedDate;
-import yeoun.user.domain.UserEntity;
-import yeoun.question.domain.QuestionEntity;
+import yeoun.user.domain.User;
 
 import java.util.Date;
 
 @Entity
-@Table(name = "comment")
+@Table(name = "notification")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CommentEntity {
+public class Notification {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,24 +26,30 @@ public class CommentEntity {
     @Column(nullable = false)
     private String content;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "user_id")
-    private UserEntity user;
+    @Column(nullable = false)
+    private boolean isRead;
+
+    @Column(nullable = false)
+    private NotificationType notificationType;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "question_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private QuestionEntity question;
+    private User receiver;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Question question;
 
     @CreatedDate
-    private final Date createdDateTime = new Date();
+    private final Date sentDateTime = new Date();
 
     @Builder
-    public CommentEntity(Long id, String content, UserEntity user, QuestionEntity question) {
+    public Notification(Long id, String content, boolean isRead,
+                        NotificationType notificationType, User receiver, Question question) {
         this.id = id;
         this.content = content;
-        this.user = user;
+        this.isRead = isRead;
+        this.notificationType = notificationType;
+        this.receiver = receiver;
         this.question = question;
     }
 }

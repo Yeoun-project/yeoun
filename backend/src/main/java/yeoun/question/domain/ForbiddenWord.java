@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ForbiddenWordEntity {
+public class ForbiddenWord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

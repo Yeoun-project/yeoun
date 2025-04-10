@@ -2,8 +2,8 @@ package yeoun.notification.presentation;
 
 import yeoun.notification.dto.response.NotificationResponse;
 import yeoun.question.dto.response.QuestionResponse;
-import yeoun.notification.domain.NotificationEntity;
-import yeoun.question.domain.QuestionEntity;
+import yeoun.notification.domain.Notification;
+import yeoun.question.domain.Question;
 import yeoun.auth.service.JwtService;
 import yeoun.notification.service.NotificationService;
 import yeoun.notification.domain.NotificationType;
@@ -37,7 +37,7 @@ public class NotificationController {
     public ResponseEntity<?> getNotifications() {
         Long userId = JwtService.getUserIdFromAuthentication();
 
-        List<NotificationEntity> entityList = notificationService.getAllNotifications(userId);
+        List<Notification> entityList = notificationService.getAllNotifications(userId);
 
         List<NotificationResponse> dtoList = entityList.stream()
                 .map(e->new NotificationResponse(e.getId(), e.getContent(), e.getNotificationType()))
@@ -50,15 +50,14 @@ public class NotificationController {
     public ResponseEntity<?> readNotification(@PathVariable Long notificationId) {
         Long userId = JwtService.getUserIdFromAuthentication();
 
-        QuestionEntity question = notificationService.readNotification(userId, notificationId);
+        Question question = notificationService.readNotification(userId, notificationId);
 
         QuestionResponse dto = QuestionResponse.builder()
                 .id(question.getId())
                 .content(question.getContent())
-                .heart(question.getHeart())
                 .categoryName(question.getCategory().getName())
                 .commentCount(question.getComments().size())
-                .createTime(question.getCreatedDateTime())
+                .createTime(question.getCreateTime())
                 .build();
 
         return ResponseEntity.ok().body(dto);
