@@ -6,9 +6,9 @@ import Response from '../../../type/response';
 
 const getTodayQuestionUrl = (type: UserType) => {
   if (type === 'User') {
-    return '/api/question/today';
+    return '/api/today-question';
   } else {
-    return '/public/question/today';
+    return '/public/today-question';
   }
 };
 
