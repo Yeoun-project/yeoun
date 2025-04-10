@@ -1,16 +1,12 @@
 package yeoun.question.presentation;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import yeoun.auth.service.JwtService;
 import yeoun.common.SuccessResponse;
-import yeoun.question.dto.request.AddTodayQuestionCommentRequest;
 import yeoun.question.dto.response.TodayQuestionResponse;
 import yeoun.question.service.TodayQuestionService;
 
@@ -36,13 +32,13 @@ public class TodayQuestionController {
                 new SuccessResponse("Get today's question for member success", todayQuestionResponse));
     }
 
-    @PostMapping("/public/today-question/comment")
-    public ResponseEntity<?> addTodayQuestionComment(
-            @RequestBody @Valid AddTodayQuestionCommentRequest request
-    ) {
-        Long userId = JwtService.getUserIdFromAuthentication();
-        todayQuestionService.addTodayQuestionComment(userId, request);
-        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("Add today question comment success", null));
-    }
+//    @PostMapping("/public/today-question/comment")
+//    public ResponseEntity<?> addTodayQuestionComment(
+//            @RequestBody @Valid AddTodayQuestionCommentRequest request
+//    ) {
+//        Long userId = JwtService.getUserIdFromAuthentication();
+//        todayQuestionService.addTodayQuestionComment(userId, request);
+//        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("Add today question comment success", null));
+//    }
 
 }
