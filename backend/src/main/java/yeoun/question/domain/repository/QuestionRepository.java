@@ -16,7 +16,7 @@ import java.util.List;
 @Repository
 public interface QuestionRepository extends JpaRepository<Question, Long> {
     @Query("select q from Question q left join fetch q.user where q.id = :id")
-    Optional<Question> findQuestionById(@Param("id") long id);
+    Optional<Question> findQuestionById(@Param("id") Long id);
 
     @Query("""
             SELECT q FROM Question q

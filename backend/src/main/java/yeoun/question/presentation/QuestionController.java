@@ -36,7 +36,10 @@ public class QuestionController {
     }
 
     @PutMapping("/api/question/{questionId}")
-    public ResponseEntity<?> updateQuestion(@RequestBody @Valid AddQuestionRequest addQuestionRequest, @PathVariable("questionId") Long questionId) {
+    public ResponseEntity<?> updateQuestion(
+            @RequestBody @Valid AddQuestionRequest addQuestionRequest,
+            @PathVariable("questionId") Long questionId
+    ) {
         addQuestionRequest.setUserId(JwtService.getUserIdFromAuthentication());
         addQuestionRequest.setId(questionId);
         questionService.updateQuestion(addQuestionRequest);

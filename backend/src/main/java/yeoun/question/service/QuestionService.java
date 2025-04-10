@@ -2,16 +2,16 @@ package yeoun.question.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
 
+import jakarta.persistence.EntityManager;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import yeoun.question.dto.request.AddQuestionRequest;
 import yeoun.question.domain.Category;
 import yeoun.question.domain.Question;
-import yeoun.question.dto.response.QuestionDetailResponse;
-import yeoun.question.dto.response.QuestionListResponse;
-import yeoun.question.dto.response.QuestionResponse;
+import yeoun.question.dto.response.*;
 import yeoun.user.domain.User;
 import yeoun.exception.CustomException;
 import yeoun.exception.ErrorCode;
@@ -22,6 +22,7 @@ import jakarta.transaction.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import yeoun.user.service.UserService;
 
 import java.util.List;
 
@@ -29,15 +30,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class QuestionService {
 
+    private final EntityManager entityManager;
+    private final UserService userService;
     private final ForbiddenWordService forbiddenWordService;
-    private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final QuestionRepository questionRepository;
 
     @Transactional
     public void addNewQuestion(AddQuestionRequest dto) throws CustomException {
-        User user = userRepository.findById(dto.getUserId())
-                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_PARAMETER, "Invalid user ID"));
+        userService.validateUser(dto.getUserId());
 
         Category category = categoryRepository.findById(dto.getCategoryId())
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_PARAMETER, "Invalid category ID"));
@@ -46,7 +47,7 @@ public class QuestionService {
 
         questionRepository.save(Question.builder()
                 .content(dto.getContent())
-                .user(user)
+                .user(entityManager.find(User.class, dto.getUserId()))
                 .category(category)
                 .build()
         );
@@ -54,18 +55,16 @@ public class QuestionService {
 
     @Transactional
     public void updateQuestion(AddQuestionRequest dto) {
-        Optional<Question> questionOptional = questionRepository.findQuestionById(dto.getId());
+        userService.validateUser(dto.getUserId());
 
-        if(questionOptional.isEmpty())
-            throw new CustomException(ErrorCode.INVALID_PARAMETER, "Invalid question ID");
+        Question question = questionRepository.findQuestionById(dto.getId())
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_PARAMETER, "Invalid question ID"));
 
-        Question question = questionOptional.get();
-
-        if(question.getUser().getId() != dto.getUserId())
+        if (!Objects.equals(question.getUser().getId(), dto.getUserId()))
             throw new CustomException(ErrorCode.INVALID_PARAMETER, "Invalid user ID");
 
         Category category = categoryRepository.findById(dto.getCategoryId())
-            .orElseThrow(() -> new CustomException(ErrorCode.INVALID_PARAMETER, "Invalid category ID"));
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_PARAMETER, "Invalid category ID"));
 
         forbiddenWordService.validateForbiddenWord(dto.getContent());
 
@@ -77,19 +76,18 @@ public class QuestionService {
                 .build());
     }
 
-    public void deleteQuestion(long id, Long userId) {
-        Optional<Question> questionOptional = questionRepository.findQuestionById(id);
-        if(questionOptional.isEmpty())
-            throw new CustomException(ErrorCode.INVALID_PARAMETER, "Invalid question ID");
+    @Transactional
+    public void deleteQuestion(Long questionId, Long userId) {
+        Question question = questionRepository.findQuestionById(questionId)
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_PARAMETER, "Invalid question ID"));
 
-        Question question = questionOptional.get();
-
-        if(question.getUser().getId() != userId)
+        if (!Objects.equals(question.getUser().getId(), userId))
             throw new CustomException(ErrorCode.INVALID_PARAMETER, "Invalid user ID");
 
         questionRepository.delete(question);
     }
 
+    @Transactional
     public QuestionListResponse getAllQuestions(String category, Pageable pageable) {
         LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
         LocalDateTime endOfDay = startOfDay.plusDays(1);
@@ -108,6 +106,7 @@ public class QuestionService {
         return new QuestionListResponse(questionResponseList, questionSlice.hasNext());
     }
 
+    @Transactional
     public QuestionDetailResponse getQuestionDetail(Long userId, Long questionId) {
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_PARAMETER, "Invalid question ID"));
@@ -125,8 +124,13 @@ public class QuestionService {
         return new QuestionListResponse(questionResponses, false);
     }
 
-    public List<Category> getAllCategories() {
-        return categoryRepository.findAll();
+    @Transactional
+    public CategoryListResponse getAllCategories() {
+        List<Category> categories = categoryRepository.findAll();
+        List<CategoryResponse> categoryResponses = categories.stream()
+                .map(CategoryResponse::of)
+                .toList();
+        return new CategoryListResponse(categoryResponses);
     }
 
     public Slice<Question> getQuestionUserAnswered(Long userId, String category, Pageable pageable) {
