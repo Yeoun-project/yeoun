@@ -19,9 +19,7 @@ public interface QuestionHistoryRepository extends JpaRepository<QuestionHistory
             """)
     Optional<QuestionHistory> findTodayHistoryByQuestionIdAndUser(
             @Param("userId") Long userId,
-            @Param("questionId") Long questionId,
-            @Param("start") LocalDateTime start,
-            @Param("end") LocalDateTime end
+            @Param("questionId") Long questionId
     );
 
     @Modifying

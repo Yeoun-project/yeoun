@@ -54,7 +54,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     // 이전에 조회된 적 없는 고정 질문들 중 랜덤 1개의 질문 조회
     @Query("""
             SELECT q FROM Question q
-            LEFT JOIN QuestionHistoryEntity h ON q.id = h.question.id AND h.user.id = :userId
+            LEFT JOIN QuestionHistory h ON q.id = h.question.id AND h.user.id = :userId
             WHERE q.isFixed = true
             AND h.id IS NULL
             ORDER BY FUNCTION('UUID') LIMIT 1
@@ -64,7 +64,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     // 오늘의 질문 조회
     @Query("""
             SELECT q FROM Question q
-            LEFT JOIN QuestionHistoryEntity h ON q.id = h.question.id AND h.user.id = :userId
+            LEFT JOIN QuestionHistory h ON q.id = h.question.id AND h.user.id = :userId
             WHERE DATE(h.createTime) = CURRENT_DATE
             """)
     Optional<Question> findTodayQuestion(@Param("userId") Long userId);
@@ -74,7 +74,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
             SELECT q FROM Question q
             LEFT JOIN q.comments c
             WHERE NOT EXISTS (
-                SELECT h.question.id FROM QuestionHistoryEntity h
+                SELECT h.question.id FROM QuestionHistory h
                 WHERE h.user.id = :userId AND h.question.id = q.id
             )
             GROUP BY q.id HAVING COUNT(c.id) >= 15

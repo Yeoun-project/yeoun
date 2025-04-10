@@ -3,6 +3,7 @@ package yeoun.question.service;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import yeoun.exception.CustomException;
 import yeoun.exception.ErrorCode;
@@ -10,12 +11,14 @@ import yeoun.question.domain.Question;
 import yeoun.question.domain.QuestionHistory;
 import yeoun.question.domain.repository.QuestionHistoryRepository;
 import yeoun.question.domain.repository.QuestionRepository;
+import yeoun.question.dto.request.AddTodayQuestionCommentRequest;
 import yeoun.question.dto.response.TodayQuestionResponse;
 import yeoun.user.domain.User;
 import yeoun.user.service.UserService;
 
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TodayQuestionService {
@@ -76,6 +79,21 @@ public class TodayQuestionService {
         );
 
         return newTodayQuestion;
+    }
+
+    @Transactional
+    public void addTodayQuestionComment(Long userId, AddTodayQuestionCommentRequest request) {
+        userService.validateUser(userId);
+
+        QuestionHistory questionHistory = questionHistoryRepository.findTodayHistoryByQuestionIdAndUser(
+                        userId, request.getQuestionId())
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_PARAMETER, "Invalid question ID"));
+
+        if (questionHistory.getComment() != null) {
+            throw new CustomException(ErrorCode.ALREADY_EXIST, "오늘은 이미 오늘의 질문에 답변했습니다.");
+        }
+
+        questionHistoryRepository.addCommentToTodayQuestion(request.getQuestionId(), request.getComment());
     }
 
 }
