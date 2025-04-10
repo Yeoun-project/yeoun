@@ -66,7 +66,15 @@ const router = createBrowserRouter([
       {
         element: <PrivateRoute />,
         children: [
-          { path: '/question', element: <QuestionPage /> },
+          {
+            path: '/question',
+            children: [
+              {
+                index: true,
+                element: <QuestionPage />,
+              },
+            ],
+          },
           { path: '/my-activity', element: <MyActivityPage /> },
         ],
       },
