@@ -1,6 +1,8 @@
 package yeoun.user.service;
 
 import lombok.extern.slf4j.Slf4j;
+import yeoun.exception.CustomException;
+import yeoun.exception.ErrorCode;
 import yeoun.user.domain.User;
 import yeoun.auth.service.JwtService;
 import yeoun.user.domain.repository.UserRepository;
@@ -28,7 +30,6 @@ public class UserService {
             log.info(tokenId.get().toString());
             userId = tokenId.get();
         }
-        log.info("test");
 
         String uuid = UUID.randomUUID().toString();
         User newUser = User.builder()
@@ -53,6 +54,11 @@ public class UserService {
                 .name("비회원")
                 .build()
             );
+    }
+
+    public void validateUser(Long userId) {
+        userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_PARAMETER, "유저 정보가 잘못 되었습니다"));
     }
 
 }
