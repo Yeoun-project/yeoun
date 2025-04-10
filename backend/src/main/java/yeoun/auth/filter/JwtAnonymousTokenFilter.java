@@ -1,7 +1,7 @@
 package yeoun.auth.filter;
 
 import yeoun.auth.service.JwtService;
-import yeoun.user.domain.UserEntity;
+import yeoun.user.domain.User;
 import yeoun.user.service.UserService;
 import yeoun.user.domain.Role;
 import yeoun.auth.infrastructure.CookieUtil;
@@ -64,7 +64,7 @@ public class JwtAnonymousTokenFilter extends OncePerRequestFilter {
     }
 
     private UsernamePasswordAuthenticationToken generateNewAuthentication(HttpServletRequest request, HttpServletResponse response) {
-        UserEntity newUser = userService.registerAnonymousUser();
+        User newUser = userService.registerAnonymousUser();
 
         String token = jwtService.generateAnonymousToken(newUser);
 

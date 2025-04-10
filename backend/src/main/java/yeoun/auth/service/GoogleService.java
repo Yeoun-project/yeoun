@@ -1,6 +1,6 @@
 package yeoun.auth.service;
 
-import yeoun.user.domain.UserEntity;
+import yeoun.user.domain.User;
 import yeoun.auth.vo.GoogleUserInfo;
 import yeoun.user.domain.repository.UserRepository;
 import yeoun.user.service.UserService;
@@ -40,12 +40,12 @@ public class GoogleService {
     private final UserRepository userRepository;
     private final UserService userService;
 
-    public UserEntity getUserFromGoogle(String code) {
+    public User getUserFromGoogle(String code) {
         String accessToken = getAccessTokenFromGoogle(code);
 
         GoogleUserInfo info = getUserInfoFromGoogle(accessToken);
 
-        Optional<UserEntity> findUser = userRepository.findByOAuthId(info.getId());
+        Optional<User> findUser = userRepository.findByOAuthId(info.getId());
 
         return findUser.orElseGet(() -> userService.registerByUserInfo(UserRegisterInfoVo.builder()
                 .oAuthId(info.getId())

@@ -6,10 +6,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import yeoun.auth.infrastructure.SecurityUtil;
 import yeoun.auth.service.JwtService;
 import yeoun.common.SuccessResponse;
-import yeoun.question.domain.QuestionEntity;
+import yeoun.question.domain.Question;
 import yeoun.question.dto.response.TodayQuestionResponse;
 import yeoun.question.service.TodayQuestionService;
 
@@ -24,7 +23,7 @@ public class TodayQuestionController {
     @GetMapping("/public/question/today")
     public ResponseEntity<?> getTodayQuestionGuest(HttpServletResponse response) throws IOException {
         Long userId = JwtService.getUserIdFromAuthentication();
-        QuestionEntity todayQuestion = todayQuestionService.getTodayQuestionGuest(userId);
+        Question todayQuestion = todayQuestionService.getTodayQuestionGuest(userId);
         return ResponseEntity.status(HttpStatus.OK).body(
                 new SuccessResponse("Get today's question for guest success", TodayQuestionResponse.builder()
                         .id(todayQuestion.getId())
@@ -36,7 +35,7 @@ public class TodayQuestionController {
     @GetMapping("/api/question/today")
     public ResponseEntity<?> getTodayQuestionMember() {
         Long userId = JwtService.getUserIdFromAuthentication();
-        QuestionEntity todayQuestion = todayQuestionService.getTodayQuestionMember(userId);
+        Question todayQuestion = todayQuestionService.getTodayQuestionMember(userId);
 
         return ResponseEntity.status(HttpStatus.OK).body(
                 new SuccessResponse("Get today's question for member success", TodayQuestionResponse.builder()

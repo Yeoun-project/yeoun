@@ -9,7 +9,7 @@ import yeoun.question.dto.request.AddQuestionRequest;
 import yeoun.question.dto.response.QuestionDetailResponse;
 import yeoun.question.dto.response.QuestionListResponse;
 import yeoun.question.dto.response.QuestionResponse;
-import yeoun.question.domain.QuestionEntity;
+import yeoun.question.domain.Question;
 import yeoun.auth.service.JwtService;
 import yeoun.question.service.QuestionService;
 import jakarta.validation.Valid;
@@ -78,7 +78,7 @@ public class QuestionController {
             @RequestParam(required = false) String category,
             @PageableDefault(sort = "createTime", direction = Sort.Direction.DESC) final Pageable pageable
     ) {
-        Slice<QuestionEntity> questionSlice = questionService.getQuestionUserAnswered(JwtService.getUserIdFromAuthentication(), category, pageable);
+        Slice<Question> questionSlice = questionService.getQuestionUserAnswered(JwtService.getUserIdFromAuthentication(), category, pageable);
 
         List<QuestionResponse> questionResponses = questionSlice.stream().map(question -> QuestionResponse.builder()
                 .id(question.getId())

@@ -8,19 +8,17 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.data.annotation.CreatedDate;
-import yeoun.comment.domain.CommentEntity;
-import yeoun.user.domain.UserEntity;
+import yeoun.comment.domain.Comment;
+import yeoun.user.domain.User;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @Entity
 @Table(name = "question")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class QuestionEntity {
+public class Question {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,14 +32,14 @@ public class QuestionEntity {
 
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private UserEntity user;
+    private User user;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @OnDelete(action = OnDeleteAction.SET_NULL)
-    private CategoryEntity category;
+    private Category category;
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<CommentEntity> comments;
+    private List<Comment> comments;
 
     @CreatedDate
     private final LocalDateTime createTime = LocalDateTime.now();
@@ -50,7 +48,7 @@ public class QuestionEntity {
     private LocalDateTime deleteTime;
 
     @Builder
-    public QuestionEntity(Long id, String content, UserEntity user, CategoryEntity category) {
+    public Question(Long id, String content, User user, Category category) {
         this.id = id;
         this.content = content;
         this.user = user;

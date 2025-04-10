@@ -5,7 +5,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import yeoun.common.ErrorResponse;
 import yeoun.common.SuccessResponse;
-import yeoun.user.domain.UserEntity;
+import yeoun.user.domain.User;
 import yeoun.auth.service.JwtService;
 import yeoun.auth.service.GoogleService;
 import yeoun.auth.service.KakaoService;
@@ -39,7 +39,7 @@ public class AuthController {
     @GetMapping("/login/kakao")
     public ResponseEntity<?> kakaoLogin(@RequestParam("code") String code, HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
-            UserEntity user = kakaoService.getUserFromKakao(code);
+            User user = kakaoService.getUserFromKakao(code);
             generateAndAddTokenCookie(user, request, response);
 
             return ResponseEntity.ok(new SuccessResponse("Login successful by Kakao", null));
@@ -51,7 +51,7 @@ public class AuthController {
     @GetMapping("/login/naver")
     public ResponseEntity<?> naverLogin(@RequestParam("code") String code, HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
-            UserEntity user = naverService.getUserFromNaver(code);
+            User user = naverService.getUserFromNaver(code);
             generateAndAddTokenCookie(user, request, response);
 
             return ResponseEntity.ok(new SuccessResponse("Login successful by Naver", null));
@@ -63,7 +63,7 @@ public class AuthController {
     @GetMapping("/login/google")
     public ResponseEntity<?> googleLogin(@RequestParam("code") String code, HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
-            UserEntity user = googleService.getUserFromGoogle(code);
+            User user = googleService.getUserFromGoogle(code);
             generateAndAddTokenCookie(user, request, response);
 
             return ResponseEntity.ok(new SuccessResponse("Login successful by Google", null));
@@ -85,7 +85,7 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("", "Not User"));
     }
 
-    private void generateAndAddTokenCookie(UserEntity user, HttpServletRequest request, HttpServletResponse response) {
+    private void generateAndAddTokenCookie(User user, HttpServletRequest request, HttpServletResponse response) {
         String ip = JwtService.getIpFromRequest(request);
 
         String accessToken = jwtService.generateAccessToken(user, ip);

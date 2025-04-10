@@ -8,16 +8,15 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.data.annotation.CreatedDate;
-import yeoun.user.domain.UserEntity;
+import yeoun.user.domain.User;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
 @Table(name = "question_history")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class QuestionHistoryEntity {
+public class QuestionHistory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,14 +27,14 @@ public class QuestionHistoryEntity {
 
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private UserEntity user;
+    private User user;
 
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private QuestionEntity question;
+    private Question question;
 
     @Builder
-    public QuestionHistoryEntity(UserEntity user, QuestionEntity question) {
+    public QuestionHistory(User user, Question question) {
         this.user = user;
         this.question = question;
     }

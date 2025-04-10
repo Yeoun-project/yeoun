@@ -1,11 +1,9 @@
 package yeoun.question.dto.response;
 
 import lombok.*;
-import org.aspectj.weaver.patterns.TypePatternQuestions;
-import yeoun.question.domain.QuestionEntity;
+import yeoun.question.domain.Question;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Getter
 @Builder
@@ -19,7 +17,7 @@ public class QuestionResponse {
     final private LocalDateTime createTime;
 
     public static QuestionResponse of(
-            QuestionEntity question
+            Question question
     ) {
         return QuestionResponse.builder()
                 .id(question.getId())

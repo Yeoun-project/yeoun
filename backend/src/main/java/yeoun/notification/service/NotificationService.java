@@ -1,9 +1,9 @@
 package yeoun.notification.service;
 
 import yeoun.notification.dto.response.NotificationResponse;
-import yeoun.notification.domain.NotificationEntity;
-import yeoun.question.domain.QuestionEntity;
-import yeoun.user.domain.UserEntity;
+import yeoun.notification.domain.Notification;
+import yeoun.question.domain.Question;
+import yeoun.user.domain.User;
 import yeoun.exception.CustomException;
 import yeoun.exception.ErrorCode;
 import yeoun.notification.domain.repository.NotificationRepository;
@@ -47,12 +47,12 @@ public class NotificationService {
         return emitter;
     }
 
-    public List<NotificationEntity> getAllNotifications(Long userId) {
+    public List<Notification> getAllNotifications(Long userId) {
         return notificationRepository.getAllNotifications(userId);
     }
 
     @Transactional
-    public QuestionEntity readNotification(Long userId, Long notificationId) {
+    public Question readNotification(Long userId, Long notificationId) {
         if (notificationRepository.readNotification(userId, notificationId) != 1)
             throw new CustomException(ErrorCode.CONFLICT ,String.format("notificationId(%d)'s Author is not userId(%d)", notificationId, userId));
 
@@ -64,17 +64,17 @@ public class NotificationService {
         sendSSEData(emitterMap.get(userId), data);
 
         notificationRepository.save(
-            NotificationEntity.builder()
+            Notification.builder()
                 .notificationType(data.getType())
                 .content(data.getContent())
-                .receiver(entityManager.getReference(UserEntity.class, userId))
+                .receiver(entityManager.getReference(User.class, userId))
                 .isRead(false)
                 .build()
         );
     }
 
     public void sendAllNotifications(SseEmitter emitter, Long userId) {
-        List<NotificationEntity> entityList = notificationRepository.getAllNotifications(userId);
+        List<Notification> entityList = notificationRepository.getAllNotifications(userId);
         List<NotificationResponse> data = entityList.stream()
             .map(entity -> new NotificationResponse(entity.getId(), entity.getContent(), entity.getNotificationType()))
             .toList();
