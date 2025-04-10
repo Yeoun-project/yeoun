@@ -10,27 +10,15 @@ import yeoun.question.domain.Question;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class TodayQuestionResponse {
 
-<<<<<<< HEAD
-    private Long id; // questionHistoryId
-
-    private Date created_at;
-
-    private String content;
-
-    @JsonProperty("isComment")
-    private Boolean isComment;
-=======
     final private Long id;
     final private String content;
+    final private Date created_at;
 
-    public static TodayQuestionResponse of(
-            Question question
-    ) {
+    public static TodayQuestionResponse of(Question question) {
         return TodayQuestionResponse.builder()
                 .id(question.getId())
                 .content(question.getContent())
                 .build();
     }
->>>>>>> d9428e8662699a05123a5a72f56aeffa81e9b6ca
 
 }

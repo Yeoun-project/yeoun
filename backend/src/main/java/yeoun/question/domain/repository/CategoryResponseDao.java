@@ -1,9 +1,9 @@
 package yeoun.question.domain.repository;
 
-import yeoun.question.domain.CategoryEntity;
+import yeoun.question.domain.Category;
 
 public interface CategoryResponseDao {
-    CategoryEntity getCategory();
+    Category getCategory();
     Long getCount();
 }
 

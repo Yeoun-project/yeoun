@@ -16,13 +16,10 @@ import yeoun.question.dto.response.CategoryResponseDto;
 
 @Repository
 public interface QuestionRepository extends JpaRepository<Question, Long> {
+
     @Query("select q from Question q left join fetch q.user where q.id = :id")
     Optional<Question> findQuestionById(@Param("id") Long id);
 
-<<<<<<< HEAD
-    @Query("SELECT q FROM QuestionEntity q LEFT JOIN q.comments c where q.isFixed = false GROUP BY q ORDER BY COUNT(c) DESC")
-    List<QuestionEntity> findAllOrderByCommentsCountDesc();
-=======
     @Query("""
             SELECT q FROM Question q
             LEFT JOIN q.comments c
@@ -36,7 +33,6 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
             @Param("end") LocalDateTime end,
             Pageable pageable
     );
->>>>>>> d9428e8662699a05123a5a72f56aeffa81e9b6ca
 
     @Query("""
             SELECT q FROM Question q
@@ -67,8 +63,6 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
             """)
     Optional<Question> findRandomFixedQuestionExcludingHistory(@Param("userId") Long userId);
 
-<<<<<<< HEAD
-=======
     // 오늘의 질문 조회
     @Query("""
             SELECT q FROM Question q
@@ -77,7 +71,6 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
             """)
     Optional<Question> findTodayQuestion(@Param("userId") Long userId);
 
->>>>>>> d9428e8662699a05123a5a72f56aeffa81e9b6ca
     // 이전에 조회된 적 없는 인기 질문들 중 랜덤 1개의 질문 조회
     @Query("""
             SELECT q FROM Question q
@@ -91,14 +84,6 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
             """)
     Optional<Question> findRandomPopularityQuestionExcludingHistory(@Param("userId") Long userId);
 
-<<<<<<< HEAD
-    @Query("select count(*) as count, q.category as category from QuestionEntity q where DATE(q.createdDateTime) = CURRENT_DATE group by q.category")
-    List<CategoryResponseDao> findCategoriesWithCount();
-
-    @Query("select q from QuestionEntity q where q.category.id = :categoryId and q.isFixed = false")
-    List<QuestionEntity> findAllByCategoryId(@Param("categoryId") Long categoryId);
-
-=======
     @Query("""
             SELECT DISTINCT q FROM Question q
             JOIN q.comments c
@@ -110,5 +95,11 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
             @Param("category") String category,
             Pageable pageable
     );
->>>>>>> d9428e8662699a05123a5a72f56aeffa81e9b6ca
+
+    @Query("select count(*) as count, q.category as category from Question q where DATE(q.createTime) = CURRENT_DATE group by q.category")
+    List<CategoryResponseDao> findCategoriesWithCount();
+
+    @Query("select q from Question q where q.category.id = :categoryId and q.isFixed = false")
+    List<Question> findAllByCategoryId(@Param("categoryId") Long categoryId);
+
 }

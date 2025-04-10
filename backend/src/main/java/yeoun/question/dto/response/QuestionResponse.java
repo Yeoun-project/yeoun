@@ -1,5 +1,6 @@
 package yeoun.question.dto.response;
 
+import java.util.Date;
 import lombok.*;
 import yeoun.question.domain.Question;
 
@@ -14,18 +15,18 @@ public class QuestionResponse {
     final private String content;
     final private int commentCount;
     final private String categoryName;
-    final private LocalDateTime createTime;
+    final private Date createTime;
 
     public static QuestionResponse of(
-            Question question
+        Question question
     ) {
         return QuestionResponse.builder()
-                .id(question.getId())
-                .content(question.getContent())
-                .commentCount(question.getComments().size())
-                .categoryName(question.getCategory().getName())
-                .createTime(question.getCreateTime())
-                .build();
+            .id(question.getId())
+            .content(question.getContent())
+            .commentCount(question.getComments().size())
+            .categoryName(question.getCategory().getName())
+            .createTime(question.getCreateTime())
+            .build();
     }
 
 }

@@ -1,6 +1,7 @@
 package yeoun.question.domain;
 
 import jakarta.persistence.*;
+import java.util.Date;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,11 +23,11 @@ public class QuestionHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(columnDefinition = "varchar(500)")
     private String comment;
 
     @CreatedDate
-    private final LocalDateTime createTime = LocalDateTime.now();
+    private final Date createTime = new Date();
 
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -36,17 +37,9 @@ public class QuestionHistory {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Question question;
 
-    @Column(columnDefinition = "varchar(500)")
-    private String comment;
-
     @Builder
-<<<<<<< HEAD:backend/src/main/java/yeoun/question/domain/QuestionHistoryEntity.java
-    public QuestionHistoryEntity(Long id, UserEntity user, QuestionEntity question, String comment) {
+    public QuestionHistory(Long id, User user, Question question, String comment) {
         this.id = id;
-=======
-    public QuestionHistory(String comment, User user, Question question) {
-        this.comment = comment;
->>>>>>> d9428e8662699a05123a5a72f56aeffa81e9b6ca:backend/src/main/java/yeoun/question/domain/QuestionHistory.java
         this.user = user;
         this.question = question;
         this.comment = comment;

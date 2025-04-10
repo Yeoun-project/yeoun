@@ -1,21 +1,11 @@
 package yeoun.question.presentation;
 
-<<<<<<< HEAD
-import jakarta.servlet.http.HttpServletRequest;
-import yeoun.comment.dto.request.SaveCommentRequest;
-import yeoun.common.SuccessResponse;
-import yeoun.question.domain.QuestionHistoryEntity;
-import yeoun.question.dto.request.AddQuestionRequest;
-import yeoun.comment.dto.response.CommentResponse;
-import yeoun.question.dto.response.CategoryResponseDto;
-=======
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import yeoun.common.SuccessResponse;
 import yeoun.question.dto.request.AddQuestionRequest;
->>>>>>> d9428e8662699a05123a5a72f56aeffa81e9b6ca
 import yeoun.question.dto.response.QuestionDetailResponse;
 import yeoun.question.dto.response.QuestionListResponse;
 import yeoun.question.dto.response.QuestionResponse;
@@ -27,10 +17,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-<<<<<<< HEAD
-import yeoun.question.service.TodayQuestionService;
-=======
->>>>>>> d9428e8662699a05123a5a72f56aeffa81e9b6ca
 
 import java.util.List;
 import java.util.Map;
@@ -49,38 +35,23 @@ public class QuestionController {
         return ResponseEntity.status(HttpStatus.CREATED).body(new SuccessResponse("Add question success", null));
     }
 
-<<<<<<< HEAD
+    // 기능 없어짐 -> 주석 처리
 //    @PutMapping("/api/question/{questionId}")
-//    public ResponseEntity<?> updateQuestion(@RequestBody @Valid AddQuestionRequest addQuestionRequest, @PathVariable("questionId") Long questionId) {
+//    public ResponseEntity<?> updateQuestion(
+//            @RequestBody @Valid AddQuestionRequest addQuestionRequest,
+//            @PathVariable("questionId") Long questionId
+//    ) {
 //        addQuestionRequest.setUserId(JwtService.getUserIdFromAuthentication());
 //        addQuestionRequest.setId(questionId);
 //        questionService.updateQuestion(addQuestionRequest);
 //        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("Edit question success", null));
 //    }
-
+//
 //    @DeleteMapping("/api/question/{questionId}")
 //    public ResponseEntity<?> deleteQuestion(@PathVariable("questionId") Long questionId) {
-//        questionService.deleteQuestion(questionId,JwtService.getUserIdFromAuthentication());
+//        questionService.deleteQuestion(questionId, JwtService.getUserIdFromAuthentication());
 //        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("Deleted question success", null));
 //    }
-=======
-    @PutMapping("/api/question/{questionId}")
-    public ResponseEntity<?> updateQuestion(
-            @RequestBody @Valid AddQuestionRequest addQuestionRequest,
-            @PathVariable("questionId") Long questionId
-    ) {
-        addQuestionRequest.setUserId(JwtService.getUserIdFromAuthentication());
-        addQuestionRequest.setId(questionId);
-        questionService.updateQuestion(addQuestionRequest);
-        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("Edit question success", null));
-    }
-
-    @DeleteMapping("/api/question/{questionId}")
-    public ResponseEntity<?> deleteQuestion(@PathVariable("questionId") Long questionId) {
-        questionService.deleteQuestion(questionId, JwtService.getUserIdFromAuthentication());
-        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("Deleted question success", null));
-    }
->>>>>>> d9428e8662699a05123a5a72f56aeffa81e9b6ca
 
     @GetMapping("/api/question/all")
     public ResponseEntity<?> getAllQuestion(
@@ -94,50 +65,9 @@ public class QuestionController {
     @GetMapping("/api/question/{questionId}")
     public ResponseEntity<?> getQuestionDetails(@PathVariable("questionId") Long questionId) {
         Long userId = JwtService.getUserIdFromAuthentication();
-<<<<<<< HEAD
-        QuestionEntity question = questionService.getQuestionWithCommentById(questionId);
 
-
-        QuestionDetailResponse questionDetail =
-                QuestionDetailResponse.builder()
-                        .id(question.getId())
-                        .content(question.getContent())
-                        .heart(question.getHeart())
-                        .commentCount(question.getComments().size())
-                        .categoryName(question.getCategory().getName())
-                        .createTime(question.getCreatedDateTime())
-                        .isAuthor(userId == question.getUser().getId())
-                        .build();
-
-        List<CommentResponse> commentDtoList = new ArrayList<>();
-        question.getComments().forEach(comment -> {
-            if(comment.getUser().getId() == userId){
-                questionDetail.setMyComment(CommentResponse.builder()
-                    .id(comment.getId())
-                    .content(comment.getContent())
-                    .createTime(comment.getCreatedDateTime())
-                    .build()
-                );
-            }
-            else{
-                commentDtoList.add(CommentResponse.builder()
-                    .id(comment.getId())
-                    .content(comment.getContent())
-                    .createTime(comment.getCreatedDateTime())
-                    .build()
-                );
-            }
-        });
-
-        questionDetail.setComments(commentDtoList);
-
-        Map<String, Object> response = Map.of("question", questionDetail);
-
-        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("get question detail success",response));
-=======
         QuestionDetailResponse questionDetailResponse = questionService.getQuestionDetail(userId, questionId);
         return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("get question detail success", questionDetailResponse));
->>>>>>> d9428e8662699a05123a5a72f56aeffa81e9b6ca
     }
 
     @GetMapping("/api/question/my")
@@ -176,19 +106,17 @@ public class QuestionController {
         return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("get all categories success", response));
     }
 
-<<<<<<< HEAD
     @GetMapping("api/category/{categoryId}")
     public ResponseEntity<?> getQuestionCategories(@PathVariable("categoryId")Long categoryId) {
-        List<QuestionEntity> questions = questionService.getAllQuestionsByCategory(categoryId);
+        List<Question> questions = questionService.getAllQuestionsByCategory(categoryId);
 
-        List<QuestionResponse> questionResponseList = questions.stream()
-            .map(question -> QuestionResponse.builder()
+        List<QuestionDetailResponse> questionResponseList = questions.stream()
+            .map(question -> QuestionDetailResponse.builder()
                 .id(question.getId())
                 .content(question.getContent())
-                .heart(question.getHeart())
                 .categoryName(question.getCategory().getName())
                 .commentCount(question.getComments().size())
-                .createTime(question.getCreatedDateTime())
+                .createTime(question.getCreateTime())
                 .build())
             .toList();
 
@@ -196,6 +124,4 @@ public class QuestionController {
         return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("get all questions success", response));
     }
 
-=======
->>>>>>> d9428e8662699a05123a5a72f56aeffa81e9b6ca
 }
