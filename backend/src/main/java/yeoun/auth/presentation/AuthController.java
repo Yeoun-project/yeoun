@@ -76,10 +76,10 @@ public class AuthController {
     public ResponseEntity<?> checkIsLoggedIn() {
         Authentication authentic = SecurityContextHolder.getContext().getAuthentication();
 
-        if(authentic == null)
+        if (authentic == null)
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("", "Not User"));
 
-        if(authentic.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_USER")))
+        if (authentic.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_USER")))
             return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("User", null));
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("", "Not User"));
@@ -98,7 +98,7 @@ public class AuthController {
     }
 
     private void removeAnonymousToken(HttpServletResponse response) {
-        if(JwtService.getAnonymousTokenAuthentication() != null)
+        if (JwtService.getAnonymousTokenAuthentication().isPresent())
             CookieUtil.addCookie(response, "anonymousToken", null, 0L);
     }
 
