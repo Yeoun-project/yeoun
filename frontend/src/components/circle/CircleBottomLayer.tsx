@@ -45,87 +45,43 @@ const CircleBottomLayer = ({ size = 150, animate = false, colors }: CircleLayerP
             in="SourceAlpha"
             type="matrix"
             values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-            result="hardAlpha"
+            result="hardAlpha1"
           />
           <feOffset />
-          <feGaussianBlur stdDeviation="0.16" />
-          <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0" />
-          <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_98_1050" />
+          <feGaussianBlur stdDeviation="3.84" in="hardAlpha1" result="blur1" />
           <feColorMatrix
-            in="SourceAlpha"
             type="matrix"
-            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-            result="hardAlpha"
+            values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            in="blur1"
+            result="colorBlur1"
           />
-          <feOffset />
-          <feGaussianBlur stdDeviation="0.32" />
-          <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0" />
           <feBlend
             mode="normal"
-            in2="effect1_dropShadow_98_1050"
-            result="effect2_dropShadow_98_1050"
-          />
-          <feColorMatrix
-            in="SourceAlpha"
-            type="matrix"
-            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-            result="hardAlpha"
-          />
-          <feOffset />
-          <feGaussianBlur stdDeviation="1.12" />
-          <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0" />
-          <feBlend
-            mode="normal"
-            in2="effect2_dropShadow_98_1050"
-            result="effect3_dropShadow_98_1050"
+            in="colorBlur1"
+            in2="BackgroundImageFix"
+            result="effect1_simplified2"
           />
           <feColorMatrix
             in="SourceAlpha"
             type="matrix"
             values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-            result="hardAlpha"
+            result="hardAlpha2"
           />
           <feOffset />
-          <feGaussianBlur stdDeviation="2.24" />
-          <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0" />
-          <feBlend
-            mode="normal"
-            in2="effect3_dropShadow_98_1050"
-            result="effect4_dropShadow_98_1050"
-          />
+          <feGaussianBlur stdDeviation="1" in="hardAlpha2" result="blur2" />
           <feColorMatrix
-            in="SourceAlpha"
             type="matrix"
-            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-            result="hardAlpha"
-          />
-          <feOffset />
-          <feGaussianBlur stdDeviation="3.84" />
-          <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0" />
-          <feBlend
-            mode="normal"
-            in2="effect4_dropShadow_98_1050"
-            result="effect5_dropShadow_98_1050"
-          />
-          <feColorMatrix
-            in="SourceAlpha"
-            type="matrix"
-            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-            result="hardAlpha"
-          />
-          <feOffset />
-          <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0" />
-          <feBlend
-            mode="normal"
-            in2="effect5_dropShadow_98_1050"
-            result="effect6_dropShadow_98_1050"
+            values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            in="blur2"
+            result="colorBlur2"
           />
           <feBlend
             mode="normal"
-            in="SourceGraphic"
-            in2="effect6_dropShadow_98_1050"
-            result="shape"
+            in="colorBlur2"
+            in2="effect1_simplified2"
+            result="effect2_simplified2"
           />
+          <feBlend mode="normal" in="SourceGraphic" in2="effect2_simplified2" result="shape" />
         </filter>
         <radialGradient
           id={`paint0_radial_98_1050_${uniqueId}`}

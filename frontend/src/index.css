@@ -71,6 +71,14 @@
       radial-gradient(at top left, transparent 100%, #ff41b394 90%);
     background-clip: text;
   }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }
 
 body {
