@@ -22,6 +22,9 @@ public class QuestionHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column
+    private String comment;
+
     @CreatedDate
     private final LocalDateTime createTime = LocalDateTime.now();
 
@@ -34,7 +37,8 @@ public class QuestionHistory {
     private Question question;
 
     @Builder
-    public QuestionHistory(User user, Question question) {
+    public QuestionHistory(String comment, User user, Question question) {
+        this.comment = comment;
         this.user = user;
         this.question = question;
     }
