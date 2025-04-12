@@ -29,19 +29,23 @@ public class Notification {
     @Column(nullable = false)
     private boolean isRead;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User receiver;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private User sender;
+
+    @ManyToOne(fetch = FetchType.EAGER)
     private Question question;
 
     @CreatedDate
-    private final Date sentDateTime = new Date();
+    private final Date createdAt = new Date();
 
     @Builder
     public Notification(Long id, String content, boolean isRead,
-                        NotificationType notificationType, User receiver, Question question) {
+                        NotificationType notificationType, User receiver, User sender, Question question) {
         this.id = id;
         this.isRead = isRead;
         this.notificationType = notificationType;

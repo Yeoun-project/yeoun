@@ -1,8 +1,11 @@
 package yeoun.notification.service;
 
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import yeoun.notification.domain.NotificationType;
-import yeoun.notification.dto.response.NotificationResponse;
+import yeoun.notification.domain.repository.NotificationDao;
+import yeoun.notification.dto.response.NotificationResponseDto;
 import yeoun.notification.domain.Notification;
 import yeoun.question.domain.Question;
 import yeoun.question.domain.repository.QuestionRepository;
@@ -46,21 +49,28 @@ public class NotificationService {
         emitter.onCompletion(() -> { emitterMap.remove(userId); });
         emitterMap.put(userId, emitter);
 
-        sendAllNotifications(emitter, userId);
+        sendUnReadNotificationCount(emitter, userId);
 
         return emitter;
     }
 
     @Transactional
-    public List<Notification> getAllNotifications(Long userId) {
-        List<Notification> notifications = notificationRepository.getUnReadNotifications(userId);
-        readAll(notifications);
-        return notifications;
-    }
+    public List<NotificationResponseDto> getAllNotifications(Long userId) {
+        List<NotificationDao> daos = notificationRepository.findAllNotifications(userId);
 
-    private void readAll(List<Notification> notifications) {
-        List<Long> notificationIds = notifications.stream().map(Notification::getId).toList();
-        notificationRepository.setReadAll(notificationIds);
+        List<NotificationResponseDto> dtos = daos.stream().map(NotificationResponseDto::of).toList();
+
+//        Map<Long, NotificationResponseDto> map = new HashMap<>();
+//        dtos.forEach(dto -> map.put(dto.getQuestionId(), dto));
+
+//        questionRepository.findAllById(daos.stream().map(NotificationDao::getQuestionId).toList())
+//                .forEach(q->{
+//                    NotificationResponseDto dto = map.get(q.getId());
+//                    dto.setContent(NotificationType.getContent(dto.getType(), q.getContent()));
+//                });
+
+        notificationRepository.setReadAll(userId);
+        return dtos;
     }
 
     @Transactional
@@ -77,17 +87,17 @@ public class NotificationService {
             throw new CustomException(ErrorCode.BAD_REQUEST, "not notification receiver");
         }
 
-        removeNotification(notificationId);
+        removeNotification(notification.getQuestion().getId());
 
         return notification.getQuestion();
     }
 
-    private void removeNotification(Long notificationId) {
-        notificationRepository.removeById(notificationId);
+    private void removeNotification(Long questionId) {
+        notificationRepository.removeByQuestion(questionId);
     }
 
     @Transactional
-    public void addNotification(Long userId, NotificationType type, Long questionId) {
+    public void addNotification(Long senderId, Long receiverId, NotificationType type, Long questionId) {
         Optional<Question> question = questionRepository.findById(questionId);
 
         if(question.isEmpty())
@@ -97,22 +107,20 @@ public class NotificationService {
             Notification.builder()
                 .notificationType(type)
                 .question(question.get())
-                .receiver(entityManager.getReference(User.class, userId))
+                .sender(entityManager.getReference(User.class, senderId))
+                .receiver(entityManager.getReference(User.class, receiverId))
                 .isRead(false)
                 .build()
         );
 
-        sendSSEData(emitterMap.get(userId), type.getContent(question.get().getContent()));
+        sendSSEData(emitterMap.get(receiverId), "1");
     }
 
     // Sse 관련 함수들
-    public void sendAllNotifications(SseEmitter emitter, Long userId) {
-        List<Notification> entityList = notificationRepository.getAllNotifications(userId);
-        List<NotificationResponse> data = entityList.stream()
-            .map(entity -> NotificationResponse.of(entity))
-            .toList();
+    public void sendUnReadNotificationCount(SseEmitter emitter, Long userId) {
+        Integer count = notificationRepository.getUnReadNotificationsCount(userId);
 
-        sendSSEData(emitter, data);
+        sendSSEData(emitter, count);
     }
 
     private void sendSSEData(SseEmitter sseEmitter, Object data) {

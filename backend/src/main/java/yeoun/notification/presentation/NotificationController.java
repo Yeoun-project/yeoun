@@ -2,11 +2,10 @@ package yeoun.notification.presentation;
 
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
+import org.springframework.web.bind.annotation.RequestBody;
 import yeoun.common.SuccessResponse;
-import yeoun.notification.dto.response.NotificationResponse;
-import yeoun.question.dto.response.QuestionResponse;
+import yeoun.notification.dto.response.NotificationResponseDto;
 import yeoun.notification.domain.Notification;
 import yeoun.question.domain.Question;
 import yeoun.auth.service.JwtService;
@@ -42,11 +41,7 @@ public class NotificationController {
     public ResponseEntity<?> getNotifications() {
         Long userId = JwtService.getUserIdFromAuthentication();
 
-        List<Notification> entityList = notificationService.getAllNotifications(userId);
-
-        List<NotificationResponse> dtoList = entityList.stream()
-                .map(e-> NotificationResponse.of(e))
-                .toList();
+        List<NotificationResponseDto> dtoList = notificationService.getAllNotifications(userId);
 
         Map<String, Object> response = Map.of("notifications", dtoList);
 
@@ -65,8 +60,8 @@ public class NotificationController {
     }
 
     @PostMapping("/test")
-    public ResponseEntity<?> testAddNotification() {
-        notificationService.addNotification(JwtService.getUserIdFromAuthentication(), NotificationType.COMMENT, 1l);
+    public ResponseEntity<?> testAddNotification(@RequestBody Map<String, Object> map) {
+        notificationService.addNotification(JwtService.getUserIdFromAuthentication(),Long.valueOf(map.get("receiver").toString()), NotificationType.NEW_COMMENT, Long.valueOf(map.get("questionId").toString()));
         return ResponseEntity.ok().build();
     }
 }
