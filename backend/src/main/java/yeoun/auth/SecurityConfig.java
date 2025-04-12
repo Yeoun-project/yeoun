@@ -1,5 +1,8 @@
 package yeoun.auth;
 
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
+import yeoun.common.WebConfig;
 import yeoun.exception.CustomAuthenticationEntryPoint;
 import yeoun.auth.filter.JwtAccessTokenFilter;
 import yeoun.auth.filter.JwtAnonymousTokenFilter;
@@ -22,6 +25,7 @@ public class SecurityConfig {
 
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
+    private final WebConfig webConfig;
     private final JwtAccessTokenFilter jwtAccessTokenFilter;
     private final JwtRefreshTokenFilter jwtRefreshTokenFilter;
     private final JwtAnonymousTokenFilter jwtAnonymousTokenFilter;
@@ -30,11 +34,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
+                .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .formLogin(AbstractHttpConfigurer::disable)
                 // security 자체 로그인 기능 disable
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/public/**").permitAll()
                         .requestMatchers("/api/**").hasRole("USER")
 //                        .requestMatchers("").hasRole("ADMIN") //TODO 추후 필요시 경로 추가

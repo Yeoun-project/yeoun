@@ -7,8 +7,8 @@ import java.util.Map;
 import yeoun.common.SuccessResponse;
 import yeoun.notification.dto.response.NotificationResponse;
 import yeoun.question.dto.response.QuestionResponse;
-import yeoun.notification.domain.NotificationEntity;
-import yeoun.question.domain.QuestionEntity;
+import yeoun.notification.domain.Notification;
+import yeoun.question.domain.Question;
 import yeoun.auth.service.JwtService;
 import yeoun.notification.service.NotificationService;
 import yeoun.notification.domain.NotificationType;
@@ -42,7 +42,7 @@ public class NotificationController {
     public ResponseEntity<?> getNotifications() {
         Long userId = JwtService.getUserIdFromAuthentication();
 
-        List<NotificationEntity> entityList = notificationService.getAllNotifications(userId);
+        List<Notification> entityList = notificationService.getAllNotifications(userId);
 
         List<NotificationResponse> dtoList = entityList.stream()
                 .map(e-> NotificationResponse.of(e))
@@ -58,7 +58,7 @@ public class NotificationController {
         throws IOException {
         Long userId = JwtService.getUserIdFromAuthentication();
 
-        QuestionEntity question = notificationService.getQuestionByNotification(userId, notificationId);
+        Question question = notificationService.getQuestionByNotification(userId, notificationId);
 
         response.sendRedirect("front question url / " + question.getId());
         return;

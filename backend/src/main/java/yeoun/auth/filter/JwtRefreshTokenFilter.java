@@ -1,7 +1,7 @@
 package yeoun.auth.filter;
 
 import yeoun.auth.service.JwtService;
-import yeoun.user.domain.UserEntity;
+import yeoun.user.domain.User;
 import yeoun.user.domain.repository.UserRepository;
 import yeoun.auth.infrastructure.CookieUtil;
 import jakarta.servlet.FilterChain;
@@ -50,7 +50,7 @@ public class JwtRefreshTokenFilter extends OncePerRequestFilter {
             String token_uuid = token.get("uuid");
 
             // db에서 조회
-            UserEntity dbUser = userRepository.findById(Long.valueOf(userId)).get();
+            User dbUser = userRepository.findById(Long.valueOf(userId)).get();
 
             // token 검증
             if (!dbUser.getUuid().equals(token_uuid)) {
@@ -59,7 +59,7 @@ public class JwtRefreshTokenFilter extends OncePerRequestFilter {
 
             // security context에 authenticaion 저장
             SecurityContextHolder.getContext().setAuthentication(
-                    new UsernamePasswordAuthenticationToken(dbUser.getId(), null, dbUser.getAuthorities()));
+                    new UsernamePasswordAuthenticationToken(dbUser.getId(), "refreshToken", dbUser.getAuthorities()));
 
             // 새로운 access, refresh token 발급
             String newAccess = jwtService.generateAccessToken(dbUser, JwtService.getIpFromRequest(request));

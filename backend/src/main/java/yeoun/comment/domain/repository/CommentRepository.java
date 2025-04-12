@@ -1,20 +1,39 @@
 package yeoun.comment.domain.repository;
 
-import yeoun.comment.domain.CommentEntity;
+import java.util.Optional;
+
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import yeoun.comment.domain.Comment;
 
 @Repository
-public interface CommentRepository extends JpaRepository<CommentEntity, Long> {
+public interface CommentRepository extends JpaRepository<Comment, Long> {
+
+    @Query("SELECT c FROM Comment c WHERE c.user.id = :userId AND c.question.id = :questionId")
+    Optional<Comment> getCommentByUserId(@Param("userId") Long userId, @Param("questionId")Long questionId);
+
+    @Query("SELECT c FROM Comment c LEFT JOIN FETCH c.user LEFT JOIN FETCH c.question WHERE c.id = :id")
+    Optional<Comment> getCommentById(@Param("id") Long id);
 
     @Modifying
-    @Query(value = "update comment set content = :content where id = :commentId and user_id = :userId", nativeQuery = true)
-    int update(@Param("commentId") Long commentId, @Param("content") String content, @Param("userId") Long userId);
+    @Query("DELETE FROM Comment c WHERE c.id = :id")
+    void deleteById(@Param("id") Long id);
 
-    @Modifying
-    @Query(value = "delete from comment where id = :commentId and user_id = :userId", nativeQuery = true)
-    int delete(@Param("commentId") Long commentId, @Param("userId") Long userId);
+    @Query("""
+            SELECT c FROM Comment c
+            WHERE c.question.id = :questionId
+            AND c.user.id <> :userId
+            """)
+    Slice<Comment> getAllCommentByQuestionExcludeMyself(
+            @Param("questionId") Long questionId,
+            @Param("userId") Long userId,
+            Pageable pageable
+    );
+
+    Optional<Comment> findTopByUserIdAndQuestionId(@Param("userId") Long userId, @Param("questionId") Long questionId);
 }

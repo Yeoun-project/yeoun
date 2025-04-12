@@ -3,10 +3,10 @@ package yeoun.notification.service;
 import java.util.Optional;
 import yeoun.notification.domain.NotificationType;
 import yeoun.notification.dto.response.NotificationResponse;
-import yeoun.notification.domain.NotificationEntity;
-import yeoun.question.domain.QuestionEntity;
+import yeoun.notification.domain.Notification;
+import yeoun.question.domain.Question;
 import yeoun.question.domain.repository.QuestionRepository;
-import yeoun.user.domain.UserEntity;
+import yeoun.user.domain.User;
 import yeoun.exception.CustomException;
 import yeoun.exception.ErrorCode;
 import yeoun.notification.domain.repository.NotificationRepository;
@@ -52,26 +52,26 @@ public class NotificationService {
     }
 
     @Transactional
-    public List<NotificationEntity> getAllNotifications(Long userId) {
-        List<NotificationEntity> notifications = notificationRepository.getUnReadNotifications(userId);
+    public List<Notification> getAllNotifications(Long userId) {
+        List<Notification> notifications = notificationRepository.getUnReadNotifications(userId);
         readAll(notifications);
         return notifications;
     }
 
-    private void readAll(List<NotificationEntity> notifications) {
-        List<Long> notificationIds = notifications.stream().map(NotificationEntity::getId).toList();
+    private void readAll(List<Notification> notifications) {
+        List<Long> notificationIds = notifications.stream().map(Notification::getId).toList();
         notificationRepository.setReadAll(notificationIds);
     }
 
     @Transactional
-    public QuestionEntity getQuestionByNotification(Long userId, Long notificationId) {
-        Optional<NotificationEntity> notificationOptional = notificationRepository.getNotificationQuestionById(notificationId);
+    public Question getQuestionByNotification(Long userId, Long notificationId) {
+        Optional<Notification> notificationOptional = notificationRepository.getNotificationQuestionById(notificationId);
 
         if(notificationOptional.isEmpty()) {
             throw new CustomException(ErrorCode.NOT_FOUND, "notification not found");
         }
 
-        NotificationEntity notification = notificationOptional.get();
+        Notification notification = notificationOptional.get();
 
         if(notification.getReceiver().getId() != userId) {
             throw new CustomException(ErrorCode.BAD_REQUEST, "not notification receiver");
@@ -88,16 +88,16 @@ public class NotificationService {
 
     @Transactional
     public void addNotification(Long userId, NotificationType type, Long questionId) {
-        Optional<QuestionEntity> question = questionRepository.findById(questionId);
+        Optional<Question> question = questionRepository.findById(questionId);
 
         if(question.isEmpty())
             throw new CustomException(ErrorCode.NOT_FOUND, "question not found");
 
         notificationRepository.save(
-            NotificationEntity.builder()
+            Notification.builder()
                 .notificationType(type)
                 .question(question.get())
-                .receiver(entityManager.getReference(UserEntity.class, userId))
+                .receiver(entityManager.getReference(User.class, userId))
                 .isRead(false)
                 .build()
         );
@@ -107,7 +107,7 @@ public class NotificationService {
 
     // Sse 관련 함수들
     public void sendAllNotifications(SseEmitter emitter, Long userId) {
-        List<NotificationEntity> entityList = notificationRepository.getAllNotifications(userId);
+        List<Notification> entityList = notificationRepository.getAllNotifications(userId);
         List<NotificationResponse> data = entityList.stream()
             .map(entity -> NotificationResponse.of(entity))
             .toList();

@@ -2,7 +2,7 @@ package yeoun.auth.service;
 
 import yeoun.auth.vo.NaverToken;
 import yeoun.auth.vo.NaverUserInfo;
-import yeoun.user.domain.UserEntity;
+import yeoun.user.domain.User;
 import yeoun.user.domain.repository.UserRepository;
 import yeoun.user.service.UserService;
 import yeoun.user.vo.UserRegisterInfoVo;
@@ -34,7 +34,7 @@ public class NaverService {
     private final UserService userService;
     private final UserRepository userRepository;
 
-    public UserEntity getUserFromNaver(String code) {
+    public User getUserFromNaver(String code) {
 
         NaverToken naverToken = WebClient.create(NAUTH_TOKEN_URL_HOST).post()
                 .uri(uriBuilder -> uriBuilder
@@ -53,7 +53,7 @@ public class NaverService {
                 .block();
 
         NaverUserInfo naverUserInfo = getUserInfo(naverToken.getAccessToken());
-        Optional<UserEntity> findUser = userRepository.findByOAuthId(naverUserInfo.getId());
+        Optional<User> findUser = userRepository.findByOAuthId(naverUserInfo.getId());
 
         System.out.println(findUser);
         return findUser.orElseGet(() -> userService.registerByUserInfo(

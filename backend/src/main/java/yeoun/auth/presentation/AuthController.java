@@ -1,8 +1,11 @@
 package yeoun.auth.presentation;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import yeoun.common.ErrorResponse;
 import yeoun.common.SuccessResponse;
-import yeoun.user.domain.UserEntity;
+import yeoun.user.domain.User;
 import yeoun.auth.service.JwtService;
 import yeoun.auth.service.GoogleService;
 import yeoun.auth.service.KakaoService;
@@ -15,6 +18,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/public/auth")
@@ -32,10 +37,9 @@ public class AuthController {
     private final JwtService jwtService;
 
     @GetMapping("/login/kakao")
-    public ResponseEntity<?> kakaoLogin(@RequestParam("code") String code, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<?> kakaoLogin(@RequestParam("code") String code, HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
-            UserEntity user = kakaoService.getUserFromKakao(code);
-
+            User user = kakaoService.getUserFromKakao(code);
             generateAndAddTokenCookie(user, request, response);
 
             return ResponseEntity.ok(new SuccessResponse("Login successful by Kakao", null));
@@ -45,10 +49,9 @@ public class AuthController {
     }
 
     @GetMapping("/login/naver")
-    public ResponseEntity<?> naverLogin(@RequestParam("code") String code, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<?> naverLogin(@RequestParam("code") String code, HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
-            UserEntity user = naverService.getUserFromNaver(code);
-
+            User user = naverService.getUserFromNaver(code);
             generateAndAddTokenCookie(user, request, response);
 
             return ResponseEntity.ok(new SuccessResponse("Login successful by Naver", null));
@@ -58,10 +61,9 @@ public class AuthController {
     }
 
     @GetMapping("/login/google")
-    public ResponseEntity<?> googleLogin(@RequestParam("code") String code, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<?> googleLogin(@RequestParam("code") String code, HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
-            UserEntity user = googleService.getUserFromGoogle(code);
-
+            User user = googleService.getUserFromGoogle(code);
             generateAndAddTokenCookie(user, request, response);
 
             return ResponseEntity.ok(new SuccessResponse("Login successful by Google", null));
@@ -70,7 +72,20 @@ public class AuthController {
         }
     }
 
-    private void generateAndAddTokenCookie(UserEntity user, HttpServletRequest request, HttpServletResponse response) {
+    @PostMapping("/me")
+    public ResponseEntity<?> checkIsLoggedIn() {
+        Authentication authentic = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentic == null)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("", "Not User"));
+
+        if (authentic.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_USER")))
+            return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("User", null));
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("", "Not User"));
+    }
+
+    private void generateAndAddTokenCookie(User user, HttpServletRequest request, HttpServletResponse response) {
         String ip = JwtService.getIpFromRequest(request);
 
         String accessToken = jwtService.generateAccessToken(user, ip);
@@ -83,7 +98,8 @@ public class AuthController {
     }
 
     private void removeAnonymousToken(HttpServletResponse response) {
-        CookieUtil.addCookie(response, "anonymousToken", null, 0L);
+        if (JwtService.getAnonymousTokenAuthentication().isPresent())
+            CookieUtil.addCookie(response, "anonymousToken", null, 0L);
     }
 
 }
