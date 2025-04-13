@@ -1,7 +1,7 @@
 package yeoun.comment.dto.response;
 
 import lombok.*;
-import yeoun.comment.domain.CommentEntity;
+import yeoun.comment.domain.Comment;
 
 import java.time.LocalDateTime;
 
@@ -17,7 +17,7 @@ public class CommentResponse {
     private final LocalDateTime createTime;
 
     public static CommentResponse of(
-            final CommentEntity comment,
+            final Comment comment,
             final Boolean isLike
     ) {
         return CommentResponse.builder()

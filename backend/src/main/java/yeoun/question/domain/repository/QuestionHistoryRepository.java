@@ -1,7 +1,36 @@
 package yeoun.question.domain.repository;
 
-import yeoun.question.domain.QuestionHistoryEntity;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import yeoun.question.domain.QuestionHistory;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface QuestionHistoryRepository extends JpaRepository<QuestionHistoryEntity, Long> {
+import java.time.LocalDateTime;
+import java.util.Optional;
+
+public interface QuestionHistoryRepository extends JpaRepository<QuestionHistory, Long> {
+
+    @Query("""
+            SELECT h FROM QuestionHistory h
+            WHERE h.question.id = :questionId
+                AND h.user.id = :userId
+                AND DATE(h.createTime) = CURRENT_DATE
+            """)
+    Optional<QuestionHistory> findTodayHistoryByQuestionIdAndUser(
+            @Param("userId") Long userId,
+            @Param("questionId") Long questionId
+    );
+
+    @Modifying
+    @Query("""
+            UPDATE QuestionHistory questionHistory
+            SET questionHistory.comment=:comment
+            WHERE questionHistory.question.id = :questionId
+            """)
+    void addCommentToTodayQuestion(
+            @Param("questionId") final Long questionId,
+            @Param("comment") final String comment
+    );
+
 }

@@ -1,7 +1,7 @@
 package yeoun.question.dto.response;
 
 import lombok.*;
-import yeoun.question.domain.QuestionEntity;
+import yeoun.question.domain.Question;
 
 import java.time.LocalDateTime;
 
@@ -18,7 +18,7 @@ public class QuestionDetailResponse {
     private final Boolean isAuthor;
 
     public static QuestionDetailResponse of(
-            final QuestionEntity question,
+            final Question question,
             final Boolean isAuthor
     ) {
 
