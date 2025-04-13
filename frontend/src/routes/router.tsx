@@ -74,11 +74,11 @@ const router = createBrowserRouter([
                 index: true,
                 element: <QuestionPage />,
               },
+              {
+                path: '/question/add-question',
+                element: <AddQuestionPage />,
+              },
             ], 
-          },
-          {
-            path: '/add-question',
-            element: <AddQuestionPage />,
           },
           { path: '/my-activity', element: <MyActivityPage /> },
         ],
