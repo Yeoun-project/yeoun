@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 
 import BackArrow from '../components/common/BackArrow';
 import { addUserQuestion } from '../services/api/question/addQuestion';
-import useAuthStore from '../store/useAuthStore';
+
 import Circle from '../components/circle/Circle';
 import QuestionCategory from '../type/questionCategory';
 
@@ -94,9 +94,6 @@ const AddQuestionPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const selectId = parseInt(searchParams.get('category') || '0');
 
-  // login
-  const { userType } = useAuthStore();
-  
   // post request
   const [categoryId, setCategoryId] = useState<number>(selectId);
   const [content, setContent] = useState<string>('');
@@ -122,7 +119,7 @@ const AddQuestionPage = () => {
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await addUserQuestion(userType,content, selectId);
+      await addUserQuestion(content, selectId);
     }
     catch(err) {
       console.error(err);
