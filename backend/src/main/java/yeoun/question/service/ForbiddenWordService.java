@@ -1,6 +1,6 @@
 package yeoun.question.service;
 
-import yeoun.question.domain.ForbiddenWordEntity;
+import yeoun.question.domain.ForbiddenWord;
 import yeoun.exception.CustomException;
 import yeoun.exception.ErrorCode;
 import yeoun.question.domain.repository.ForbiddenWordRepository;
@@ -25,7 +25,7 @@ public class ForbiddenWordService {
         }
     }
 
-    public List<ForbiddenWordEntity> getAllForbiddenWords() {
+    public List<ForbiddenWord> getAllForbiddenWords() {
         return forbiddenWordRepository.findAll();
     }
 

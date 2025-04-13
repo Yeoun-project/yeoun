@@ -1,6 +1,6 @@
 package yeoun.question.service;
 
-import yeoun.question.domain.ForbiddenWordEntity;
+import yeoun.question.domain.ForbiddenWord;
 import yeoun.exception.CustomException;
 import yeoun.question.domain.repository.ForbiddenWordRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -30,9 +30,9 @@ class ForbiddenWordServiceTest {
     void validateForbiddenWord() {
         // given
         String content = "당신은 좆같은 경험이 있나요?";
-        ForbiddenWordEntity word1 = new ForbiddenWordEntity(1L, "시발");
-        ForbiddenWordEntity word2 = new ForbiddenWordEntity(2L, "좆");
-        List<ForbiddenWordEntity> allWords = List.of(word1, word2);
+        ForbiddenWord word1 = new ForbiddenWord(1L, "시발");
+        ForbiddenWord word2 = new ForbiddenWord(2L, "좆");
+        List<ForbiddenWord> allWords = List.of(word1, word2);
         given(forbiddenWordService.getAllForbiddenWords()).willReturn(allWords);
 
         // when & then
@@ -49,9 +49,9 @@ class ForbiddenWordServiceTest {
     @Test
     void validateForbiddenWord_withoutForbiddenWord_shouldNotThrowException() {
         // given
-        List<ForbiddenWordEntity> forbiddenWords = List.of(
-                new ForbiddenWordEntity(1L, "시발"),
-                new ForbiddenWordEntity(2L, "좆")
+        List<ForbiddenWord> forbiddenWords = List.of(
+                new ForbiddenWord(1L, "시발"),
+                new ForbiddenWord(2L, "좆")
         );
         given(forbiddenWordRepository.findAll()).willReturn(forbiddenWords);
 

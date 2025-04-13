@@ -20,16 +20,16 @@ import org.springframework.data.annotation.LastModifiedDate;
 @Entity
 @Table(name = "user_history")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserHistoryEntity {
+public class UserHistory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(targetEntity = UserEntity.class, fetch = FetchType.LAZY)
+    @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id", nullable = false)
-    private UserEntity user;
+    private User user;
 
     @LastModifiedDate
     @Column(name = "last_login", nullable = false)
@@ -45,8 +45,8 @@ public class UserHistoryEntity {
     private String uri;
 
     @Builder
-    public UserHistoryEntity(UserEntity user, String ip, String agent,
-        String uri) {
+    public UserHistory(User user, String ip, String agent,
+                       String uri) {
         this.user = user;
         this.ip = ip;
         this.agent = agent;
