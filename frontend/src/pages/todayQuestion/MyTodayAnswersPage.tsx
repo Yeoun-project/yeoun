@@ -1,4 +1,4 @@
-import BackArrow from '../../components/common/BackArrow';
+import BackArrowButton from '../../components/button/BackArrowButton';
 import QuestionList from '../../components/question/QuestionList';
 import QuestionCategory from '../../type/questionCategory';
 
@@ -67,7 +67,7 @@ const MyTodayAnswersPage = () => {
       {/* Header */}
       <header className="relative flex justify-center px-6 py-3">
         <div className="absolute top-3 left-6">
-          <BackArrow />
+          <BackArrowButton />
         </div>
         <h3 className="w-full text-center">답변목록</h3>
       </header>

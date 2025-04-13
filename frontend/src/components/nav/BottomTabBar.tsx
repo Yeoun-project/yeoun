@@ -1,9 +1,9 @@
 import { Link, useLocation } from 'react-router-dom';
 
-import AddQuestionIcon from '../assets/Icons/nav/AddQuestionIcon';
-import MyPageIcon from '../assets/Icons/nav/MyPageIcon';
-import QuestionIcon from '../assets/Icons/nav/QuestionIcon';
-import QuestionListIcon from '../assets/Icons/nav/QuestionListIcon';
+import AddQuestionIcon from '../../assets/Icons/nav/AddQuestionIcon';
+import MyPageIcon from '../../assets/Icons/nav/MyPageIcon';
+import QuestionIcon from '../../assets/Icons/nav/QuestionIcon';
+import QuestionListIcon from '../../assets/Icons/nav/QuestionListIcon';
 
 const TabNavPaths = [
   {
@@ -28,7 +28,7 @@ const TabNavPaths = [
   },
 ];
 
-const TabNav = () => {
+const BottomTabBar = () => {
   const { pathname } = useLocation();
   return (
     <nav className="absolute bottom-0 left-0 w-full overflow-hidden rounded-t-[20px] border border-white/40 bg-white/5 py-2">
@@ -54,4 +54,4 @@ const TabNav = () => {
   );
 };
 
-export default TabNav;
+export default BottomTabBar;

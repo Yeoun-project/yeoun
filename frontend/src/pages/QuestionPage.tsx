@@ -1,5 +1,3 @@
-import { Link } from 'react-router-dom';
-
 import useIndexCarousel from '../hooks/queries/useIndexCarousel';
 
 import QuestionCategory from '../type/questionCategory';
@@ -14,9 +12,10 @@ import ChallengesAndCourage from '../assets/Icons/category/challengesAndCourageI
 import DreamsAndGoals from '../assets/Icons/category/dreamsAndGoalsIcon.svg?react';
 
 // Components
-import TabNav from '../components/TabNav';
 import Circle from '../components/circle/Circle';
 import Carousel from '../components/Carousel';
+import BottomTabBar from '../components/nav/BottomTabBar';
+import TopNavBar from '../components/nav/TopNavBar';
 
 const QuestionCategoryList = [
   {
@@ -77,13 +76,9 @@ const QuestionPage = () => {
 
   return (
     <main className="h-[100svh]">
-      <nav className="flex items-center justify-between p-6">
-        <Link
-          aria-label="설정 바로가기"
-          to="/settings"
-          className="size-6 bg-[url(/icons/settings.svg)] bg-no-repeat"
-        />
-      </nav>
+      <header className="p-6">
+        <TopNavBar />
+      </header>
 
       {/* 캐러세 네비게이션 */}
       <ul className="no-scrollbar mb-6 flex cursor-pointer justify-evenly overflow-x-scroll overflow-y-hidden">
@@ -137,7 +132,7 @@ const QuestionPage = () => {
           </p>
         </div>
       </div>
-      <TabNav />
+      <BottomTabBar />
     </main>
   );
 };
