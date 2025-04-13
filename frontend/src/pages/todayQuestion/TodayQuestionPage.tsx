@@ -25,6 +25,7 @@ const TodayQuestionPage = () => {
         </div>
         <header className="w-full">
           <TopNavBar />
+
         </header>
 
         {/* Question */}
