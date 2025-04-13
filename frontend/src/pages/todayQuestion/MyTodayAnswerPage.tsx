@@ -6,7 +6,7 @@ import useModalStore from '../../store/useModalStore';
 import Circle from '../../components/circle/Circle';
 import CommentForm from '../../components/form/CommentForm';
 import BasicButton from '../../components/button/BasicButton';
-import BackArrowButton from '../../components/button/BackArrow';
+import BackArrowButton from '../../components/button/BackArrowButton';
 
 import Modal from '../../components/modal/Modal';
 
