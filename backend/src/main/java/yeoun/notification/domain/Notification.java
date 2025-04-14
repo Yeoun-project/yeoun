@@ -51,5 +51,6 @@ public class Notification {
         this.notificationType = notificationType;
         this.receiver = receiver;
         this.question = question;
+        this.sender = sender;
     }
 }

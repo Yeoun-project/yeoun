@@ -1,8 +1,6 @@
 package yeoun.notification.service;
 
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import yeoun.notification.domain.NotificationType;
 import yeoun.notification.domain.repository.NotificationDao;
 import yeoun.notification.dto.response.NotificationResponseDto;
@@ -49,7 +47,7 @@ public class NotificationService {
         emitter.onCompletion(() -> { emitterMap.remove(userId); });
         emitterMap.put(userId, emitter);
 
-        sendUnReadNotificationCount(emitter, userId);
+        sendUnReadNotificationCount(userId);
 
         return emitter;
     }
@@ -60,40 +58,22 @@ public class NotificationService {
 
         List<NotificationResponseDto> dtos = daos.stream().map(NotificationResponseDto::of).toList();
 
-//        Map<Long, NotificationResponseDto> map = new HashMap<>();
-//        dtos.forEach(dto -> map.put(dto.getQuestionId(), dto));
-
-//        questionRepository.findAllById(daos.stream().map(NotificationDao::getQuestionId).toList())
-//                .forEach(q->{
-//                    NotificationResponseDto dto = map.get(q.getId());
-//                    dto.setContent(NotificationType.getContent(dto.getType(), q.getContent()));
-//                });
-
         notificationRepository.setReadAll(userId);
+
+        sendUnReadNotificationCount(userId);
+
         return dtos;
     }
 
     @Transactional
-    public Question getQuestionByNotification(Long userId, Long notificationId) {
-        Optional<Notification> notificationOptional = notificationRepository.getNotificationQuestionById(notificationId);
+    public Question getQuestionFromNotification(Long userId, Long questionId) {
+        Question question = notificationRepository.getQuestion(userId, questionId).orElseThrow(
+            () -> new CustomException(ErrorCode.NOT_FOUND, "no notification with question id")
+        );
 
-        if(notificationOptional.isEmpty()) {
-            throw new CustomException(ErrorCode.NOT_FOUND, "notification not found");
-        }
+        notificationRepository.removeByQuestion(userId, questionId);
 
-        Notification notification = notificationOptional.get();
-
-        if(notification.getReceiver().getId() != userId) {
-            throw new CustomException(ErrorCode.BAD_REQUEST, "not notification receiver");
-        }
-
-        removeNotification(notification.getQuestion().getId());
-
-        return notification.getQuestion();
-    }
-
-    private void removeNotification(Long questionId) {
-        notificationRepository.removeByQuestion(questionId);
+        return question;
     }
 
     @Transactional
@@ -103,7 +83,7 @@ public class NotificationService {
         if(question.isEmpty())
             throw new CustomException(ErrorCode.NOT_FOUND, "question not found");
 
-        notificationRepository.save(
+        Notification noti = notificationRepository.save(
             Notification.builder()
                 .notificationType(type)
                 .question(question.get())
@@ -113,14 +93,14 @@ public class NotificationService {
                 .build()
         );
 
-        sendSSEData(emitterMap.get(receiverId), "1");
+        sendUnReadNotificationCount(receiverId);
     }
 
     // Sse 관련 함수들
-    public void sendUnReadNotificationCount(SseEmitter emitter, Long userId) {
+    public void sendUnReadNotificationCount(Long userId) {
         Integer count = notificationRepository.getUnReadNotificationsCount(userId);
 
-        sendSSEData(emitter, count);
+        sendSSEData(emitterMap.get(userId), count);
     }
 
     private void sendSSEData(SseEmitter sseEmitter, Object data) {

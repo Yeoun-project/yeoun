@@ -110,7 +110,11 @@ public class QuestionService {
     public QuestionDetailResponse getQuestionDetail(Long userId, Long questionId) {
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_PARAMETER, "Invalid question ID"));
-        Boolean isAuthor = question.getUser().getId().equals(userId);
+        Boolean isAuthor = false;
+
+        if(question.getUser() != null)
+            isAuthor = question.getUser().getId().equals(userId);
+
         return QuestionDetailResponse.of(question, isAuthor);
     }
 

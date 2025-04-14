@@ -20,18 +20,14 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
         + " group by n.question, n.notificationType")
     List<NotificationDao> findAllNotifications(@Param("userId") Long userId);
 
+    @Query("select n.question from Notification n where n.receiver.id=:userId and n.question.id=:questionId")
+    Optional<Question> getQuestion(@Param("userId") Long userId, @Param("questionId") Long questionId);
+
     @Modifying
     @Query("update Notification n set n.isRead = true where n.receiver.id = :userId")
     void setReadAll(@Param("userId")Long userId);
 
-    @Query("select n from Notification n left join fetch n.question left join fetch n.receiver where n.id = :notificationId")
-    Optional<Notification> getNotificationQuestionById(@Param("notificationId") Long notificationId);
-
     @Modifying
-    @Query("update Notification n set n.isRead = true where n.receiver.id = :userId and n.question.id = :questionId")
-    void setReadByQuestionId(@Param("questionId") Long questionId, @Param("userId") Long userId);
-
-    @Modifying
-    @Query("delete from Notification n where n.question.id = :questionId")
-    void removeByQuestion(@Param("questionId") Long questionId);
+    @Query("delete from Notification n where n.question.id = :questionId and n.receiver.id=:userId")
+    void removeByQuestion(@Param("userId")Long userId, @Param("questionId") Long questionId);
 }
