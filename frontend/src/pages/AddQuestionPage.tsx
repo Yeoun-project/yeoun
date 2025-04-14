@@ -4,10 +4,9 @@ import { useEffect, useState } from 'react';
 import BackArrow from '../components/common/BackArrow';
 import { addUserQuestion } from '../services/api/question/addQuestion';
 
-import Circle from '../components/circle/Circle';
-import QuestionCategory from '../type/questionCategory';
+import Dropdown from '../components/dropdown/Dropdown';
 
-interface Category {
+export interface Category {
   category: string,
   id: number, 
   name: string,
@@ -109,6 +108,8 @@ const AddQuestionPage = () => {
     setSearchParams({ category: String(categoryId) });
   }, [categoryId]);
 
+  const onClick = () => setIsOpen((prev) => !prev);
+
   const handleSelect = (cat: Category) => {
     setSelected(cat);
     setCategoryId(cat.id);
@@ -138,42 +139,14 @@ const AddQuestionPage = () => {
         {/* Dropdown */}
         <div className="flex h-55 flex-col justify-between p-6">
           <h1>질문 카테고리 설정</h1>
-          <div className="relative w-full text-white font-desc">
-            <div
-              onClick={() => setIsOpen((prev) => !prev)}
-              className={`flex justify-between items-center px-4 py-2 
-                bg-white/10 backdrop-blur-md border border-white/20 cursor-pointer 
-                transition 
-                ${isOpen ? "rounded-t-md rounded-b-none" : "rounded-md"}`}
-            >
-              <div className="flex items-center gap-2">
-              <Circle category={selected.category as QuestionCategory} size={20} animate />
-                <span className='pl-1'>{selected.name}</span>
-              </div>
-              <img src="/icons/dropdownIcon.svg" alt="드롭다운 버튼" className={`w-4 h-4 transform transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
-            </div>
-              {isOpen && (
-                <ul className="absolute z-10 w-full max-h-72 overflow-y-auto bg-white/10 backdrop-blur-md shadow-lg">
-                  {categories.map((cat) => (
-                    <li
-                      key={cat.id}
-                      onClick={() => handleSelect(cat)}
-                      className={`flex items-center gap-2 px-4 py-2 cursor-pointer text-sm hover:bg-white/20 transition 
-                        ${cat.id === selected.id ? "bg-[#96567c7c]" : ""}`}
-                    >
-                      <Circle category={cat.category as QuestionCategory} size={20} animate />
-                      <span className='pl-1'>{cat.name}</span>
-                    </li>
-                  ))}
-                </ul>
-              )}
-          </div>
-          <ul className="font-desc flex flex-col list-none gap-1 text-white">
-            <span className="text-[#999999]">(예시)</span>
-            {categories[categoryId - 1]?.examples.map((example, index) => (
-              <li key={index}>"{example}"</li>
-            ))}
-          </ul>
+          <Dropdown 
+            isOpen={isOpen}
+            onClick={onClick}
+            handleSelect={handleSelect}
+            categories={categories}
+            selected={selected}
+            categoryId={categoryId}
+          />
         </div>
         <div className='font-desc w-full p-6 text-white'>
           <form
