@@ -52,8 +52,7 @@ public class NotificationController {
     }
 
     @GetMapping("/{questionId}")
-    public ResponseEntity<?> readNotification(@PathVariable("questionId") Long questionId)
-        throws IOException {
+    public ResponseEntity<?> readNotification(@PathVariable("questionId") Long questionId) {
         Long userId = JwtService.getUserIdFromAuthentication();
 
         Question question = notificationService.getQuestionFromNotification(userId, questionId);
