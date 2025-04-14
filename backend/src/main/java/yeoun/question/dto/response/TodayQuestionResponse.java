@@ -1,18 +1,23 @@
 package yeoun.question.dto.response;
 
 import lombok.*;
+import yeoun.question.domain.Question;
 
 @Getter
-@Setter
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class TodayQuestionResponse {
 
-    private Long id;
+    final private Long id;
+    final private String content;
 
-    private String content;
-
-    // 추후 필요한 요구 데이터 확장을 위해 DTO 분리
+    public static TodayQuestionResponse of(
+            Question question
+    ) {
+        return TodayQuestionResponse.builder()
+                .id(question.getId())
+                .content(question.getContent())
+                .build();
+    }
 
 }

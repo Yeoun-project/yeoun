@@ -1,9 +1,9 @@
 package yeoun.auth.service;
 
 import java.util.Optional;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+
 import org.springframework.security.core.Authentication;
-import yeoun.user.domain.UserEntity;
+import yeoun.user.domain.User;
 import yeoun.exception.CustomException;
 import yeoun.exception.ErrorCode;
 import io.jsonwebtoken.Claims;
@@ -43,7 +43,7 @@ public class JwtService {
         return Keys.hmacShaKeyFor(secretKey.getBytes());
     }
 
-    public String generateAccessToken(UserEntity user, String ip) {
+    public String generateAccessToken(User user, String ip) {
         return Jwts.builder()
                 .setSubject(user.getId().toString())
                 .claim("ip", ip)
@@ -53,7 +53,7 @@ public class JwtService {
                 .compact();
     }
 
-    public String generateRefreshToken(UserEntity user) {
+    public String generateRefreshToken(User user) {
         return Jwts.builder()
                 .setSubject(user.getId().toString())
                 .claim("uuid", user.getUuid())
@@ -62,7 +62,7 @@ public class JwtService {
                 .compact();
     }
 
-    public String generateAnonymousToken(UserEntity user) {
+    public String generateAnonymousToken(User user) {
         return Jwts.builder()
             .setSubject(user.getId().toString())
             .claim("role", user.getRole())

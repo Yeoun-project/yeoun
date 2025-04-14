@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Date;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -22,7 +21,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @SQLDelete(sql = "UPDATE user SET delete_time = CURRENT_TIMESTAMP WHERE id = ?") // soft delete
 @SQLRestriction("delete_time IS NULL") // 지워지지 않은 레코드에 대한 조건
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserEntity implements UserDetails {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -56,7 +55,7 @@ public class UserEntity implements UserDetails {
     private LocalDateTime deleteTime;
 
     @Builder
-    public UserEntity(Long id, String oAuthId, String oAuthPlatform, String name, String email, String phone, String role, String uuid) {
+    public User(Long id, String oAuthId, String oAuthPlatform, String name, String email, String phone, String role, String uuid) {
         this.id = id;
         this.oAuthId = oAuthId;
         this.oAuthPlatform = oAuthPlatform;
