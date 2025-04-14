@@ -24,7 +24,7 @@ const MyTodayAnswerPage = () => {
           <Modal.Header>
             <Modal.Title>등록하신 답변을 삭제하시겠습니까?</Modal.Title>
             <Modal.SubTitle>
-              삭제 후 답변 <span className="text-alert">복구</span>는 불가능합니다.
+              삭제 후 답변 <span className="text-error">복구</span>는 불가능합니다.
             </Modal.SubTitle>
           </Modal.Header>
 

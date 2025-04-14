@@ -21,7 +21,7 @@
   --color-black-primary: #1a1a1a;
   --color-black-secondary: #1b1b1b;
 
-  --color-alert: #ff2020;
+  --color-error: #ff2020;
 
   --animate-spin-first: spin 11s linear infinite;
   --animate-spin-second: spin 13s linear infinite;
