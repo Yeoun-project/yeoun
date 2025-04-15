@@ -4,8 +4,6 @@ import java.util.Date;
 import lombok.*;
 import yeoun.question.domain.Question;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Builder
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)

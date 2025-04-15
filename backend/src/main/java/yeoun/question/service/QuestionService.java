@@ -2,7 +2,6 @@ package yeoun.question.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Objects;
 import jakarta.persistence.EntityManager;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -13,7 +12,6 @@ import yeoun.question.dto.response.*;
 import yeoun.user.domain.User;
 import lombok.extern.slf4j.Slf4j;
 import yeoun.question.domain.repository.CategoryResponseDao;
-import yeoun.question.dto.response.CategoryResponseDto;
 import yeoun.exception.CustomException;
 import yeoun.exception.ErrorCode;
 import yeoun.question.domain.repository.CategoryRepository;
@@ -41,7 +39,7 @@ public class QuestionService {
         userService.validateUser(dto.getUserId());
 
         Category category = categoryRepository.findById(dto.getCategoryId())
-                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_PARAMETER, "Invalid category ID"));
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_PARAMETER, "카테고리 ID가 잘못 되었습니다."));
 
         forbiddenWordService.validateForbiddenWord(dto.getContent());
 
@@ -106,10 +104,10 @@ public class QuestionService {
         return new QuestionListResponse(questionResponseList, questionSlice.hasNext());
     }
 
-    @Transactional
+    @Transactional // 질문 상세 정보 조회는 사용자가 작성한 질문들 중에서만, 고정 질문 X
     public QuestionDetailResponse getQuestionDetail(Long userId, Long questionId) {
-        Question question = questionRepository.findById(questionId)
-                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_PARAMETER, "Invalid question ID"));
+        Question question = questionRepository.findByIdAndIsFixedIsFalse(questionId)
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_PARAMETER, "질문 ID가 잘못 되었습니다."));
         Boolean isAuthor = question.getUser().getId().equals(userId);
         return QuestionDetailResponse.of(question, isAuthor);
     }
@@ -133,8 +131,13 @@ public class QuestionService {
 //        return new CategoryListResponse(categoryResponses);
 //    }
 
-    public Slice<Question> getQuestionUserAnswered(Long userId, String category, Pageable pageable) {
-        return questionRepository.findAllCommentedQuestionsByUserIdAndCategory(userId, category, pageable);
+    @Transactional
+    public QuestionListResponse getQuestionUserAnswered(Long userId, String category, Pageable pageable) {
+        Slice<Question> questionSlice = questionRepository.findAllCommentedQuestionsByUserIdAndCategory(userId, category, pageable);
+        List<QuestionResponse> questionResponses = questionSlice.stream()
+                .map(QuestionResponse::of)
+                .toList();
+        return new QuestionListResponse(questionResponses, questionSlice.hasNext());
     }
 
     @Transactional
@@ -142,22 +145,12 @@ public class QuestionService {
         return questionRepository.findQuestionById(questionId).isPresent();
     }
 
-    public List<CategoryResponseDto> getAllCategories() {
-        List<CategoryResponseDao> daoList = questionRepository.findCategoriesWithCount();
-        return daoList
-            .stream()
-            .map(dao-> {
-                return CategoryResponseDto
-                    .builder()
-                    .id(dao.getCategory().getId())
-                    .name(dao.getCategory().getName())
-                    .questionCount(dao.getCount())
-                    .build();
-            })
+    @Transactional
+    public List<CategoryResponse> getAllCategories() {
+        List<CategoryResponseDao> categoryResponseDaos = questionRepository.findCategoriesWithCount();
+        return categoryResponseDaos.stream()
+            .map(dao-> CategoryResponse.of(dao.getCategory(), dao.getCount()))
             .toList();
     }
 
-    public List<Question> getAllQuestionsByCategory(Long categoryId) {
-        return questionRepository.findAllByCategoryId(categoryId);
-    }
 }

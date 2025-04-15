@@ -26,8 +26,11 @@ public class QuestionHistory {
     @Column(columnDefinition = "varchar(500)")
     private String comment;
 
+    @Column
+    private LocalDateTime commentTime;
+
     @CreatedDate
-    private final Date createTime = new Date();
+    private final LocalDateTime createTime = LocalDateTime.now();
 
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)

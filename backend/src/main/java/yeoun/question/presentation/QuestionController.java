@@ -1,15 +1,13 @@
 package yeoun.question.presentation;
 
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import yeoun.common.SuccessResponse;
+import yeoun.question.domain.Question;
 import yeoun.question.dto.request.AddQuestionRequest;
 import yeoun.question.dto.response.QuestionDetailResponse;
 import yeoun.question.dto.response.QuestionListResponse;
-import yeoun.question.dto.response.QuestionResponse;
-import yeoun.question.domain.Question;
 import yeoun.auth.service.JwtService;
 import yeoun.question.service.QuestionService;
 import jakarta.validation.Valid;
@@ -31,8 +29,7 @@ public class QuestionController {
     public ResponseEntity<?> addQuestion(@RequestBody @Valid AddQuestionRequest addQuestionRequest) {
         addQuestionRequest.setUserId(JwtService.getUserIdFromAuthentication());
         questionService.addNewQuestion(addQuestionRequest);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(new SuccessResponse("Add question success", null));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new SuccessResponse("질문 추가를 성공했습니다.", null));
     }
 
     // 기능 없어짐 -> 주석 처리
@@ -59,7 +56,7 @@ public class QuestionController {
             @PageableDefault() final Pageable pageable
     ) {
         QuestionListResponse questionListResponse = questionService.getAllQuestions(category, pageable);
-        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("get all questions success", questionListResponse));
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("질문 목록 조회를 성공했습니다.", questionListResponse));
     }
 
     @GetMapping("/api/question/{questionId}")
@@ -67,7 +64,7 @@ public class QuestionController {
         Long userId = JwtService.getUserIdFromAuthentication();
 
         QuestionDetailResponse questionDetailResponse = questionService.getQuestionDetail(userId, questionId);
-        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("get question detail success", questionDetailResponse));
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("질문 상세 조회를 성공했습니다.", questionDetailResponse));
     }
 
     @GetMapping("/api/question/my")
@@ -75,7 +72,7 @@ public class QuestionController {
         Long userId = JwtService.getUserIdFromAuthentication();
         QuestionListResponse questionListResponse = questionService.getMyQuestions(userId, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(
-                new SuccessResponse("get my questions success", questionListResponse));
+                new SuccessResponse("내가 작성한 질문 목록 조회를 성공했습니다.", questionListResponse));
     }
 
     @GetMapping("/api/question/commented-by-me")
@@ -83,45 +80,15 @@ public class QuestionController {
             @RequestParam(required = false) String category,
             @PageableDefault(sort = "createTime", direction = Sort.Direction.DESC) final Pageable pageable
     ) {
-        Slice<Question> questionSlice = questionService.getQuestionUserAnswered(JwtService.getUserIdFromAuthentication(), category, pageable);
-
-        List<QuestionResponse> questionResponses = questionSlice.stream().map(question -> QuestionResponse.builder()
-                .id(question.getId())
-                .content(question.getContent())
-                .commentCount(question.getComments().size())
-                .categoryName(question.getCategory().getName())
-                .createTime(question.getCreateTime())
-                .build()).toList();
-
-        Map<String, Object> response = Map.of(
-                "questions", questionResponses,
-                "hasNext", questionSlice.hasNext()
-        );
-        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("get questions success", response));
+        QuestionListResponse questionListResponse = questionService.getQuestionUserAnswered(JwtService.getUserIdFromAuthentication(), category, pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new SuccessResponse("내가 답변한 질문 목록 조회를 성공했습니다.", questionListResponse));
     }
 
     @GetMapping("/api/category")
     public ResponseEntity<?> getCategories() {
         Map<String, Object> response = Map.of("categories", questionService.getAllCategories());
-        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("get all categories success", response));
-    }
-
-    @GetMapping("api/category/{categoryId}")
-    public ResponseEntity<?> getQuestionCategories(@PathVariable("categoryId")Long categoryId) {
-        List<Question> questions = questionService.getAllQuestionsByCategory(categoryId);
-
-        List<QuestionDetailResponse> questionResponseList = questions.stream()
-            .map(question -> QuestionDetailResponse.builder()
-                .id(question.getId())
-                .content(question.getContent())
-                .categoryName(question.getCategory().getName())
-                .commentCount(question.getComments().size())
-                .createTime(question.getCreateTime())
-                .build())
-            .toList();
-
-        Map<String, Object> response = Map.of("questions", questionResponseList);
-        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("get all questions success", response));
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("카테고리 목록 조회를 성공했습니다.", response));
     }
 
 }

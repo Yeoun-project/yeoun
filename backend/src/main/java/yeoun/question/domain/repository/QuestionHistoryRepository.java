@@ -19,17 +19,20 @@ public interface QuestionHistoryRepository extends JpaRepository<QuestionHistory
                 AND DATE(h.createTime) = CURRENT_DATE
             """)
     Optional<QuestionHistory> findTodayHistoryByQuestionIdAndUser(
-            @Param("userId") Long userId,
-            @Param("questionId") Long questionId
+            @Param("userId") final Long userId,
+            @Param("questionId") final Long questionId
     );
 
     @Modifying
     @Query("""
             UPDATE QuestionHistory questionHistory
-            SET questionHistory.comment=:comment
+            SET questionHistory.comment=:comment,
+                questionHistory.commentTime=CURRENT_TIMESTAMP
             WHERE questionHistory.question.id = :questionId
+                AND questionHistory.user.id = :userId
             """)
     void addCommentToTodayQuestion(
+            @Param("userId") final Long userId,
             @Param("questionId") final Long questionId,
             @Param("comment") final String comment
     );
@@ -39,17 +42,5 @@ public interface QuestionHistoryRepository extends JpaRepository<QuestionHistory
         + "left join fetch qh.user "
         + "where qh.id = :id")
     Optional<QuestionHistory> findById(@Param("id") Long id);
-
-    @Query("""
-        select qh from QuestionHistory qh 
-        left join fetch qh.question q
-        where qh.user.id = :userId and qh.comment is not null order by qh.createTime desc
-        """)
-    List<QuestionHistory> findAllByUserId(@Param("userId") long userId);
-
-    @Query("select qh from QuestionHistory qh "
-        + "left join fetch qh.question "
-        + "where qh.id = :questionHistoryId and qh.user.id = :userId")
-    Optional<QuestionHistory> findByIdWithQuestionAndUser(@Param("userId") Long userId, @Param("questionHistoryId") Long questionHistoryId);
 
 }

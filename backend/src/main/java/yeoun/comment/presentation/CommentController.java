@@ -1,5 +1,6 @@
 package yeoun.comment.presentation;
 
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -26,31 +27,29 @@ public class CommentController {
             @PageableDefault(sort = "createTime", direction = Sort.Direction.ASC) Pageable pageable
     ) {
         Long userId = JwtService.getUserIdFromAuthentication();
-        CommentListResponse response = commentService.getAllComments(questionId, userId, pageable);
-
-        return ResponseEntity.ok(new SuccessResponse("success get all comments", response));
+        CommentListResponse commentListResponse = commentService.getAllComments(questionId, userId, pageable);
+        return ResponseEntity.ok(
+                new SuccessResponse("댓글 목록 조회를 성공했습니다.", commentListResponse));
     }
 
     @PostMapping("/{questionId}")
     public ResponseEntity<?> addComment(
             @PathVariable("questionId") Long questionId,
-            @RequestBody SaveCommentRequest commentRequestDto) {
-
-        // check user
+            @RequestBody @Valid SaveCommentRequest commentRequestDto
+    ) {
         Long userId = JwtService.getUserIdFromAuthentication();
-
         commentRequestDto.setUserId(userId);
         commentRequestDto.setQuestionId(questionId);
-
-        // add comment
         commentService.saveComment(commentRequestDto);
-
-        // response
-        return ResponseEntity.status(HttpStatus.CREATED).body(new SuccessResponse("Add comment success", null));
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                new SuccessResponse("답변 추가를 성공했습니다.", null));
     }
 
     @PutMapping("/{commentId}")
-    public ResponseEntity<?> updateComment(@PathVariable("commentId") Long commentId, @RequestBody SaveCommentRequest commentRequestDto) {
+    public ResponseEntity<?> updateComment(
+            @PathVariable("commentId") Long commentId,
+            @RequestBody @Valid SaveCommentRequest commentRequestDto
+    ) {
 
         Long userId = JwtService.getUserIdFromAuthentication();
 
@@ -59,7 +58,7 @@ public class CommentController {
 
         commentService.updateComment(commentRequestDto);
 
-        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("Updated comment success", null));
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("답변 수정을 성공했습니다.", null));
     }
 
     @DeleteMapping("/{commentId}")
@@ -69,7 +68,7 @@ public class CommentController {
 
         commentService.deleteComment(commentId, userId);
 
-        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("deleted comment success", null));
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("답변 삭제를 성공했습니다.", null));
     }
 
     // 신고하기

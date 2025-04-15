@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+import java.util.Objects;
+
 @ControllerAdvice
 public class CustomExceptionHandler {
 
@@ -25,18 +27,19 @@ public class CustomExceptionHandler {
         boolean isMissingParams = false;
 
         for (FieldError error : e.getBindingResult().getFieldErrors()) {
-            // 필수 입력값 누락 (@NotNull, @NotEmpty, @NotBlank)
-            if (error.getCode().equals("NotNull") || error.getCode().equals("NotEmpty") || error.getCode().equals("NotBlank")) {
+            if (Objects.requireNonNull(error.getCode()).equals("NotNull") || error.getCode().equals("NotEmpty") || error.getCode().equals("NotBlank")) {
                 isMissingParams = true;
             }
         }
 
+        String errorMessage = Objects.requireNonNull(e.getBindingResult().getFieldError()).getDefaultMessage();
+
         if (isMissingParams) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ErrorResponse("MISSING_PARAMETER", "필수 파라미터를 입력하세요"));
+                    .body(new ErrorResponse("MISSING_PARAMETER", errorMessage != null ? errorMessage : "필수 파라미터를 입력하세요"));
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ErrorResponse("INVALID_PARAMETER", "파라미터 값이 잘못되었습니다"));
+                    .body(new ErrorResponse("INVALID_PARAMETER", errorMessage != null ? errorMessage : "파라미터 값이 잘못되었습니다"));
         }
     }
 
