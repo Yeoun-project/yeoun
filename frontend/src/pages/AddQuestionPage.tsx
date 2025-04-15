@@ -1,7 +1,7 @@
 import { useSearchParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
-import BackArrow from '../components/common/BackArrow';
+import BackArrowButton from '../components/button/BackArrowButton';
 import { addUserQuestion } from '../services/api/question/addQuestion';
 
 import Dropdown from '../components/dropdown/Dropdown';
@@ -91,7 +91,7 @@ const categories: Category[] = [
 const AddQuestionPage = () => {
   // query string
   const [searchParams, setSearchParams] = useSearchParams();
-  const selectId = parseInt(searchParams.get('category') || '0');
+  const selectId = parseInt(searchParams.get('category') || '1');
 
   // post request
   const [categoryId, setCategoryId] = useState<number>(selectId);
@@ -132,7 +132,7 @@ const AddQuestionPage = () => {
       <main className="flex min-h-[100svh] flex-col">
         <header className="relative flex justify-center p-6">
           <div className="absolute top-6 left-6">
-            <BackArrow />
+            <BackArrowButton />
           </div>
           <h3 className="w-full text-center">답변목록</h3>
         </header>
