@@ -15,6 +15,7 @@ import java.util.List;
 
 @Repository
 public interface QuestionRepository extends JpaRepository<Question, Long> {
+
     @Query("select q from Question q left join fetch q.user where q.id = :id")
     Optional<Question> findQuestionById(@Param("id") Long id);
 
@@ -51,24 +52,6 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     @Query("select q from Question q left join fetch q.comments where q.user.id = :userId")
     List<Question> findByUserId(@Param("userId")Long userId);
 
-    // 이전에 조회된 적 없는 고정 질문들 중 랜덤 1개의 질문 조회
-    @Query("""
-            SELECT q FROM Question q
-            LEFT JOIN QuestionHistory h ON q.id = h.question.id AND h.user.id = :userId
-            WHERE q.isFixed = true
-            AND h.id IS NULL
-            ORDER BY FUNCTION('UUID') LIMIT 1
-            """)
-    Optional<Question> findRandomFixedQuestionExcludingHistory(@Param("userId") Long userId);
-
-    // 오늘의 질문 조회
-    @Query("""
-            SELECT q FROM Question q
-            LEFT JOIN QuestionHistory h ON q.id = h.question.id AND h.user.id = :userId
-            WHERE DATE(h.createTime) = CURRENT_DATE
-            """)
-    Optional<Question> findTodayQuestion(@Param("userId") Long userId);
-
     // 이전에 조회된 적 없는 인기 질문들 중 랜덤 1개의 질문 조회
     @Query("""
             SELECT q FROM Question q
@@ -93,4 +76,10 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
             @Param("category") String category,
             Pageable pageable
     );
+
+    @Query("select count(*) as count, q.category as category from Question q where DATE(q.createTime) = CURRENT_DATE group by q.category")
+    List<CategoryResponseDao> findCategoriesWithCount();
+
+    Optional<Question> findByIdAndIsFixedIsFalse(Long id);
+
 }
