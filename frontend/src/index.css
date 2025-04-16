@@ -24,8 +24,9 @@
   --color-error: #ff2020;
 
   --animate-spin-first: spin 11s linear infinite;
-  --animate-spin-second: spin 13s linear infinite;
-  --animate-spin-third: spin 20s linear infinite;
+  --animate-spin-cube: spin 17s linear infinite;
+  --animate-spin-cube-reverse: spin 20s linear infinite reverse;
+  --animate-spin-circle-layer: spin 15s linear infinite;
 }
 
 :root {
