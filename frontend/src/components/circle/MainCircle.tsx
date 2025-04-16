@@ -51,7 +51,7 @@ const MainCircle = ({ size = 150, colors }: MainCircleProps) => {
             result="hardAlpha4"
           />
           <feOffset />
-          <feGaussianBlur stdDeviation="2.24" in="hardAlpha4" result="blur4" />
+          <feGaussianBlur stdDeviation="1" in="hardAlpha4" result="blur4" />
           <feColorMatrix
             type="matrix"
             values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
@@ -72,7 +72,7 @@ const MainCircle = ({ size = 150, colors }: MainCircleProps) => {
             result="hardAlpha5"
           />
           <feOffset />
-          <feGaussianBlur stdDeviation="3.84" in="hardAlpha5" result="blur5" />
+          <feGaussianBlur stdDeviation="2" in="hardAlpha5" result="blur5" />
           <feColorMatrix
             type="matrix"
             values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
@@ -93,7 +93,7 @@ const MainCircle = ({ size = 150, colors }: MainCircleProps) => {
             result="hardAlpha6"
           />
           <feOffset />
-          <feGaussianBlur stdDeviation="5.72" in="hardAlpha6" result="blur6" />
+          <feGaussianBlur stdDeviation="4" in="hardAlpha6" result="blur6" />
           <feColorMatrix
             type="matrix"
             values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
