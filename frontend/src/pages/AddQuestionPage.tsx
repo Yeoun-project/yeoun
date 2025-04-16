@@ -5,6 +5,7 @@ import BackArrowButton from '../components/button/BackArrowButton';
 import { addUserQuestion } from '../services/api/question/addQuestion';
 
 import Dropdown from '../components/dropdown/Dropdown';
+import axios from 'axios';
 
 export interface Category {
   category: string,
@@ -120,10 +121,13 @@ const AddQuestionPage = () => {
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await addUserQuestion(content, selectId);
+      const response = await addUserQuestion(content, selectId);
+      console.log(response?.data.message);
     }
     catch(err) {
-      console.error(err);
+      if(axios.isAxiosError(err)) {
+        console.error(err.response?.data.message);
+      }
     }
   }
 
