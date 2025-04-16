@@ -1,17 +1,17 @@
 import { useSearchParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
-import BackArrow from '../components/common/BackArrow';
+import BackArrowButton from '../components/button/BackArrowButton';
 import { addUserQuestion } from '../services/api/question/addQuestion';
 
 import Dropdown from '../components/dropdown/Dropdown';
 
 export interface Category {
-  category: string,
-  id: number, 
-  name: string,
-  examples: string[],
-  color: string,
+  category: string;
+  id: number;
+  name: string;
+  examples: string[];
+  color: string;
 }
 
 const categories: Category[] = [
@@ -29,20 +29,14 @@ const categories: Category[] = [
     category: 'memories',
     id: 2,
     name: '추억과 기억',
-    examples: [
-        '잊을 수 없는 여행의 순간이 있나요?', 
-        '특별한 의미가 담긴 물건이 있나요?'
-    ],
+    examples: ['잊을 수 없는 여행의 순간이 있나요?', '특별한 의미가 담긴 물건이 있나요?'],
     color: '#D88511',
   },
   {
     category: 'selfReflection',
     id: 3,
     name: '자기성찰',
-    examples: [
-        '요즘 가장 몰입하고 있는 일이 있나요?', 
-        '가장 큰 영향을 받은 경험은 무엇인가요?'
-    ],
+    examples: ['요즘 가장 몰입하고 있는 일이 있나요?', '가장 큰 영향을 받은 경험은 무엇인가요?'],
     color: '#19B70B',
   },
   {
@@ -60,10 +54,7 @@ const categories: Category[] = [
     category: 'mindAndEmotions',
     id: 5,
     name: '마음과 감정',
-    examples: [
-        '기분이 좋아지는 작은 습관이 있나요?', 
-        '요즘 가장 많이 느끼는 감정은 무엇인가요?'
-    ],
+    examples: ['기분이 좋아지는 작은 습관이 있나요?', '요즘 가장 많이 느끼는 감정은 무엇인가요?'],
     color: '#E52323',
   },
   {
@@ -97,7 +88,7 @@ const AddQuestionPage = () => {
   const [categoryId, setCategoryId] = useState<number>(selectId);
   const [content, setContent] = useState<string>('');
 
-  // dropdown 
+  // dropdown
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState(
     categories.find((cat) => cat.id === categoryId) || categories[0]
@@ -121,25 +112,24 @@ const AddQuestionPage = () => {
     e.preventDefault();
     try {
       await addUserQuestion(content, selectId);
-    }
-    catch(err) {
+    } catch (err) {
       console.error(err);
     }
-  }
+  };
 
   return (
     <>
       <main className="flex min-h-[100svh] flex-col">
         <header className="relative flex justify-center p-6">
           <div className="absolute top-6 left-6">
-            <BackArrow />
+            <BackArrowButton />
           </div>
           <h3 className="w-full text-center">답변목록</h3>
         </header>
         {/* Dropdown */}
         <div className="flex h-55 flex-col justify-between p-6">
           <h1>질문 카테고리 설정</h1>
-          <Dropdown 
+          <Dropdown
             isOpen={isOpen}
             onClick={onClick}
             handleSelect={handleSelect}
@@ -148,31 +138,30 @@ const AddQuestionPage = () => {
             categoryId={categoryId}
           />
         </div>
-        <div className='font-desc w-full p-6 text-white'>
+        <div className="font-desc w-full p-6 text-white">
           <form
-            id='add-question' onSubmit={(e) => {onSubmit(e)}}
-            className='h-[192px]'
+            id="add-question"
+            onSubmit={(e) => {
+              onSubmit(e);
+            }}
+            className="h-[192px]"
           >
-              <textarea 
-                value={content}
-                name="comment" 
-                id="comment"
-                onChange={(e) => setContent(e.target.value)}
-                maxLength={30}
-                placeholder='사용자들의 생각을 듣고 싶은 의미있는 질문을 작성해주세요.'
-                className='w-full !h-[160px] rounded-[4px] bg-[#ffffff1a] p-5 
-                resize-none focus:outline-none placeholder:text-white
-                border border-[#99999999]'
-              />
-              <div className="mt-1 text-right text-sm text-white">
-                {content.length} / 30
-              </div>
+            <textarea
+              value={content}
+              name="comment"
+              id="comment"
+              onChange={(e) => setContent(e.target.value)}
+              maxLength={30}
+              placeholder="사용자들의 생각을 듣고 싶은 의미있는 질문을 작성해주세요."
+              className="!h-[160px] w-full resize-none rounded-[4px] border border-[#99999999] bg-[#ffffff1a] p-5 placeholder:text-white focus:outline-none"
+            />
+            <div className="mt-1 text-right text-sm text-white">{content.length} / 30</div>
           </form>
         </div>
-        <div className='w-full p-6 absolute bottom-0'>
-          <button 
-            form='add-question'
-            className='font-desc w-full h-[60px] cursor-pointer rounded-xl bg-white py-4 font-bold text-black'
+        <div className="absolute bottom-0 w-full p-6">
+          <button
+            form="add-question"
+            className="font-desc h-[60px] w-full cursor-pointer rounded-xl bg-white py-4 font-bold text-black"
           >
             질문 등록하기
           </button>
