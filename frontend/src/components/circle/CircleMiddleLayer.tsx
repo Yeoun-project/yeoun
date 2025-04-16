@@ -41,11 +41,28 @@ const CircleMiddleLayer = ({ size = 150, animate = false, colors }: CircleLayerP
           filterUnits="userSpaceOnUse"
           colorInterpolationFilters="sRGB"
         >
-          <feGaussianBlur stdDeviation="2" />
           <feBlend
             mode="normal"
-            in2="effect2_dropShadow_98_1050"
-            result="effect3_dropShadow_98_1050"
+            in2="effect1_dropShadow_98_1050"
+            result="effect2_dropShadow_98_1050"
+          />
+
+          <feOffset />
+          <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0" />
+
+          <feColorMatrix
+            in="SourceAlpha"
+            type="matrix"
+            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+            result="hardAlpha"
+          />
+          <feOffset />
+          <feGaussianBlur stdDeviation="1" />
+          <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0" />
+          <feBlend
+            mode="normal"
+            in2="effect3_dropShadow_98_1050"
+            result="effect4_dropShadow_98_1050"
           />
           <feColorMatrix
             in="SourceAlpha"
@@ -53,15 +70,23 @@ const CircleMiddleLayer = ({ size = 150, animate = false, colors }: CircleLayerP
             values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
             result="hardAlpha"
           />
-
-          <feGaussianBlur stdDeviation="2" />
+          <feOffset />
+          <feGaussianBlur stdDeviation="1" />
           <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0" />
           <feBlend
             mode="normal"
             in2="effect4_dropShadow_98_1050"
             result="effect5_dropShadow_98_1050"
           />
-
+          <feColorMatrix
+            in="SourceAlpha"
+            type="matrix"
+            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+            result="hardAlpha"
+          />
+          <feOffset />
+          <feGaussianBlur stdDeviation="3" />
+          <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0" />
           <feBlend
             mode="normal"
             in2="effect5_dropShadow_98_1050"
