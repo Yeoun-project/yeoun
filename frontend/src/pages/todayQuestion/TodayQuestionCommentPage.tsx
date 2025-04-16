@@ -63,7 +63,7 @@ const TodayQuestionCommentPage = () => {
           </div>
         </div>
         {/* Form Submit Button */}
-        <BasicButton form="today-question">답글 작성완료</BasicButton>
+        <BasicButton form="today-question">답글 등록하기</BasicButton>
       </main>
     </>
   );
