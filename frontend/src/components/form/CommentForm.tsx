@@ -13,12 +13,21 @@ const CommentForm = ({
   commentValue,
   onChange,
 }: CommentFormProps) => {
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    // maxLength 한글 인식 이슈
+    if (e.target.value.length > maxValue) {
+      e.target.value = e.target.value.slice(0, maxValue);
+    }
+
+    onChange(e);
+  };
+
   return (
     <form className="z-10 w-full" id={formId} onSubmit={(e) => onSubmit(e)}>
       <div className="relative z-10">
         <textarea
           value={commentValue}
-          onChange={(e) => onChange(e)}
+          onChange={(e) => handleChange(e)}
           name="comment"
           id="comment"
           maxLength={maxValue}
