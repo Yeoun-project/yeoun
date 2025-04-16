@@ -84,7 +84,7 @@ const QuestionPage = () => {
       <ul className="no-scrollbar mb-6 flex cursor-pointer justify-evenly overflow-x-scroll overflow-y-hidden">
         {QuestionCategoryList.map((category, idx) => (
           <li key={category.category} onClick={() => setCurrentCarousel(idx)}>
-            <Circle category={category.category as QuestionCategory} size={42} animate />
+            <Circle category={category.category as QuestionCategory} size={42} />
           </li>
         ))}
       </ul>
