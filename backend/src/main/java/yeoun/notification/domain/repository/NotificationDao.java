@@ -1,12 +1,12 @@
 package yeoun.notification.domain.repository;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import yeoun.question.domain.Question;
 
 public interface NotificationDao {
     Question getQuestion();
     String getType();
-    Date getCreatedAt();
+    LocalDateTime getCreatedAt();
     Integer getCount();
     String getSender();
 }
