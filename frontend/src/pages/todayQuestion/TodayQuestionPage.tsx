@@ -17,21 +17,22 @@ const TodayQuestionPage = () => {
   return (
     <>
       <main className="flex min-h-[100svh] flex-col items-center justify-between p-6 pb-[100px]">
-        <div aria-hidden className="animate-spin-second absolute top-[15%] right-[10%]">
+        <div aria-hidden className="animate-spin-cube absolute top-[10%] right-[13%]">
           <Squre size={50} />
         </div>
-        <div aria-hidden className="animate-spin-third absolute bottom-[23%] left-[8%]">
+        <div aria-hidden className="animate-spin-cube-reverse absolute bottom-[20%] left-[8%]">
           <Squre size={70} />
         </div>
         <header className="w-full">
           <TopNavBar />
-
         </header>
 
         {/* Question */}
         <Link to={'/today-question/comment'}>
           <Circle size={300} animate>
-            <p className="text-blur px-8 text-xl break-keep text-black">{todayQuestion.content}</p>
+            <p className="text-blur text-black-primary px-8 text-xl break-keep">
+              {todayQuestion.content}
+            </p>
           </Circle>
         </Link>
         <p>질문을 눌러 답변을 달아주세요!</p>

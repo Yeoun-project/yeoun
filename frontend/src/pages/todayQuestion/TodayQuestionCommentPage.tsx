@@ -1,5 +1,3 @@
-/* eslint-disable react-refresh/only-export-components */
-
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -63,7 +61,7 @@ const TodayQuestionCommentPage = () => {
           </div>
         </div>
         {/* Form Submit Button */}
-        <BasicButton form="today-question">답글 작성완료</BasicButton>
+        <BasicButton form="today-question">답변 등록하기</BasicButton>
       </main>
     </>
   );
