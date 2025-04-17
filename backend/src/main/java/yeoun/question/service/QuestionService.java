@@ -3,11 +3,11 @@ package yeoun.question.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
-import java.util.Optional;
 
 import jakarta.persistence.EntityManager;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.transaction.annotation.Transactional;
 import yeoun.question.dto.request.AddQuestionRequest;
 import yeoun.question.domain.Category;
 import yeoun.question.domain.Question;
@@ -17,8 +17,6 @@ import yeoun.exception.CustomException;
 import yeoun.exception.ErrorCode;
 import yeoun.question.domain.repository.CategoryRepository;
 import yeoun.question.domain.repository.QuestionRepository;
-import yeoun.user.domain.repository.UserRepository;
-import jakarta.transaction.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -76,7 +74,7 @@ public class QuestionService {
                 .build());
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public void deleteQuestion(Long questionId, Long userId) {
         Question question = questionRepository.findQuestionById(questionId)
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_PARAMETER, "Invalid question ID"));
@@ -87,7 +85,7 @@ public class QuestionService {
         questionRepository.delete(question);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public QuestionListResponse getAllQuestions(String category, Pageable pageable) {
         LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
         LocalDateTime endOfDay = startOfDay.plusDays(1);
@@ -106,7 +104,7 @@ public class QuestionService {
         return new QuestionListResponse(questionResponseList, questionSlice.hasNext());
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public QuestionDetailResponse getQuestionDetail(Long userId, Long questionId) {
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_PARAMETER, "Invalid question ID"));
@@ -117,7 +115,7 @@ public class QuestionService {
         return QuestionDetailResponse.of(question, isAuthor);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public QuestionListResponse getMyQuestions(Long userId, Pageable pageable) {
         // todo 추후 여기도 페이징 조회 처리
         List<Question> questions = questionRepository.findByUserId(userId);
@@ -127,7 +125,7 @@ public class QuestionService {
         return new QuestionListResponse(questionResponses, false);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public CategoryListResponse getAllCategories() {
         List<Category> categories = categoryRepository.findAll();
         List<CategoryResponse> categoryResponses = categories.stream()
@@ -136,11 +134,12 @@ public class QuestionService {
         return new CategoryListResponse(categoryResponses);
     }
 
+    @Transactional(readOnly = true)
     public Slice<Question> getQuestionUserAnswered(Long userId, String category, Pageable pageable) {
         return questionRepository.findAllCommentedQuestionsByUserIdAndCategory(userId, category, pageable);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Boolean isExistQuestion(Long questionId) {
         return questionRepository.findQuestionById(questionId).isPresent();
     }
