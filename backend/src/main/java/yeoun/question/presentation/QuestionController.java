@@ -4,7 +4,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import yeoun.common.SuccessResponse;
-import yeoun.question.domain.Question;
 import yeoun.question.dto.request.AddQuestionRequest;
 import yeoun.question.dto.response.QuestionDetailResponse;
 import yeoun.question.dto.response.QuestionListResponse;
