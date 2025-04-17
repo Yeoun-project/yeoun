@@ -11,15 +11,18 @@ import yeoun.question.domain.Category;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class CategoryResponse {
 
-    final private Long id;
-    final private String name;
+    private final Long id;
+    private final String name;
+    private final Long totalQuestions;
 
     public static CategoryResponse of(
-            Category category
+            Category category,
+            Long totalQuestions
     ) {
         return CategoryResponse.builder()
                 .id(category.getId())
                 .name(category.getName())
+                .totalQuestions(totalQuestions)
                 .build();
     }
 

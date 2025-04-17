@@ -4,7 +4,7 @@ interface BackArrowProps {
   label?: string;
 }
 
-const BackArrow = ({ label }: BackArrowProps) => {
+const BackArrowButton = ({ label }: BackArrowProps) => {
   const navigate = useNavigate();
   return (
     <button
@@ -16,4 +16,4 @@ const BackArrow = ({ label }: BackArrowProps) => {
   );
 };
 
-export default BackArrow;
+export default BackArrowButton;

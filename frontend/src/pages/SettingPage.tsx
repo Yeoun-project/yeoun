@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState } from 'react';
 
-import BackArrow from "../components/common/BackArrow";
-import TabNav from "../components/TabNav";
+import BottomTabBar from '../components/nav/BottomTabBar';
+import BackArrowButton from '../components/button/BackArrowButton';
 
 const SettingPage = () => {
   const [activate, setActivate] = useState(true);
@@ -13,54 +13,51 @@ const SettingPage = () => {
         {/* Header */}
         <header className="relative flex justify-center p-6">
           <div className="absolute top-6 left-6">
-            <BackArrow />
+            <BackArrowButton />
           </div>
           <h3 className="w-full text-center">답변목록</h3>
         </header>
-        <ul className="w-full font-desc">
+        <ul className="font-desc w-full">
           <li
-            onClick={() => { setLogin(!isLogin); }}
-            className="border-b border-[#AAAAAA] cursor-pointer overflow-hidden"
+            onClick={() => {
+              setLogin(!isLogin);
+            }}
+            className="cursor-pointer overflow-hidden border-b border-[#AAAAAA]"
           >
             <div className="px-6 py-4.5 transition-transform duration-150 active:shadow-inner">
-              {isLogin ? "로그아웃" : "로그인"}
+              {isLogin ? '로그아웃' : '로그인'}
             </div>
           </li>
 
-          {isLogin && <li className="flex flex-row justify-between items-center border-b border-[#AAAAAA]">
-            <div className="px-6 py-4.5">
-              알림
-            </div>
-            <div className="px-6 py-4">
-              <button 
-                className={`w-[40px] h-[24px] p-[4px] flex items-center rounded-full transition-colors duration-300 
-                ${activate ? "bg-[#FC90D1]" : "bg-[#F5F5F5] border border-[#D4D4D4]"}`}
-                onClick={() => { setActivate(!activate) }}
-              >
-                <div
-                  className={`w-[16px] h-[16px]  flex items-center rounded-full bg-white shadow-md transform transition-transform duration-300 
-                    ${activate ? "translate-x-[16px] bg-[url(/icons/check.svg)] bg-no-repeat bg-center" : "translate-x-0 bg-[url(/icons/Union.svg)] bg-no-repeat bg-center"}`}
+          {isLogin && (
+            <li className="flex flex-row items-center justify-between border-b border-[#AAAAAA]">
+              <div className="px-6 py-4.5">알림</div>
+              <div className="px-6 py-4">
+                <button
+                  className={`flex h-[24px] w-[40px] items-center rounded-full p-[4px] transition-colors duration-300 ${activate ? 'bg-[#FC90D1]' : 'border border-[#D4D4D4] bg-[#F5F5F5]'}`}
+                  onClick={() => {
+                    setActivate(!activate);
+                  }}
                 >
-                </div>
-              </button>
-            </div>
-          </li>}
-          <li className="flex flex-row justify-between px-6 py-4.5 border-b border-[#AAAAAA]">
-            <div>
-              버전정보
-            </div>
-            <div>
-              1.0.0
-            </div>
+                  <div
+                    className={`flex h-[16px] w-[16px] transform items-center rounded-full bg-white shadow-md transition-transform duration-300 ${activate ? 'translate-x-[16px] bg-[url(/icons/check.svg)] bg-center bg-no-repeat' : 'translate-x-0 bg-[url(/icons/Union.svg)] bg-center bg-no-repeat'}`}
+                  ></div>
+                </button>
+              </div>
+            </li>
+          )}
+          <li className="flex flex-row justify-between border-b border-[#AAAAAA] px-6 py-4.5">
+            <div>버전정보</div>
+            <div>1.0.0</div>
           </li>
-          <li className="border-b border-[#AAAAAA] cursor-pointer">
+          <li className="cursor-pointer border-b border-[#AAAAAA]">
             <div className="px-6 py-4.5 transition-transform duration-150 active:shadow-inner">
               문의하기
             </div>
           </li>
         </ul>
       </main>
-      <TabNav />
+      <BottomTabBar />
     </>
   );
 };

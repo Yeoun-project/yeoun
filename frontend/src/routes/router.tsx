@@ -7,6 +7,7 @@ import PrivateRoute from './PrivateRoute.tsx';
 
 import HomePage from '../pages/HomePage.tsx';
 import QuestionPage from '../pages/QuestionPage.tsx';
+import AddQuestionPage from '../pages/AddQuestionPage.tsx';
 import SettingPage from '../pages/SettingPage.tsx';
 import MyActivityPage from '../pages/MyActivityPage.tsx';
 
@@ -73,7 +74,11 @@ const router = createBrowserRouter([
                 index: true,
                 element: <QuestionPage />,
               },
-            ],
+              {
+                path: '/question/add-question',
+                element: <AddQuestionPage />,
+              },
+            ], 
           },
           { path: '/my-activity', element: <MyActivityPage /> },
         ],
