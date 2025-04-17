@@ -1,6 +1,7 @@
 package yeoun.question.domain;
 
 import jakarta.persistence.*;
+import java.util.Date;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,8 +23,11 @@ public class QuestionHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(columnDefinition = "varchar(500)")
     private String comment;
+
+    @Column
+    private LocalDateTime commentTime;
 
     @CreatedDate
     private final LocalDateTime createTime = LocalDateTime.now();
@@ -37,9 +41,10 @@ public class QuestionHistory {
     private Question question;
 
     @Builder
-    public QuestionHistory(String comment, User user, Question question) {
-        this.comment = comment;
+    public QuestionHistory(Long id, User user, Question question, String comment) {
+        this.id = id;
         this.user = user;
         this.question = question;
+        this.comment = comment;
     }
 }

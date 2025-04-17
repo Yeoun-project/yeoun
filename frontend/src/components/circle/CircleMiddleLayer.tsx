@@ -8,12 +8,12 @@ const CircleMiddleLayer = ({ size = 150, animate = false, colors }: CircleLayerP
     <svg
       width={size}
       height={size}
-      viewBox="0 0 171 166"
+      viewBox="3 2 170 160"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={`absolute z-3 ${animate && 'animate-spin-third'}`}
+      className={`absolute z-3 ${animate && 'animate-spin-circle-layer will-change-transform'}`}
     >
-      <g id="Vector 16" opacity="0.6" filter="url(#filter0_dddddd_98_1051)">
+      <g id="Vector 16" opacity="0.4" filter="url(#filter0_dddddd_98_1051)">
         <path
           d="M46.4178 129.868C-12.5789 72.3586 21.8358 41.5393 46.4178 33.3184C107.489 2.67166 134.238 4.77407 150.37 60.1646C166.502 115.555 150.37 134.315 129.464 143.776C108.559 153.237 82.3854 160.514 46.4178 129.868Z"
           fill="white"
@@ -41,48 +41,63 @@ const CircleMiddleLayer = ({ size = 150, animate = false, colors }: CircleLayerP
           filterUnits="userSpaceOnUse"
           colorInterpolationFilters="sRGB"
         >
-          <feFlood floodOpacity="0" result="BackgroundImageFix" />
+          <feBlend
+            mode="normal"
+            in2="effect1_dropShadow_98_1050"
+            result="effect2_dropShadow_98_1050"
+          />
+
+          <feOffset />
+          <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0" />
+
           <feColorMatrix
             in="SourceAlpha"
             type="matrix"
             values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-            result="hardAlpha1"
+            result="hardAlpha"
           />
           <feOffset />
-          <feGaussianBlur stdDeviation="3.84" in="hardAlpha1" result="blur1" />
-          <feColorMatrix
-            type="matrix"
-            values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
-            in="blur1"
-            result="colorBlur1"
-          />
+          <feGaussianBlur stdDeviation="1" />
+          <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0" />
           <feBlend
             mode="normal"
-            in="colorBlur1"
-            in2="BackgroundImageFix"
-            result="effect1_simplified2"
+            in2="effect3_dropShadow_98_1050"
+            result="effect4_dropShadow_98_1050"
           />
           <feColorMatrix
             in="SourceAlpha"
             type="matrix"
             values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-            result="hardAlpha2"
+            result="hardAlpha"
           />
           <feOffset />
-          <feGaussianBlur stdDeviation="1" in="hardAlpha2" result="blur2" />
+          <feGaussianBlur stdDeviation="1" />
+          <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0" />
+          <feBlend
+            mode="normal"
+            in2="effect4_dropShadow_98_1050"
+            result="effect5_dropShadow_98_1050"
+          />
           <feColorMatrix
+            in="SourceAlpha"
             type="matrix"
-            values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
-            in="blur2"
-            result="colorBlur2"
+            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+            result="hardAlpha"
+          />
+          <feOffset />
+          <feGaussianBlur stdDeviation="3" />
+          <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0" />
+          <feBlend
+            mode="normal"
+            in2="effect5_dropShadow_98_1050"
+            result="effect6_dropShadow_98_1050"
           />
           <feBlend
             mode="normal"
-            in="colorBlur2"
-            in2="effect1_simplified2"
-            result="effect2_simplified2"
+            in="SourceGraphic"
+            in2="effect6_dropShadow_98_1050"
+            result="shape"
           />
-          <feBlend mode="normal" in="SourceGraphic" in2="effect2_simplified2" result="shape" />
         </filter>
         <radialGradient
           id={`paint0_radial_98_1051_${uniqueId}`}
