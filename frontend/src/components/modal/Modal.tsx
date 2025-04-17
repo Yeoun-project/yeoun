@@ -28,7 +28,7 @@ const Modal = ({ children }: ModalProps) => {
       ref={modalRef}
       onClose={() => closeModal()}
     >
-      <div className="w-full rounded-[20px] bg-white px-12 py-6">{children}</div>
+      <div className="w-full rounded-[20px] bg-white px-8 py-6">{children}</div>
     </dialog>,
     document.getElementById('modal') as HTMLDivElement
   );
@@ -42,7 +42,7 @@ const ModalContent = ({ children }: ModalProps) => {
   return <main className="mb-3">{children}</main>;
 };
 const ModalFooter = ({ children }: ModalProps) => {
-  return <div className="flex gap-3">{children}</div>;
+  return <div className="flex px-4 gap-3">{children}</div>;
 };
 export default Modal;
 

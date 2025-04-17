@@ -1,10 +1,18 @@
+import axios from 'axios';
+
 import { useSearchParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
-import BackArrowButton from '../components/button/BackArrowButton';
 import { addUserQuestion } from '../services/api/question/addQuestion';
 
+import BackArrowButton from '../components/button/BackArrowButton';
 import Dropdown from '../components/dropdown/Dropdown';
+
+import useToastStore from '../store/useToastStore';
+
+import useModalStore from '../store/useModalStore';
+import Modal from '../components/modal/Modal';
+import RegisterModal from '../components/modal/RegisterModal';
 
 export interface Category {
   category: string;
@@ -80,25 +88,37 @@ const categories: Category[] = [
 ];
 
 const AddQuestionPage = () => {
+  //#region State
   // query string
   const [searchParams, setSearchParams] = useSearchParams();
-  const selectId = parseInt(searchParams.get('category') || '0');
+  const selectId = parseInt(searchParams.get('category') || '1');
 
   // post request
-  const [categoryId, setCategoryId] = useState<number>(selectId);
   const [content, setContent] = useState<string>('');
+  const [categoryId, setCategoryId] = useState<number>(selectId);
+
+  // 금지어 error state
+  const [hasError, setHasError] = useState(false);
+  const toast = useToastStore();
+
+  // modal
+  const modal = useModalStore();
+  const [first, setFirst] = useState(true);
+  const [second, setSecond] = useState(false);
 
   // dropdown
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState(
     categories.find((cat) => cat.id === categoryId) || categories[0]
   );
+  //#endregion
 
   // categoryId가 바뀔 때마다 querystring도 업데이트
   useEffect(() => {
     setSearchParams({ category: String(categoryId) });
   }, [categoryId]);
 
+  //#region function
   const onClick = () => setIsOpen((prev) => !prev);
 
   const handleSelect = (cat: Category) => {
@@ -107,15 +127,58 @@ const AddQuestionPage = () => {
     setIsOpen(false);
   };
 
-  // post
+  //#region 질문하기 버튼 클릭 시
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await addUserQuestion(content, selectId);
+      // 수정 필요
+      const response = await addUserQuestion(content, selectId);
+      console.log(response?.data);
+
+      // 버튼 클릭 시 첫 번째 모달 출력
+      modal.openModal();
+      setFirst(true);
+      setSecond(false);
     } catch (err) {
-      console.error(err);
+      if (axios.isAxiosError(err)) {
+        const response = err.response?.data;
+        setHasError(true);
+
+        if (response.code === 'MISSING_PARAMETER') {
+          toast.addToast.error({
+            title: '질문 등록 실패',
+            message: `질문을 등록해주세요!`,
+          });
+        }
+        if (response.code === 'BAD_REQUEST') {
+          toast.addToast.error({
+            title: '질문 등록 실패',
+            message: `질문에 제한된 표현이 포함되어 있어요.
+            수정 후 다시 등록해 주세요!`,
+          });
+        }
+      }
     }
   };
+
+  // 두 번째 모달 등록 버튼
+  const confirmModal = async () => {
+    const response = await addUserQuestion(content, selectId);
+    console.log(response?.data);
+
+    // 등록 후 초기화
+    setSecond(false);
+    setContent('');
+  };
+  //#endregion
+
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (hasError) {
+      setHasError(false);
+    }
+    setContent(e.target.value);
+  };
+  //#endregion
 
   return (
     <>
@@ -150,14 +213,49 @@ const AddQuestionPage = () => {
               value={content}
               name="comment"
               id="comment"
-              onChange={(e) => setContent(e.target.value)}
+              onChange={handleChange}
               maxLength={30}
               placeholder="사용자들의 생각을 듣고 싶은 의미있는 질문을 작성해주세요."
-              className="!h-[160px] w-full resize-none rounded-[4px] border border-[#99999999] bg-[#ffffff1a] p-5 placeholder:text-white focus:outline-none"
+              className={`!h-[160px] w-full resize-none rounded-[4px] border p-5 placeholder:text-white focus:outline-none ${
+                hasError
+                  ? 'border-[#FF202080] bg-[#FF20200D] focus:border-[#FF202080]'
+                  : 'border-[#99999999] bg-[#ffffff1a]'
+              }`}
             />
             <div className="mt-1 text-right text-sm text-white">{content.length} / 30</div>
           </form>
         </div>
+        {first && (
+          <Modal>
+            <Modal.Header>
+              <Modal.Title>이대로 등록하시겠습니까?</Modal.Title>
+              <Modal.SubTitle>
+                작성한 질문은 한 번 등록하면{' '}
+                <span className="text-[#FF2020]">수정이나 삭제가 불가능합니다!</span>
+              </Modal.SubTitle>
+            </Modal.Header>
+            <Modal.Content>
+              <div className="font-desc h-[200px] rounded-[8px] border border-[#919191] px-5 py-3 text-[#1A1A1A]">
+                {content}
+              </div>
+              <div className="font-desc mt-2 text-right text-sm text-[#6D6D6D]">
+                {content.length} / 30
+              </div>
+            </Modal.Content>
+            <Modal.Footer>
+              <Modal.CancleButton>수정</Modal.CancleButton>
+              <Modal.ConfirmButton
+                onConfirm={() => {
+                  setFirst(false);
+                  setSecond(true);
+                }}
+              >
+                등록
+              </Modal.ConfirmButton>
+            </Modal.Footer>
+          </Modal>
+        )}
+        {second && <RegisterModal value="질문" onSubmit={confirmModal} />}
         <div className="absolute bottom-0 w-full p-6">
           <button
             form="add-question"
