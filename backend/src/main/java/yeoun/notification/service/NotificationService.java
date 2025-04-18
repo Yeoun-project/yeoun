@@ -1,10 +1,11 @@
 package yeoun.notification.service;
 
 import java.util.Optional;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import yeoun.notification.domain.NotificationType;
-import yeoun.notification.domain.repository.NotificationDao;
-import yeoun.notification.dto.response.NotificationResponseDto;
 import yeoun.notification.domain.Notification;
+import yeoun.notification.dto.response.NotificationList;
 import yeoun.question.domain.Question;
 import yeoun.question.domain.repository.QuestionRepository;
 import yeoun.user.domain.User;
@@ -53,16 +54,14 @@ public class NotificationService {
     }
 
     @Transactional
-    public List<NotificationResponseDto> getAllNotifications(Long userId) {
-        List<NotificationDao> daos = notificationRepository.findAllNotifications(userId);
-
-        List<NotificationResponseDto> dtos = daos.stream().map(NotificationResponseDto::of).toList();
+    public Slice<Notification> getAllNotifications(Long userId, Pageable pageable) {
+        Slice<Notification> entitySlice = notificationRepository.findAllNotifications(userId, pageable);
 
         notificationRepository.setReadAll(userId);
 
         sendUnReadNotificationCount(userId);
 
-        return dtos;
+        return entitySlice;
     }
 
     @Transactional
@@ -78,15 +77,24 @@ public class NotificationService {
 
     @Transactional
     public void addNotification(Long senderId, Long receiverId, NotificationType type, Long questionId) {
-        Optional<Question> question = questionRepository.findById(questionId);
+        Question question = questionRepository.findById(questionId).orElseThrow(
+            () -> {throw new CustomException(ErrorCode.NOT_FOUND, "question not found");}
+        );
 
-        if(question.isEmpty())
-            throw new CustomException(ErrorCode.NOT_FOUND, "question not found");
+        if(type.equals(NotificationType.COMMENT_LIKE)){
+            // get old from db where receiverId, questionId, type
+            Optional<Notification> old = notificationRepository.findOldNotification(receiverId, questionId, type.toString());
+            if(old.isPresent()) {
+                notificationRepository.upCountAndUnRead(old.get().getId());
+                return;
+            }
+        }
 
+        //save new notification
         Notification noti = notificationRepository.save(
             Notification.builder()
                 .notificationType(type)
-                .question(question.get())
+                .question(question)
                 .sender(entityManager.getReference(User.class, senderId))
                 .receiver(entityManager.getReference(User.class, receiverId))
                 .isRead(false)

@@ -1,5 +1,7 @@
 package yeoun.notification.domain;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import yeoun.question.domain.Question;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -24,7 +26,7 @@ public class Notification {
     private Long id;
 
     @Column(nullable = false)
-    private NotificationType notificationType;
+    private String notificationType;
 
     @Column(nullable = false)
     private boolean isRead;
@@ -40,17 +42,21 @@ public class Notification {
     @ManyToOne(fetch = FetchType.EAGER)
     private Question question;
 
+    @Column(nullable = false)
+    private Long count = 1L;
+
     @CreatedDate
-    private final Date createdAt = new Date();
+    private final LocalDateTime createdAt = LocalDateTime.now();
 
     @Builder
     public Notification(Long id, String content, boolean isRead,
                         NotificationType notificationType, User receiver, User sender, Question question) {
         this.id = id;
         this.isRead = isRead;
-        this.notificationType = notificationType;
+        this.notificationType = notificationType.toString();
         this.receiver = receiver;
         this.question = question;
         this.sender = sender;
     }
+
 }

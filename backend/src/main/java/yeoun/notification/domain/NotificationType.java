@@ -17,7 +17,7 @@ public enum NotificationType {
         this.content = content;
     }
 
-    public static String getContent(String type, String questionContent, int count, String senderName) {
+    public static String getContent(String type, String questionContent, long count, String senderName) {
         if(count == 1)
             return String.format(NotificationType.valueOf(type).content[0], questionContent, senderName);
         else

@@ -1,12 +1,14 @@
 package yeoun.notification.presentation;
 
-import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.RequestBody;
 import yeoun.common.SuccessResponse;
-import yeoun.notification.dto.response.NotificationResponseDto;
+import yeoun.notification.domain.Notification;
+import yeoun.notification.dto.response.NotificationList;
 import yeoun.question.domain.Question;
 import yeoun.auth.service.JwtService;
 import yeoun.notification.service.NotificationService;
@@ -41,14 +43,12 @@ public class NotificationController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getNotifications() {
+    public ResponseEntity<?> getNotifications(@PageableDefault() final Pageable pageable) {
         Long userId = JwtService.getUserIdFromAuthentication();
 
-        List<NotificationResponseDto> dtoList = notificationService.getAllNotifications(userId);
+        Slice<Notification> entityList = notificationService.getAllNotifications(userId,pageable);
 
-        Map<String, Object> response = Map.of("notifications", dtoList);
-
-        return ResponseEntity.ok().body(new SuccessResponse("success get all notifications", response));
+        return ResponseEntity.ok().body(new SuccessResponse("알람 가져오기 성공", NotificationList.of(entityList)));
     }
 
     @GetMapping("/{questionId}")
