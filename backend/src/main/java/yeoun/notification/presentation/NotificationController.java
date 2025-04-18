@@ -5,15 +5,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestBody;
 import yeoun.common.SuccessResponse;
 import yeoun.notification.domain.Notification;
-import yeoun.notification.dto.response.NotificationList;
+import yeoun.notification.dto.response.NotificationDetailResponse;
+import yeoun.notification.dto.response.NotificationListResponse;
 import yeoun.question.domain.Question;
 import yeoun.auth.service.JwtService;
 import yeoun.notification.service.NotificationService;
 import yeoun.notification.domain.NotificationType;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import yeoun.question.dto.response.QuestionDetailResponse;
 import yeoun.question.presentation.QuestionController;
 
 @RestController
@@ -48,16 +50,22 @@ public class NotificationController {
 
         Slice<Notification> entityList = notificationService.getAllNotifications(userId,pageable);
 
-        return ResponseEntity.ok().body(new SuccessResponse("알람 가져오기 성공", NotificationList.of(entityList)));
+        NotificationListResponse dtoList = NotificationListResponse
+            .builder()
+            .details(entityList.toList())
+            .hasNext(entityList.hasNext())
+            .build();
+
+        return ResponseEntity.ok().body(new SuccessResponse("알람 가져오기 성공", dtoList));
     }
 
     @GetMapping("/{questionId}")
     public ResponseEntity<?> readNotification(@PathVariable("questionId") Long questionId) {
         Long userId = JwtService.getUserIdFromAuthentication();
 
-        Question question = notificationService.getQuestionFromNotification(userId, questionId);
+        QuestionDetailResponse dto = notificationService.getQuestionFromNotification(userId, questionId);
 
-        return questionController.getQuestionDetails(questionId);
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("질문 상세 조회를 성공했습니다.", dto));
     }
 
     @PostMapping("/test")

@@ -1,6 +1,5 @@
 package yeoun.notification.domain;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import yeoun.question.domain.Question;
 import jakarta.persistence.*;
@@ -12,8 +11,6 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.data.annotation.CreatedDate;
 import yeoun.user.domain.User;
-
-import java.util.Date;
 
 @Entity
 @Table(name = "notification")
@@ -46,7 +43,7 @@ public class Notification {
     private Long count = 1L;
 
     @CreatedDate
-    private final LocalDateTime createdAt = LocalDateTime.now();
+    private final LocalDateTime createTime = LocalDateTime.now();
 
     @Builder
     public Notification(Long id, String content, boolean isRead,

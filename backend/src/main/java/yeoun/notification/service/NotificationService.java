@@ -8,6 +8,7 @@ import yeoun.notification.domain.NotificationType;
 import yeoun.notification.domain.Notification;
 import yeoun.question.domain.Question;
 import yeoun.question.domain.repository.QuestionRepository;
+import yeoun.question.dto.response.QuestionDetailResponse;
 import yeoun.user.domain.User;
 import yeoun.exception.CustomException;
 import yeoun.exception.ErrorCode;
@@ -63,14 +64,17 @@ public class NotificationService {
     }
 
     @Transactional
-    public Question getQuestionFromNotification(Long userId, Long questionId) {
+    public QuestionDetailResponse getQuestionFromNotification(Long userId, Long questionId) {
         Question question = notificationRepository.getQuestion(userId, questionId).orElseThrow(
             () -> new CustomException(ErrorCode.NOT_FOUND, "no notification with question id")
         );
 
         notificationRepository.removeByQuestion(userId, questionId);
 
-        return question;
+        boolean isAuthor = false;
+        if (question.getUser() != null) isAuthor = question.getUser().getId().equals(userId);
+
+        return QuestionDetailResponse.of(question, isAuthor);
     }
 
     @Transactional
