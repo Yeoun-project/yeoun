@@ -11,6 +11,6 @@ public class CommentListResponse {
 
     final CommentResponse myComment;
     final List<CommentResponse> comments;
-    final Boolean hasNextPage;
+    final Boolean hasNext;
 
 }

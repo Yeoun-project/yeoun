@@ -1,6 +1,7 @@
 package yeoun.question.domain;
 
 import jakarta.persistence.*;
+import java.util.Date;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -42,10 +43,10 @@ public class Question {
     private List<Comment> comments;
 
     @CreatedDate
-    private final LocalDateTime createTime = LocalDateTime.now();
+    private final Date createTime = new Date();
 
     @Column
-    private LocalDateTime deleteTime;
+    private Date deleteTime;
 
     @Builder
     public Question(Long id, String content, User user, Category category) {

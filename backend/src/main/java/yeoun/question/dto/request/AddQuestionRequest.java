@@ -2,23 +2,19 @@ package yeoun.question.dto.request;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class AddQuestionRequest {
 
-    public Long id;
+    @NotEmpty(message = "질문 내용을 입력해주세요.")
+    private final String content;
 
-    @NotEmpty
-    public String content;
+    @NotNull(message = "카테고리 ID를 입력해주세요.")
+    private final Long categoryId;
 
-    @NotNull
-    public Long categoryId;
-
-    public Long userId;
+    private Long userId;
 
 }

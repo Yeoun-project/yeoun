@@ -13,7 +13,7 @@ import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.data.annotation.CreatedDate;
 import yeoun.user.domain.User;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "notification")
@@ -49,8 +49,10 @@ public class Notification {
     private final LocalDateTime createdAt = LocalDateTime.now();
 
     @Builder
-    public Notification(Long id, String content, boolean isRead,
-                        NotificationType notificationType, User receiver, User sender, Question question) {
+    public Notification(
+            Long id, boolean isRead, NotificationType notificationType,
+            User receiver, User sender, Question question
+    ) {
         this.id = id;
         this.isRead = isRead;
         this.notificationType = notificationType.toString();
