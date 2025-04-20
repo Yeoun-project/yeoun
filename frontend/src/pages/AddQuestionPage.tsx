@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useSearchParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
-import { addUserQuestion } from '../services/api/question/addQuestion';
+import { addUserQuestion, verifiedQuestion } from '../services/api/question/addQuestion';
 
 import BackArrowButton from '../components/button/BackArrowButton';
 import Dropdown from '../components/dropdown/Dropdown';
@@ -131,15 +131,16 @@ const AddQuestionPage = () => {
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      // 수정 필요
-      const response = await addUserQuestion(content, selectId);
-      console.log(response?.data);
+      // 금지어 탐색
+      await verifiedQuestion(content, selectId);
 
+      // 금지어 X
       // 버튼 클릭 시 첫 번째 모달 출력
       modal.openModal();
       setFirst(true);
       setSecond(false);
     } catch (err) {
+      // 금지어 O
       if (axios.isAxiosError(err)) {
         const response = err.response?.data;
         setHasError(true);
