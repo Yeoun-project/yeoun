@@ -2,10 +2,14 @@ import { useState } from 'react';
 
 import BottomTabBar from '../components/nav/BottomTabBar';
 import BackArrowButton from '../components/button/BackArrowButton';
+import useAuthStore from '../store/useAuthStore';
+import { useNavigate } from 'react-router-dom';
+
 
 const SettingPage = () => {
   const [activate, setActivate] = useState(true);
-  const [isLogin, setLogin] = useState(false);
+  const { userType } = useAuthStore();
+  const navigate = useNavigate();
 
   return (
     <>
@@ -20,16 +24,18 @@ const SettingPage = () => {
         <ul className="font-desc w-full">
           <li
             onClick={() => {
-              setLogin(!isLogin);
+              if(userType === 'Guest') {
+                navigate('/login');
+              }
             }}
             className="cursor-pointer overflow-hidden border-b border-[#AAAAAA]"
           >
             <div className="px-6 py-4.5 transition-transform duration-150 active:shadow-inner">
-              {isLogin ? '로그아웃' : '로그인'}
+              {userType === 'User' ? '로그아웃' : '로그인'}
             </div>
           </li>
 
-          {isLogin && (
+          {userType === 'User' && (
             <li className="flex flex-row items-center justify-between border-b border-[#AAAAAA]">
               <div className="px-6 py-4.5">알림</div>
               <div className="px-6 py-4">
@@ -57,7 +63,7 @@ const SettingPage = () => {
           </li>
         </ul>
       </main>
-      <BottomTabBar />
+      {userType === 'User' && <BottomTabBar />}
     </>
   );
 };
