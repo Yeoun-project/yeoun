@@ -184,23 +184,29 @@ const AddQuestionPage = () => {
   return (
     <>
       <main className="flex min-h-[100svh] flex-col">
-        <header className="relative flex justify-center p-6">
+        <header className="relative flex justify-center p-8">
           <div className="absolute top-6 left-6">
             <BackArrowButton />
           </div>
-          <h3 className="w-full text-center">답변목록</h3>
+          <h3 className="w-full text-center">질문작성</h3>
         </header>
-        {/* Dropdown */}
-        <div className="flex h-55 flex-col justify-between p-6">
-          <h1>질문 카테고리 설정</h1>
+        {/* <div className="flex h-60 flex-col justify-between p-6"> */}
+        <div>
+          <h1 className='px-6 mb-4'>질문 카테고리 설정</h1>
           <Dropdown
             isOpen={isOpen}
             onClick={onClick}
             handleSelect={handleSelect}
             categories={categories}
             selected={selected}
-            categoryId={categoryId}
+            location={"w-full px-6 text-white font-desc mb-4"}
           />
+          <ul className="font-desc px-6 flex flex-col list-none gap-1 text-white">
+            <span className="text-[#999999]">(예시)</span>
+            {categories[categoryId - 1]?.examples.map((example, index) => (
+              <li key={index}>"{example}"</li>
+            ))}
+          </ul>
         </div>
         <div className="font-desc w-full p-6 text-white">
           <form
