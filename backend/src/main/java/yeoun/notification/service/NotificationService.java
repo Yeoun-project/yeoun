@@ -1,17 +1,21 @@
 package yeoun.notification.service;
 
-import yeoun.notification.dto.response.NotificationResponse;
+import java.util.Optional;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.transaction.annotation.Transactional;
+import yeoun.notification.domain.NotificationType;
 import yeoun.notification.domain.Notification;
 import yeoun.question.domain.Question;
+import yeoun.question.domain.repository.QuestionRepository;
+import yeoun.question.dto.response.QuestionDetailResponse;
 import yeoun.user.domain.User;
 import yeoun.exception.CustomException;
 import yeoun.exception.ErrorCode;
 import yeoun.notification.domain.repository.NotificationRepository;
 import jakarta.persistence.EntityManager;
-import jakarta.transaction.Transactional;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,11 +26,12 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @RequiredArgsConstructor
 public class NotificationService {
 
-//    @Value("${sse.connection_time}")
+    //    @Value("${sse.connection_time}")
     private final Long SSE_CONNECTION_TIME = Long.MAX_VALUE;
     private final Long SEE_RECONNECTION_TIME = 1000 * 10L; // 10초
 
     private final NotificationRepository notificationRepository;
+    private final QuestionRepository questionRepository;
     private final EntityManager entityManager;
 
     private static HashMap<Long, SseEmitter> emitterMap = new HashMap<>();
@@ -42,44 +47,70 @@ public class NotificationService {
         emitter.onCompletion(() -> { emitterMap.remove(userId); });
         emitterMap.put(userId, emitter);
 
-        sendAllNotifications(emitter, userId);
+        sendUnReadNotificationCount(userId);
 
         return emitter;
     }
 
-    public List<Notification> getAllNotifications(Long userId) {
-        return notificationRepository.getAllNotifications(userId);
+    @Transactional
+    public Slice<Notification> getAllNotifications(Long userId, Pageable pageable) {
+        Slice<Notification> entitySlice = notificationRepository.findAllNotifications(userId, pageable);
+
+        notificationRepository.setReadAll(userId);
+
+        sendUnReadNotificationCount(userId);
+
+        return entitySlice;
     }
 
     @Transactional
-    public Question readNotification(Long userId, Long notificationId) {
-        if (notificationRepository.readNotification(userId, notificationId) != 1)
-            throw new CustomException(ErrorCode.CONFLICT ,String.format("notificationId(%d)'s Author is not userId(%d)", notificationId, userId));
+    public QuestionDetailResponse getQuestionFromNotification(Long userId, Long questionId) {
+        Question question = notificationRepository.getQuestion(userId, questionId).orElseThrow(
+            () -> new CustomException(ErrorCode.NOT_FOUND, "no notification with question id")
+        );
 
-        return notificationRepository.getNotificationQuestionById(notificationId);
+        notificationRepository.removeByQuestion(userId, questionId);
+
+        boolean isAuthor = false;
+        if (question.getUser() != null) isAuthor = question.getUser().getId().equals(userId);
+
+        return QuestionDetailResponse.of(question, isAuthor);
     }
 
-    // Sse 관련 함수들
-    public void addNotification(Long userId, NotificationResponse data) {
-        sendSSEData(emitterMap.get(userId), data);
+    @Transactional
+    public void addNotification(Long senderId, Long receiverId, NotificationType type, Long questionId) {
+        Question question = questionRepository.findById(questionId).orElseThrow(
+            () -> {throw new CustomException(ErrorCode.NOT_FOUND, "question not found");}
+        );
 
-        notificationRepository.save(
+        if(type.equals(NotificationType.COMMENT_LIKE)){
+            // get old from db where receiverId, questionId, type
+            Optional<Notification> old = notificationRepository.findOldNotification(receiverId, questionId, type.toString());
+            if(old.isPresent()) {
+                notificationRepository.upCountAndUnRead(old.get().getId());
+                return;
+            }
+        }
+
+        //save new notification
+        Notification noti = notificationRepository.save(
             Notification.builder()
-                .notificationType(data.getType())
-                .content(data.getContent())
-                .receiver(entityManager.getReference(User.class, userId))
+                .notificationType(type)
+                .question(question)
+                .sender(entityManager.getReference(User.class, senderId))
+                .receiver(entityManager.getReference(User.class, receiverId))
                 .isRead(false)
                 .build()
         );
+
+        sendUnReadNotificationCount(receiverId);
     }
 
-    public void sendAllNotifications(SseEmitter emitter, Long userId) {
-        List<Notification> entityList = notificationRepository.getAllNotifications(userId);
-        List<NotificationResponse> data = entityList.stream()
-            .map(entity -> new NotificationResponse(entity.getId(), entity.getContent(), entity.getNotificationType()))
-            .toList();
+    // Sse 관련 함수들
+    public void sendUnReadNotificationCount(Long userId) {
+        Integer count = notificationRepository.getUnReadNotificationsCount(userId);
 
-        sendSSEData(emitter, data);
+        sendSSEData(emitterMap.get(userId), count);
     }
 
     private void sendSSEData(SseEmitter sseEmitter, Object data) {
