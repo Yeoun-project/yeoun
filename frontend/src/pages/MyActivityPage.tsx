@@ -16,7 +16,7 @@ const MY_PAGE_NAV_PATHS = [
     path: '/my/question',
   },
   {
-    label: '내가 작성한 답변',
+    label: '내가 답변한 질문',
     path: '/my/answer',
   },
 ];
