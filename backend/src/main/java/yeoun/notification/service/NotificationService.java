@@ -1,11 +1,14 @@
 package yeoun.notification.service;
 
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.transaction.annotation.Transactional;
 import yeoun.notification.domain.NotificationType;
 import yeoun.notification.domain.Notification;
+import yeoun.notification.dto.response.NotificationDetailResponse;
+import yeoun.notification.dto.response.NotificationListResponse;
 import yeoun.question.domain.Question;
 import yeoun.question.domain.repository.QuestionRepository;
 import yeoun.question.dto.response.QuestionDetailResponse;
@@ -52,15 +55,18 @@ public class NotificationService {
         return emitter;
     }
 
-    @Transactional
-    public Slice<Notification> getAllNotifications(Long userId, Pageable pageable) {
-        Slice<Notification> entitySlice = notificationRepository.findAllNotifications(userId, pageable);
+    @Transactional(readOnly = true)
+    public NotificationListResponse getAllNotifications(Long userId, Pageable pageable) {
+        Slice<Notification> notifications = notificationRepository.findAllNotifications(userId, pageable);
+        List<NotificationDetailResponse> notificationDetailResponses = notifications.stream()
+                .map(NotificationDetailResponse::of)
+                .toList();
+        NotificationListResponse notificationListResponse = new NotificationListResponse(notificationDetailResponses, notifications.hasNext());
 
         notificationRepository.setReadAll(userId);
-
         sendUnReadNotificationCount(userId);
 
-        return entitySlice;
+        return notificationListResponse;
     }
 
     @Transactional

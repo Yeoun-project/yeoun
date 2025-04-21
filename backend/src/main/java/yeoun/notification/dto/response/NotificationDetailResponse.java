@@ -1,29 +1,36 @@
 package yeoun.notification.dto.response;
 
 import java.time.LocalDateTime;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+
+import lombok.*;
 import yeoun.notification.domain.Notification;
 import yeoun.notification.domain.NotificationType;
 
 @Getter
 @Builder
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class NotificationDetailResponse {
 
-    private Long questionId;
+    private final Long questionId;
 
-    private String content;
+    private final String content;
 
-    private LocalDateTime createTime;
+    private final LocalDateTime createTime;
 
-    public static NotificationDetailResponse of(Notification entity) {
+    public static NotificationDetailResponse of(
+            Notification notification
+    ) {
         return NotificationDetailResponse.builder()
-            .questionId(entity.getQuestion().getId())
-            .content(NotificationType.getContent(entity.getNotificationType(), entity.getQuestion().getContent(), entity.getCount(), entity.getSender().getName()))
-            .createTime(entity.getCreateTime())
+            .questionId(notification.getQuestion().getId())
+            .content(
+                    NotificationType.getContent(
+                            notification.getNotificationType(),
+                            notification.getQuestion().getContent(),
+                            notification.getCount(),
+                            notification.getSender().getName()
+                    )
+            )
+            .createTime(notification.getCreateTime())
             .build();
     }
 
