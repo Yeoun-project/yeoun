@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import useAuthStore from '../../store/useAuthStore';
@@ -23,11 +23,15 @@ const TodayQuestionCommentPage = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await addTodayQuestionComment(userType, value);
+      await addTodayQuestionComment({ questionId: todayQuestion!.id, comment: value });
       return navigate('/today-question');
     } catch (err) {
       console.log(err);
     }
+  };
+
+  const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setValue(e.target.value);
   };
 
   return (
@@ -47,15 +51,16 @@ const TodayQuestionCommentPage = () => {
             <CommentForm
               formId="today-question"
               commentValue={value}
-              onChange={(e) => setValue(e.target.value)}
+              onChange={onChange}
               onSubmit={handleSubmit}
+              maxValue={500}
             />
 
             {/* Backgroun Squre */}
-            <div aria-hidden className="animate-spin-second absolute top-[-15%] right-[-5%]">
+            <div aria-hidden className="animate-spin-cube absolute top-[-15%] right-[-5%]">
               <Squre size={60} />
             </div>
-            <div aria-hidden className="animate-spin-third absolute bottom-[-5%] left-[-5%]">
+            <div aria-hidden className="animate-spin-cube-reverse absolute bottom-[-5%] left-[-5%]">
               <Squre size={80} />
             </div>
           </div>
