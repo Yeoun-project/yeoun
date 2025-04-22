@@ -4,11 +4,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import yeoun.common.SuccessResponse;
-import yeoun.question.domain.Question;
 import yeoun.question.dto.request.AddQuestionRequest;
 import yeoun.question.dto.response.QuestionDetailResponse;
 import yeoun.question.dto.response.QuestionListResponse;
 import yeoun.auth.service.JwtService;
+import yeoun.question.service.ForbiddenWordService;
 import yeoun.question.service.QuestionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -24,12 +23,19 @@ import java.util.Map;
 public class QuestionController {
 
     private final QuestionService questionService;
+    private final ForbiddenWordService forbiddenWordService;
 
     @PostMapping("/api/question")
     public ResponseEntity<?> addQuestion(@RequestBody @Valid AddQuestionRequest addQuestionRequest) {
         addQuestionRequest.setUserId(JwtService.getUserIdFromAuthentication());
         questionService.addNewQuestion(addQuestionRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(new SuccessResponse("질문 추가를 성공했습니다.", null));
+    }
+
+    @PostMapping("/api/question/forbidden-words")
+    public ResponseEntity<?> validateQuestionContent(@RequestBody @Valid AddQuestionRequest addQuestionRequest) {
+        forbiddenWordService.validateForbiddenWord(addQuestionRequest.getContent());
+        return ResponseEntity.ok().body(new SuccessResponse("질문 내용 검사에 성공했습니다.", null));
     }
 
     // 기능 없어짐 -> 주석 처리
