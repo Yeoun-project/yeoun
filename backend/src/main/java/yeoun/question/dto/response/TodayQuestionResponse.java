@@ -1,7 +1,6 @@
 package yeoun.question.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.Date;
+import java.time.LocalDateTime;
 import lombok.*;
 import yeoun.question.domain.Question;
 
@@ -12,12 +11,15 @@ public class TodayQuestionResponse {
 
     final private Long id;
     final private String content;
-    final private Date created_at;
+    final private LocalDateTime createTime;
 
-    public static TodayQuestionResponse of(Question question) {
+    public static TodayQuestionResponse of(
+            Question question
+    ) {
         return TodayQuestionResponse.builder()
                 .id(question.getId())
                 .content(question.getContent())
+                .createTime(question.getCreateTime())
                 .build();
     }
 
