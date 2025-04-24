@@ -1,10 +1,7 @@
 package yeoun.comment.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.data.annotation.CreatedDate;
@@ -46,5 +43,13 @@ public class Comment {
         this.content = content;
         this.user = user;
         this.question = question;
+    }
+
+    public void updateAddLike() {
+        this.likeCount = likeCount + 1;
+    }
+
+    public void updateRemoveLike() {
+        this.likeCount = likeCount - 1;
     }
 }
