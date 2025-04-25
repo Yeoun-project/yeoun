@@ -1,5 +1,8 @@
 package yeoun.notification.domain;
 
+import java.time.LocalDateTime;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 import yeoun.question.domain.Question;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -32,7 +35,7 @@ public class Notification {
     @Column(nullable = false)
     private NotificationType notificationType;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User receiver;
 
