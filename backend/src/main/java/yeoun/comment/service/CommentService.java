@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.transaction.annotation.Transactional;
 import yeoun.auth.service.JwtService;
 import yeoun.comment.dto.request.SaveCommentRequest;
 import yeoun.comment.domain.Comment;
@@ -18,7 +19,6 @@ import yeoun.exception.CustomException;
 import yeoun.exception.ErrorCode;
 import yeoun.comment.domain.repository.CommentRepository;
 import jakarta.persistence.EntityManager;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -81,7 +81,7 @@ public class CommentService {
         commentRepository.deleteById(commentId);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public CommentListResponse getAllComments(Long questionId, Long userId, Pageable pageable) {
         Boolean isExistQuestion = questionService.isExistQuestion(questionId);
         if(!isExistQuestion) throw new CustomException(ErrorCode.INVALID_PARAMETER, "Invalid question id");
@@ -110,5 +110,6 @@ public class CommentService {
                         false // 좋아요 정보
                 )).toList();
     }
+
 
 }
