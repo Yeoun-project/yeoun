@@ -16,6 +16,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import yeoun.comment.domain.Comment;
+import yeoun.like.domain.Like;
 import yeoun.notification.domain.Notification;
 import yeoun.question.domain.Question;
 import yeoun.question.domain.QuestionHistory;
@@ -71,12 +72,12 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Comment> comments;
 
-    // like : hard
-    @OneToMany
-    private List<> likes;
+    // like : soft
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<Like> likes;
 
     // question history : soft
-    @OneToMany
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<QuestionHistory> questionHistory;
 
     // user history : soft

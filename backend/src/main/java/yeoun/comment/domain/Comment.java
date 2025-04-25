@@ -1,12 +1,14 @@
 package yeoun.comment.domain;
 
 import jakarta.persistence.*;
+import java.util.List;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 import org.springframework.data.annotation.CreatedDate;
+import yeoun.like.domain.Like;
 import yeoun.user.domain.User;
 import yeoun.question.domain.Question;
 
@@ -28,7 +30,7 @@ public class Comment {
     private String content;
 
     @Column(nullable = false)
-    private Long likeCount;
+    private Long likeCount = 0L;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -43,6 +45,9 @@ public class Comment {
 
     @Column
     private LocalDateTime deleteTime;
+
+    @OneToMany(mappedBy = "comment", cascade = CascadeType.REMOVE)
+    private List<Like> likes;
 
     @Builder
     public Comment(Long id, String content, User user, Question question) {

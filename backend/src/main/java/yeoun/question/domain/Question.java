@@ -12,6 +12,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 import org.springframework.data.annotation.CreatedDate;
 import yeoun.comment.domain.Comment;
+import yeoun.notification.domain.Notification;
 import yeoun.user.domain.User;
 
 import java.time.LocalDateTime;
@@ -43,14 +44,20 @@ public class Question {
     @OnDelete(action = OnDeleteAction.SET_NULL)
     private Category category;
 
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<Comment> comments;
-
     @CreatedDate
     private final Date createTime = new Date();
 
     @Column
     private Date deleteTime;
+
+    @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    private List<Comment> comments;
+
+    @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    private List<Notification> notifications;
+
+    @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    private List<QuestionHistory> questionHistories;
 
     @Builder
     public Question(Long id, String content, User user, Category category) {

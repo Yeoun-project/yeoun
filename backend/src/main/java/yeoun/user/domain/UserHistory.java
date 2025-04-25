@@ -24,7 +24,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 @Entity
 @Table(name = "user_history")
-@SQLDelete(sql = "UPDATE user SET user_history = CURRENT_TIMESTAMP WHERE id = ?") // soft delete
+@SQLDelete(sql = "UPDATE user_history SET delete_time = CURRENT_TIMESTAMP WHERE id = ?") // soft delete
 @SQLRestriction("delete_time IS NULL") // 지워지지 않은 레코드에 대한 조건
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserHistory {
