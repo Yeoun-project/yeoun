@@ -27,7 +27,7 @@ const CommentForm = ({
       <div className="relative z-10">
         <textarea
           value={commentValue}
-          onChange={(e) => handleChange(e)}
+          onChange={handleChange}
           name="comment"
           id="comment"
           maxLength={maxValue}

@@ -108,7 +108,10 @@ public class QuestionService {
     public QuestionDetailResponse getQuestionDetail(Long userId, Long questionId) {
         Question question = questionRepository.findByIdAndIsFixedIsFalse(questionId)
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_PARAMETER, "질문 ID가 잘못 되었습니다."));
-        Boolean isAuthor = question.getUser().getId().equals(userId);
+      
+        boolean isAuthor = false;
+        if (question.getUser() != null) isAuthor = question.getUser().getId().equals(userId);
+      
         return QuestionDetailResponse.of(question, isAuthor);
     }
 
