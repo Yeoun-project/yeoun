@@ -72,8 +72,8 @@ public class User implements UserDetails {
     private List<Comment> comments;
 
     // like : hard
-    //@OneToMany
-    //private List likes;
+    @OneToMany
+    private List<> likes;
 
     // question history : soft
     @OneToMany
