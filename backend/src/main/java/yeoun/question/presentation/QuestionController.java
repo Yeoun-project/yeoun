@@ -58,7 +58,7 @@ public class QuestionController {
 
     @GetMapping("/api/question/all")
     public ResponseEntity<?> getAllQuestion(
-            @RequestParam(required = false) String category,
+            @RequestParam(name= "category", required = false) String category,
             @PageableDefault() final Pageable pageable
     ) {
         QuestionListResponse questionListResponse = questionService.getAllQuestions(category, pageable);
@@ -83,7 +83,7 @@ public class QuestionController {
 
     @GetMapping("/api/question/commented-by-me")
     public ResponseEntity<?> getCommentedQuestions(
-            @RequestParam(required = false) String category,
+            @RequestParam(name="category", required = false) String category,
             @PageableDefault(sort = "createTime", direction = Sort.Direction.DESC) final Pageable pageable
     ) {
         QuestionListResponse questionListResponse = questionService.getQuestionUserAnswered(JwtService.getUserIdFromAuthentication(), category, pageable);
