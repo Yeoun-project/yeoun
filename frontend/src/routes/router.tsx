@@ -9,7 +9,6 @@ import HomePage from '../pages/HomePage.tsx';
 import QuestionPage from '../pages/QuestionPage.tsx';
 import AddQuestionPage from '../pages/AddQuestionPage.tsx';
 import SettingPage from '../pages/SettingPage.tsx';
-import MyActivityPage from '../pages/MyActivityPage.tsx';
 
 //로그인
 import LoginPage from '../pages/login/LoginPage.tsx';
@@ -23,6 +22,10 @@ import TodayQuestionPage from '../pages/todayQuestion/TodayQuestionPage.tsx';
 import TodayQuestionCommentPage from '../pages/todayQuestion/TodayQuestionCommentPage.tsx';
 import MyTodayAnswersPage from '../pages/todayQuestion/MyTodayAnswersPage.tsx';
 import MyTodayAnswerPage from '../pages/todayQuestion/MyTodayAnswerPage.tsx';
+
+import MyActivityPage from '../pages/my/MyActivityPage.tsx';
+import MyQuestionsPage from '../pages/my/MyQuestionsPage.tsx';
+import MyAnswersPage from '../pages/my/MyAnswersPage.tsx';
 
 const router = createBrowserRouter([
   {
@@ -80,7 +83,23 @@ const router = createBrowserRouter([
               },
             ],
           },
-          { path: '/my', element: <MyActivityPage /> },
+          {
+            path: '/my',
+            children: [
+              {
+                index: true,
+                element: <MyActivityPage />,
+              },
+              {
+                path: '/my/questions',
+                element: <MyQuestionsPage />,
+              },
+              {
+                path: '/my/answers',
+                element: <MyAnswersPage />,
+              },
+            ],
+          },
         ],
       },
     ],
