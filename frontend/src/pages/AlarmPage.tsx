@@ -1,6 +1,6 @@
 import BackArrowButton from '../components/button/BackArrowButton';
 import BottomTabBar from '../components/nav/BottomTabBar';
-import { getAlarmList, postTestAlarm } from '../services/api/alarm/alarmList';
+// import { getAlarmList, postTestAlarm } from '../services/api/alarm/alarmList';
 
 const AlarmPage = () => {
   // const alarmList = getAlarmList(); 
