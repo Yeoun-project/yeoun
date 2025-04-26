@@ -5,10 +5,10 @@ import QuestionCategory from '../../type/questionCategory';
 import CATEGORY, { CategoryList } from './Category';
 
 interface ExtendsData {
+  // 확장 가능성 있는 요소들 추가
   icon?: (size?: number) => JSX.Element;
   color?: string;
   examples?: string[];
-  test?: string;
 }
 
 type ExtendsDataList = {
