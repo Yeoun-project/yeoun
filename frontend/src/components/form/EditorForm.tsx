@@ -35,7 +35,8 @@ const EditorForm = ({
   useEffect(() => {
     if (valueRef.current) {
       if (hasError) {
-        valueRef.current.innerHTML = highlightForbiddenWords(value, forbidden);
+        if (value.length !== 0)
+          valueRef.current.innerHTML = highlightForbiddenWords(value, forbidden);
       } else {
         valueRef.current.innerText = value;
       }
@@ -48,6 +49,18 @@ const EditorForm = ({
         ref={valueRef}
         contentEditable
         suppressContentEditableWarning={true}
+        onBeforeInput={(e) => {
+          if(value.length >= maxLength) {
+            if(valueRef.current) {
+              valueRef.current.contentEditable = 'false';
+              setTimeout(() => {
+                if(valueRef.current)
+                  valueRef.current.contentEditable = 'true';
+              }, 0);
+            }
+            e.preventDefault();
+          }
+        }}
         onInput={onChange}
         data-placeholder={placeholder}
         className={`!h-[160px] w-full resize-none rounded-[4px] border p-5 placeholder:text-white before:opacity-50 empty:before:content-[attr(data-placeholder)] focus:outline-none focus:before:content-[''] ${
