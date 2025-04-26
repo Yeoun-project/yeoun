@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom';
 
-import ProfileIcon from '../assets/Icons/ProfileIcon.svg?react';
+import ProfileIcon from '../../assets/Icons/ProfileIcon.svg?react';
 
-import BottomTabBar from '../components/nav/BottomTabBar';
-import TopNavBar from '../components/nav/TopNavBar';
-import AuthLogoIcon from '../components/AuthLogoIcon';
+import BottomTabBar from '../../components/nav/BottomTabBar';
+import TopNavBar from '../../components/nav/TopNavBar';
+import AuthLogoIcon from '../../components/AuthLogoIcon';
 
 const MY_PAGE_NAV_PATHS = [
   {
@@ -13,11 +13,11 @@ const MY_PAGE_NAV_PATHS = [
   },
   {
     label: '내가 작성한 질문',
-    path: '/my/question',
+    path: '/my/questions?q=0',
   },
   {
     label: '내가 답변한 질문',
-    path: '/my/answer',
+    path: '/my/answers?q=0',
   },
 ];
 
