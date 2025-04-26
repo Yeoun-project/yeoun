@@ -18,6 +18,8 @@ import EditorForm from '../components/form/EditorForm';
 import RegisterModal from '../components/modal/RegisterModal';
 import ConfirmModal from '../components/modal/ConfirmModal';
 
+import { useNavigate } from 'react-router-dom';
+
 export interface Category {
   category: QuestionCategory;
   id: number;
@@ -85,6 +87,7 @@ const categories: Category[] = [
 ];
 
 const AddQuestionPage = () => {
+  const nav = useNavigate();
   //#region State
   // query string
   const [searchParams, setSearchParams] = useSearchParams();
@@ -134,7 +137,7 @@ const AddQuestionPage = () => {
     try {
       // 금지어 탐색
       await verifiedQuestion(content, categoryId);
-      
+
       // 금지어 X
       // 버튼 클릭 시 첫 번째 모달 출력
       modal.openModal();
@@ -146,7 +149,7 @@ const AddQuestionPage = () => {
         const response = err.response?.data;
         setForbidden(response.data);
         setHasError(true);
-        
+
         if (response.code === 'MISSING_PARAMETER') {
           toast.addToast.error({
             title: '질문 등록 실패',
@@ -177,21 +180,48 @@ const AddQuestionPage = () => {
     // 등록 후 초기화
     setSecond(false);
     setContent('');
+    nav('/question');
   };
 
   const handleChange = (e: React.FormEvent<HTMLDivElement>) => {
+    const selection = window.getSelection();
+    if (!selection || !e.currentTarget) return;
+
+    const { focusOffset } = selection;
+
+    // 현재 커서 위치 저장
+    const newFocusOffset = Math.min(focusOffset, e.currentTarget.innerText.length);
+
     if (e.currentTarget?.innerHTML === '<br>') {
       setContent('');
       e.currentTarget.innerHTML = '';
     } else {
-      if (e.currentTarget?.innerText.length > MAX_LENGTH) {
+      if (e.currentTarget?.innerText.length >= MAX_LENGTH) {
         e.currentTarget.innerText = e.currentTarget.innerText.slice(0, MAX_LENGTH);
+
+        // 커서 복구
+        const range = document.createRange();
+        const sel = window.getSelection();
+        if (e.currentTarget.childNodes.length > 0 && sel) {
+          let node = e.currentTarget.childNodes[0];
+
+          // span 같은 태그 때문에 childNodes[0]이 span일 수도 있음
+          if (node.nodeType !== Node.TEXT_NODE) {
+            node = node.firstChild || node;
+          }
+
+          range.setStart(node, Math.min(newFocusOffset, node.textContent?.length || 0));
+          range.collapse(true);
+          sel.removeAllRanges();
+          sel.addRange(range);
+        }
       }
       setContent(e.currentTarget?.innerText);
     }
 
     if (hasError) {
       setHasError(false);
+      e.currentTarget.innerHTML = content;
     }
   };
   //#endregion
