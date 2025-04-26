@@ -1,17 +1,17 @@
-import { Category } from '../../pages/AddQuestionPage';
+import { ExtendedCategory } from '../../constant/category/extendsCategoryData';
 import QuestionCategory from '../../type/questionCategory';
 
 import Circle from '../circle/Circle';
 
 interface DropdownProps {
-  id: number,
+  id: number;
   isOpen: boolean;
   all: boolean;
   onClick: () => void;
   handleSelect: (id: number) => void;
-  categories: Category[];
-  selected: Category;
-  location: string;
+  categories: ExtendedCategory[];
+  selected: ExtendedCategory;
+  location?: string;
 }
 
 const Dropdown = ({
@@ -32,7 +32,7 @@ const Dropdown = ({
           className={`flex cursor-pointer items-center justify-between border border-white/20 bg-white/10 px-4 py-2 backdrop-blur-md transition ${isOpen ? 'rounded-t-md rounded-b-none' : 'rounded-md'}`}
         >
           <div className="flex items-center gap-2">
-            {id !== 0 && <Circle category={selected.category as QuestionCategory} size={20} animate />}
+            {id !== 0 && <Circle category={selected.category as QuestionCategory} size={20} />}
             {id !== 0 && <span className="pl-1">{selected.name}</span>}
             {id === 0 && <span className="pl-1">전체 카테고리</span>}
           </div>
