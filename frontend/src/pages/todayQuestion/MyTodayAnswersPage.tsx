@@ -1,80 +1,94 @@
-import BackArrowButton from '../../components/button/BackArrowButton';
-import QuestionList from '../../components/question/QuestionList';
-import QuestionCategory from '../../type/questionCategory';
+import { useState } from 'react';
+import { useInfiniteQuery } from '@tanstack/react-query';
 
-const questions = [
+import { getTodayAnswersQuestions } from '../../services/api/question/getQuestions';
+
+import useQuestionGroupByYear from '../../hooks/useQuestionGroupByYear';
+
+import BottomTabBar from '../../components/nav/BottomTabBar';
+
+import CheckBox from '../../components/common/CheckBox';
+
+import FallBack from '../../components/ui/FallBack';
+import SubPageHeader from '../../components/ui/SubPageHeader';
+
+import QuestionListYearSection from '../../components/questionList/QuestionListYearSection';
+import ListMoreButton from '../../components/questionList/ListMoreButton';
+import QuestionList from '../../components/questionList/QuestionList';
+
+type sortOrder = 'latest' | 'old';
+
+const SORTORDER_CHECKBOXS = [
   {
-    id: 1,
-    content: '다시 태어난다면, 당신은 어떻게 살고 싶나요?',
-    heart: 5,
-    commentCount: 3,
-    categoryName: 'valuesAndBeliefs' as QuestionCategory,
-    createTime: '2025-12-25 17:35:23',
+    label: '최신순',
+    id: 'latest',
   },
   {
-    id: 2,
-    content: '다시 태어난다면, 당신은 어떻게 살고 싶나요?',
-    heart: 4,
-    commentCount: 2,
-    categoryName: 'relationships' as QuestionCategory,
-    createTime: '2025-11-05 17:50:50',
-  },
-  {
-    id: 3,
-    content: '다시 태어난다면, 당신은 어떻게 살고 싶나요?',
-    heart: 4,
-    commentCount: 2,
-    categoryName: 'dreamsAndGoals' as QuestionCategory,
-    createTime: '2025-02-13 17:50:50',
-  },
-  {
-    id: 4,
-    content: '다시 태어난다면, 당신은 어떻게 살고 싶나요?',
-    heart: 4,
-    commentCount: 2,
-    categoryName: 'selfReflection' as QuestionCategory,
-    createTime: '2025-10-08 17:50:50',
-  },
-  {
-    id: 5,
-    content: '다시 태어난다면, 당신은 어떻게 살고 싶나요?',
-    heart: 4,
-    commentCount: 2,
-    categoryName: 'mindAndEmotions' as QuestionCategory,
-    createTime: '2025-04-17 17:50:50',
-  },
-  {
-    id: 6,
-    content: '다시 태어난다면, 당신은 어떻게 살고 싶나요?',
-    heart: 4,
-    commentCount: 2,
-    categoryName: 'challengesAndCourage' as QuestionCategory,
-    createTime: '2025-05-19 17:50:50',
-  },
-  {
-    id: 7,
-    content: '다시 태어난다면, 당신은 어떻게 살고 싶나요?',
-    heart: 4,
-    commentCount: 2,
-    categoryName: 'memories' as QuestionCategory,
-    createTime: '2025-01-21 17:50:50',
+    label: '오래된순',
+    id: 'old',
   },
 ];
 
 const MyTodayAnswersPage = () => {
-  return (
-    <main className="flex min-h-[100svh] flex-col gap-4">
-      {/* Header */}
-      <header className="relative flex justify-center px-6 py-3">
-        <div className="absolute top-3 left-6">
-          <BackArrowButton />
-        </div>
-        <h3 className="w-full text-center">답변목록</h3>
-      </header>
+  const [sortOrder, setSortOrder] = useState<sortOrder>('latest');
 
-      {/* Content-Section */}
-      <QuestionList questions={questions} />
-    </main>
+  const { data, fetchNextPage, hasNextPage } = useInfiniteQuery({
+    queryKey: ['my', 'today-question', 'answers'],
+    queryFn: async ({ pageParam }) =>
+      await getTodayAnswersQuestions({
+        page: pageParam as number,
+      }),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, allPages) => (lastPage.hasNext ? allPages.length + 1 : undefined),
+    select: (data) => {
+      // 새로 불러온 데이터들이 있다면 기존 데이터들과 매핑 후 반환
+      return data.pages.flatMap((page) => page.question || []);
+    },
+  });
+
+  const { questions, questionsYear } = useQuestionGroupByYear(data ? data : [], sortOrder);
+
+  const handleSelectSortOrder = (sortOrder: sortOrder) => {
+    setSortOrder(sortOrder);
+  };
+  return (
+    <div className="h-[100svh] overflow-hidden">
+      <SubPageHeader pageTitle="답변목록" backButtonPath="/my" />
+
+      <main className="flex h-[calc(100%-140px)] flex-col">
+        <div className="mb-3 flex items-center justify-end gap-2 px-6">
+          {SORTORDER_CHECKBOXS.map((option) => (
+            <CheckBox
+              key={option.id}
+              isChecked={sortOrder === option.id}
+              id="sortOrder"
+              name={option.id}
+              label={option.label}
+              value={option.id}
+              onChange={(e) => handleSelectSortOrder(e.target.value as sortOrder)}
+            />
+          ))}
+        </div>
+
+        {questionsYear.length === 0 && (
+          <FallBack desc="아직 남겨진 여운이 없어요" subDesc="오늘, 당신의 여운을 남겨볼까요?" />
+        )}
+
+        {questionsYear.length > 0 && (
+          <div className="no-scrollbar overflow-scroll pb-6">
+            {questionsYear.map((year) => (
+              <QuestionListYearSection key={year} year={year}>
+                <QuestionList questions={questions[year]} path="question" />
+              </QuestionListYearSection>
+            ))}
+
+            {/* 더보기 버튼 */}
+            {hasNextPage && <ListMoreButton fetchNextPage={fetchNextPage} />}
+          </div>
+        )}
+      </main>
+      <BottomTabBar />
+    </div>
   );
 };
 

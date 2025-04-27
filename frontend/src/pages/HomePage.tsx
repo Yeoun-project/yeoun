@@ -59,7 +59,7 @@ const HomePage = () => {
       <div className="px-6">
         <button
           onClick={handleClick}
-          className="font-desc w-full rounded-xl bg-white py-4 font-extrabold"
+          className="font-desc w-full cursor-pointer rounded-xl bg-white py-4 font-extrabold"
         >
           <span className="text-gradient-linear">여운 시작하기</span>
         </button>
