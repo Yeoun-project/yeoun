@@ -12,8 +12,13 @@ import Dropdown from '../components/dropdown/Dropdown';
 import useToastStore from '../store/useToastStore';
 
 import useModalStore from '../store/useModalStore';
-import Modal from '../components/modal/Modal';
+
+import EditorForm from '../components/form/EditorForm';
+
 import RegisterModal from '../components/modal/RegisterModal';
+import ConfirmModal from '../components/modal/ConfirmModal';
+
+import { useNavigate } from 'react-router-dom';
 
 export interface Category {
   category: QuestionCategory;
@@ -21,6 +26,8 @@ export interface Category {
   name: string;
   examples: string[];
 }
+
+const MAX_LENGTH = 30;
 
 const categories: Category[] = [
   {
@@ -80,6 +87,7 @@ const categories: Category[] = [
 ];
 
 const AddQuestionPage = () => {
+  const nav = useNavigate();
   //#region State
   // query string
   const [searchParams, setSearchParams] = useSearchParams();
@@ -93,6 +101,7 @@ const AddQuestionPage = () => {
 
   // 금지어 error state
   const [hasError, setHasError] = useState(false);
+  const [forbidden, setForbidden] = useState<string[]>([]);
   const toast = useToastStore();
 
   // modal
@@ -114,18 +123,17 @@ const AddQuestionPage = () => {
       setSelected(categories.find((cat) => cat.id === categoryId) || categories[0]);
     }
   }, [categoryId]);
-
-  //#region function
+  //#region EventHandler
   const onClick = () => setIsOpen((prev) => !prev);
 
   const handleSelect = (id: number) => {
     setCategoryId(id);
     setIsOpen(false);
   };
-
-  //#region 질문하기 버튼 클릭 시
+  // 질문하기 버튼 클릭 시
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     try {
       // 금지어 탐색
       await verifiedQuestion(content, categoryId);
@@ -139,6 +147,7 @@ const AddQuestionPage = () => {
       // 금지어 O
       if (axios.isAxiosError(err)) {
         const response = err.response?.data;
+        setForbidden(response.data);
         setHasError(true);
 
         if (response.code === 'MISSING_PARAMETER') {
@@ -158,22 +167,62 @@ const AddQuestionPage = () => {
     }
   };
 
+  // 첫 번째 모달 등록 버튼
+  const onRegister = () => {
+    setFirst(false);
+    setSecond(true);
+  };
   // 두 번째 모달 등록 버튼
-  const confirmModal = async () => {
+  const onConfirm = async () => {
     const response = await addUserQuestion(content, categoryId);
     console.log(response?.data);
 
     // 등록 후 초기화
     setSecond(false);
     setContent('');
+    nav('/question');
   };
-  //#endregion
 
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleChange = (e: React.FormEvent<HTMLDivElement>) => {
+    const selection = window.getSelection();
+    if (!selection || !e.currentTarget) return;
+
+    const { focusOffset } = selection;
+
+    // 현재 커서 위치 저장
+    const newFocusOffset = Math.min(focusOffset, e.currentTarget.innerText.length);
+
+    if (e.currentTarget?.innerHTML === '<br>') {
+      setContent('');
+      e.currentTarget.innerHTML = '';
+    } else {
+      if (e.currentTarget?.innerText.length >= MAX_LENGTH) {
+        e.currentTarget.innerText = e.currentTarget.innerText.slice(0, MAX_LENGTH);
+
+        // 커서 복구
+        const range = document.createRange();
+        const sel = window.getSelection();
+        if (e.currentTarget.childNodes.length > 0 && sel) {
+          let node = e.currentTarget.childNodes[0];
+
+          // span 같은 태그 때문에 childNodes[0]이 span일 수도 있음
+          if (node.nodeType !== Node.TEXT_NODE) {
+            node = node.firstChild || node;
+          }
+
+          range.setStart(node, Math.min(newFocusOffset, node.textContent?.length || 0));
+          range.collapse(true);
+          sel.removeAllRanges();
+          sel.addRange(range);
+        }
+      }
+      setContent(e.currentTarget?.innerText);
+    }
+
     if (hasError) {
       setHasError(false);
+      e.currentTarget.innerHTML = content;
     }
-    setContent(e.target.value);
   };
   //#endregion
 
@@ -207,58 +256,19 @@ const AddQuestionPage = () => {
           </ul>
         </div>
         <div className="font-desc w-full p-6 text-white">
-          <form
-            id="add-question"
-            onSubmit={(e) => {
-              onSubmit(e);
-            }}
-            className="h-[192px]"
-          >
-            <textarea
-              value={content}
-              onChange={handleChange}
-              maxLength={30}
-              placeholder="사용자들의 생각을 듣고 싶은 의미있는 질문을 작성해주세요."
-              className={`!h-[160px] w-full resize-none rounded-[4px] border p-5 placeholder:text-white focus:outline-none ${
-                hasError
-                  ? 'border-[#FF202080] bg-[#FF20200D] focus:border-[#FF202080]'
-                  : 'border-[#99999999] bg-[#ffffff1a]'
-              }`}
-            />
-            <div className="mt-1 text-right text-sm text-white">{content.length} / 30</div>
-          </form>
+          <EditorForm
+            formId="add-question"
+            onSubmit={(e) => onSubmit(e)}
+            value={content}
+            onChange={handleChange}
+            hasError={hasError}
+            maxLength={MAX_LENGTH}
+            placeholder="사용자들의 생각을 듣고 싶은 의미있는 질문을 작성해주세요."
+            forbidden={forbidden}
+          />
         </div>
-        {first && (
-          <Modal>
-            <Modal.Header>
-              <Modal.Title>이대로 등록하시겠습니까?</Modal.Title>
-              <Modal.SubTitle>
-                작성한 질문은 한 번 등록하면{' '}
-                <span className="text-[#FF2020]">수정이나 삭제가 불가능합니다!</span>
-              </Modal.SubTitle>
-            </Modal.Header>
-            <Modal.Content>
-              <div className="font-desc h-[200px] rounded-[8px] border border-[#919191] px-5 py-3 text-[#1A1A1A]">
-                {content}
-              </div>
-              <div className="font-desc mt-2 text-right text-sm text-[#6D6D6D]">
-                {content.length} / 30
-              </div>
-            </Modal.Content>
-            <Modal.Footer>
-              <Modal.CancleButton>수정</Modal.CancleButton>
-              <Modal.ConfirmButton
-                onConfirm={() => {
-                  setFirst(false);
-                  setSecond(true);
-                }}
-              >
-                등록
-              </Modal.ConfirmButton>
-            </Modal.Footer>
-          </Modal>
-        )}
-        {second && <RegisterModal value="질문" onSubmit={confirmModal} />}
+        {first && <RegisterModal content={content} onSubmit={onRegister} />}
+        {second && <ConfirmModal value="질문" onSubmit={onConfirm} />}
         <div className="absolute bottom-0 w-full p-6">
           <button
             form="add-question"
