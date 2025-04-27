@@ -22,6 +22,7 @@ import TodayQuestionPage from '../pages/todayQuestion/TodayQuestionPage.tsx';
 import TodayQuestionCommentPage from '../pages/todayQuestion/TodayQuestionCommentPage.tsx';
 import MyTodayAnswersPage from '../pages/todayQuestion/MyTodayAnswersPage.tsx';
 import MyTodayAnswerPage from '../pages/todayQuestion/MyTodayAnswerPage.tsx';
+import AlarmPage from '../pages/AlarmPage.tsx';
 
 import MyActivityPage from '../pages/my/MyActivityPage.tsx';
 import MyQuestionsPage from '../pages/my/MyQuestionsPage.tsx';
@@ -34,6 +35,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <HomePage /> },
       { path: '/setting', element: <SettingPage /> },
+      { path: '/notification', element: <AlarmPage /> },
       {
         path: '/login',
         element: <LoginPage />,
