@@ -1,7 +1,8 @@
 import AlarmItem from '../components/alarmList/AlarmItem';
-import BackArrowButton from '../components/button/BackArrowButton';
+
 import BottomTabBar from '../components/nav/BottomTabBar';
 import FallBack from '../components/ui/FallBack';
+import SubPageHeader from '../components/ui/SubPageHeader';
 
 const list = [
   {
@@ -25,13 +26,7 @@ const AlarmPage = () => {
   return (
     <>
       <main className="flex h-[100svh] flex-col">
-        {/* Header */}
-        <header className="relative flex justify-center p-6">
-          <div className="absolute top-6 left-6">
-            <BackArrowButton />
-          </div>
-          <h3 className="w-full text-center">알람</h3>
-        </header>
+        <SubPageHeader pageTitle={'알림'} />
         <div className="flex h-[calc(100%-140px)] flex-col">
           {list.length === 0 && <FallBack desc="" subDesc="오늘은 조용한 하루였어요" />}
           <ul className="font-desc w-full">
