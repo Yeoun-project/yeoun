@@ -23,6 +23,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import yeoun.user.domain.repository.UserRepository;
+import yeoun.user.service.UserService;
 
 @Service
 @Slf4j
@@ -38,6 +40,8 @@ public class NotificationService {
     private final EntityManager entityManager;
 
     private static HashMap<Long, SseEmitter> emitterMap = new HashMap<>();
+    private final UserService userService;
+    private final UserRepository userRepository;
 
     public SseEmitter getConnect(Long userId) {
         SseEmitter oldEmitter = emitterMap.get(userId);
@@ -114,9 +118,11 @@ public class NotificationService {
 
     // Sse 관련 함수들
     public void sendUnReadNotificationCount(Long userId) {
-        Integer count = notificationRepository.getUnReadNotificationsCount(userId);
+        //Integer count = notificationRepository.getUnReadNotificationsCount(userId); // 개수를 반환암함 (유무만 반환)
+        User user = userRepository.findById(userId).orElseThrow(()->{throw new CustomException(ErrorCode.NOT_FOUND);});
 
-        sendSSEData(emitterMap.get(userId), count);
+        if(user.getIsNotification())
+            sendSSEData(emitterMap.get(userId), 1);
     }
 
     private void sendSSEData(SseEmitter sseEmitter, Object data) {

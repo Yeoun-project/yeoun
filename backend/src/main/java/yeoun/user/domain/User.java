@@ -54,6 +54,9 @@ public class User implements UserDetails {
     @Column(nullable = true)
     private String uuid;
 
+    @Column
+    private final Boolean isNotification = false;
+
     @CreatedDate
     private final LocalDateTime createTime = LocalDateTime.now();
 
