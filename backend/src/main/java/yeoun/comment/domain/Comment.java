@@ -43,7 +43,7 @@ public class Comment {
     private Question question;
 
     @BatchSize(size = 100)
-    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "comment", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Like> likes;
 
     @CreatedDate
@@ -51,9 +51,6 @@ public class Comment {
 
     @Column
     private LocalDateTime deleteTime;
-
-    @OneToMany(mappedBy = "comment", cascade = CascadeType.REMOVE)
-    private List<Like> likes;
 
     @Builder
     public Comment(Long id, String content, User user, Question question) {
