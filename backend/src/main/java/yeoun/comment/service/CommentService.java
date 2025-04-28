@@ -92,7 +92,11 @@ public class CommentService {
                 .orElse(null);
 
         Slice<Comment> comments = commentRepository.getAllCommentByQuestionExcludeMyself(questionId, userId, pageable);
-        final List<CommentResponse> commentResponses = getCommentResponses(comments.toList());
+        final List<CommentResponse> commentResponses = comments.stream()
+                .map(comment -> CommentResponse.of(
+                        comment,
+                        isLikedByUser(comment, userId)
+                )).toList();
 
         return new CommentListResponse(
                 myCommentResponse,
@@ -101,14 +105,9 @@ public class CommentService {
         );
     }
 
-    private List<CommentResponse> getCommentResponses(final List<Comment> comments) {
-        // 좋아요 유무 찾기
-
-        return comments.stream()
-                .map(comment -> CommentResponse.of(
-                        comment,
-                        false // 좋아요 정보
-                )).toList();
+    private boolean isLikedByUser(final Comment comment, final Long userId) {
+        return comment.getLikes().stream()
+                .anyMatch(like -> like.getUser().getId().equals(userId));
     }
 
 
