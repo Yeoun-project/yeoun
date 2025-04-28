@@ -16,53 +16,41 @@ import Circle from '../components/circle/Circle';
 import Carousel from '../components/Carousel';
 import BottomTabBar from '../components/nav/BottomTabBar';
 import TopNavBar from '../components/nav/TopNavBar';
+import extendsCategoryData from '../constant/category/extendsCategoryData';
 
-const QuestionCategoryList = [
-  {
-    category: 'valuesAndBeliefs',
+const extnedsCategoryIconAndColor = {
+  valuesAndBeliefs: {
     icon: (size?: number) => <ValuesAndBeliefs width={size || 48} height={size || 48} />,
-    label: '가치관과 신념',
     color: '#EA44C6',
   },
-  {
-    category: 'memories',
+  memories: {
     icon: (size?: number) => <Memories width={size || 48} height={size || 48} />,
-    label: '추억과 기억',
     color: '#D88511',
   },
-  {
-    category: 'selfReflection',
+  selfReflection: {
     icon: (size?: number) => <SelfReflection width={size || 48} height={size || 48} />,
-    label: '자기성찰',
     color: '#19B70B',
   },
-  {
-    category: 'relationships',
+  relationships: {
     icon: (size?: number) => <Relationships width={size || 48} height={size || 48} />,
-    label: '사람과의 관계',
     color: '#336CFB',
   },
-  {
-    category: 'mindAndEmotions',
+  mindAndEmotions: {
     icon: (size?: number) => <MindAndEmotions width={size || 48} height={size || 48} />,
-    label: '마음과 감정',
     color: '#E52323',
   },
-  {
-    category: 'challengesAndCourage',
+  challengesAndCourage: {
     icon: (size?: number) => <ChallengesAndCourage width={size || 48} height={size || 48} />,
-    label: '도전과 용기',
     color: '#CACA00',
   },
-  {
-    category: 'dreamsAndGoals',
+  dreamsAndGoals: {
     icon: (size?: number) => <DreamsAndGoals width={size || 48} height={size || 48} />,
-    label: '꿈과 목표',
     color: '#B61ED4',
   },
-];
-
+};
 const QuestionPage = () => {
+  const QuestionCategoryList = extendsCategoryData(extnedsCategoryIconAndColor);
+
   const {
     carouselRef,
     currentCarousel,
@@ -111,11 +99,11 @@ const QuestionPage = () => {
                 // 질문 여부 확인 후 모달 띄우기
               }}
             >
-              <Circle size={230} animate category={category.category as QuestionCategory}>
+              <Circle size={250} animate category={category.category as QuestionCategory}>
                 <div className="flex flex-col items-center justify-center">
-                  {category.icon(64)}
+                  {category.icon && category.icon(64)}
                   <p className="text-blur text-xl" style={{ color: category.color }}>
-                    {category.label}
+                    {category.name}
                   </p>
                 </div>
               </Circle>

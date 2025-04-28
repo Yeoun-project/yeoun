@@ -15,7 +15,7 @@ public class QuestionResponse {
     final private String content;
     final private int commentCount;
     final private String categoryName;
-    final private Date createTime;
+    final private LocalDateTime createTime;
 
     public static QuestionResponse of(
         Question question

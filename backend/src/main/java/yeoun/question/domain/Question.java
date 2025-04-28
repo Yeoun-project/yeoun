@@ -45,10 +45,10 @@ public class Question {
     private Category category;
 
     @CreatedDate
-    private final Date createTime = new Date();
+    private final LocalDateTime createTime = LocalDateTime.now();
 
     @Column
-    private Date deleteTime;
+    private LocalDateTime deleteTime;
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     private List<Comment> comments;
