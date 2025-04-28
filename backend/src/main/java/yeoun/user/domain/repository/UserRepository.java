@@ -1,5 +1,6 @@
 package yeoun.user.domain.repository;
 
+import java.time.LocalDateTime;
 import yeoun.user.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -24,5 +25,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Query("update User u set u.isNotification = :isNotification where u.id = :userId")
     void setIsNotification(@Param("isNotification") boolean isNotification,@Param("userId") long userId);
+  
+    @Modifying
+    @Query("delete from User u where u.id not in (select h.user.id from UserHistory h group by h.user.id) and u.role = 'ANONYMOUS' and u.createTime < :deleteTime")
+    void deleteOldAnonymousUser(@Param("deleteTime") LocalDateTime deleteTime);
 }
 
