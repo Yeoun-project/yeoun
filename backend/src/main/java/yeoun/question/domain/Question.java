@@ -43,10 +43,10 @@ public class Question {
     private List<Comment> comments;
 
     @CreatedDate
-    private final Date createTime = new Date();
+    private final LocalDateTime createTime = LocalDateTime.now();
 
     @Column
-    private Date deleteTime;
+    private LocalDateTime deleteTime;
 
     @Builder
     public Question(Long id, String content, User user, Category category) {

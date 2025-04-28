@@ -1,7 +1,39 @@
-import { Link, useNavigate } from 'react-router-dom';
-import Circle from '../../components/circle/Circle';
-import useAuthStore from '../../store/useAuthStore';
 import { useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+
+import useAuthStore from '../../store/useAuthStore';
+
+import Circle from '../../components/circle/Circle';
+import AuthLogoIcon from '../../components/AuthLogoIcon';
+
+const AUTH_PATH_LIST = [
+  {
+    label: '네이버로 시작하기',
+    identifier: 'naver',
+    path: import.meta.env.VITE_OAUTH_NAVER,
+  },
+  {
+    label: '카카오로 시작하기',
+    identifier: 'kakao',
+    path: import.meta.env.VITE_OAUTH_KAKAO,
+  },
+  {
+    label: 'Google로 시작하기',
+    identifier: 'google',
+    path: import.meta.env.VITE_OAUTH_GOOGLE,
+  },
+] as const;
+
+const getAuthLinkStyle = (identifier: 'kakao' | 'naver' | 'google') => {
+  switch (identifier) {
+    case 'kakao':
+      return 'bg-[#ffeb3b] text-[#1a1a1a]';
+    case 'naver':
+      return 'bg-[#03c75a]  text-white';
+    case 'google':
+      return 'bg-white text-[#1a1a1a]';
+  }
+};
 
 const LoginPage = () => {
   const { setUserType, userType } = useAuthStore();
@@ -19,7 +51,8 @@ const LoginPage = () => {
       navigate(-1);
       return;
     }
-  }, []);
+  }, [navigate, userType]);
+
   return (
     <main className="flex h-[100svh] flex-col items-center justify-between px-6 pt-10 pb-5">
       <div className="">
@@ -42,33 +75,17 @@ const LoginPage = () => {
             로그인 없이 이용하기
           </button>
         </li>
-        <li>
-          <Link
-            to={import.meta.env.VITE_OAUTH_NAVER}
-            className="block w-full rounded-xl bg-[#03C75A] py-4.5 text-white"
-          >
-            <img src="/icons/naverLogo.svg" alt="네이버로 시작하기" className="inline-block" />
-            <span className="pl-2">네이버로 시작하기</span>
-          </Link>
-        </li>
-        <li>
-          <Link
-            to={import.meta.env.VITE_OAUTH_KAKAO}
-            className="block w-full rounded-xl bg-[#FFEB3B] py-4.5 text-[#1A1A1A]"
-          >
-            <img src="/icons/kakaoLogo.svg" alt="카카오로 시작하기" className="inline-block" />
-            <span className="pl-2">카카오로 시작하기</span>
-          </Link>
-        </li>
-        <li>
-          <Link
-            to={import.meta.env.VITE_OAUTH_GOOGLE}
-            className="block w-full rounded-xl bg-white py-4.5 text-[#1A1A1A]"
-          >
-            <img src="/icons/googleLogo.svg" alt="구글로 시작하기" className="inline-block" />
-            <span className="pl-2">구글로 시작하기</span>
-          </Link>
-        </li>
+        {AUTH_PATH_LIST.map((el) => (
+          <li>
+            <Link
+              to={el.path}
+              className={`flex w-full items-center justify-center gap-2 rounded-xl py-4.5 ${getAuthLinkStyle(el.identifier)}`}
+            >
+              <AuthLogoIcon identifier={el.identifier} />
+              <span>{el.label}</span>
+            </Link>
+          </li>
+        ))}
       </ul>
     </main>
   );

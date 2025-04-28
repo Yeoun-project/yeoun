@@ -61,9 +61,9 @@ const Circle = ({ size = 150, category = 'valuesAndBeliefs', children, animate }
         </div>
       )}
       <MainCircle size={size} colors={gradientColors} />
-      <CircleTopLayer size={size + size / 20} colors={gradientColors} animate={animate} />
-      <CircleMiddleLayer size={size + size / 15} colors={gradientColors} animate={animate} />
-      <CircleBottomLayer size={size + size / 20} colors={gradientColors} animate={animate} />
+      <CircleTopLayer size={size + size / 18} colors={gradientColors} animate={animate} />
+      <CircleMiddleLayer size={size + size / 13} colors={gradientColors} animate={animate} />
+      <CircleBottomLayer size={size + size / 18} colors={gradientColors} animate={animate} />
     </div>
   );
 };

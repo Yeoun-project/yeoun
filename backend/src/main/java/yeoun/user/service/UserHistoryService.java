@@ -37,11 +37,10 @@ public class UserHistoryService {
     }
 
     // scheduler
-    @Transactional
-    @Scheduled(cron="${scheduler.cron}")
-    public void deleteOldUserHistory() {
-        LocalDateTime deleteTime = LocalDateTime.now().minusSeconds(USER_HISTORY_DELETE_SECOND);
-        userRepository.deleteOldAnonymousUser(deleteTime);
-        userHistoryRepository.deleteOldHistory(deleteTime);
-    }
+//    @Transactional
+//    @Scheduled(cron="${scheduler.cron}")
+//    public void deleteOldUserHistory() {
+//        userHistoryRepository.deleteOldHistory(deleteTime);
+//        userRepository.deleteOldAnonymousUser();
+//    }
 }

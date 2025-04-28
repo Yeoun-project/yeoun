@@ -1,5 +1,6 @@
 package yeoun.question.dto.response;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import lombok.*;
 import yeoun.question.domain.Question;
@@ -13,7 +14,7 @@ public class QuestionDetailResponse {
     private final String content;
     private final int commentCount;
     private final String categoryName;
-    private final Date createTime;
+    private final LocalDateTime createTime;
     private final Boolean isAuthor;
 
     public static QuestionDetailResponse of(
