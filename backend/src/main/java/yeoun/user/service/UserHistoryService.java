@@ -1,5 +1,6 @@
 package yeoun.user.service;
 
+import java.time.LocalDateTime;
 import yeoun.user.domain.User;
 import yeoun.user.domain.UserHistory;
 import yeoun.user.domain.repository.UserHistoryRepository;
@@ -18,7 +19,7 @@ import org.springframework.stereotype.Service;
 public class UserHistoryService {
 
     @Value("${scheduler.user_history_delete_second}")
-    private Long deleteTime;
+    private Long USER_HISTORY_DELETE_SECOND;
 
     private final UserRepository userRepository;
     private final UserHistoryRepository userHistoryRepository;
@@ -39,7 +40,8 @@ public class UserHistoryService {
     @Transactional
     @Scheduled(cron="${scheduler.cron}")
     public void deleteOldUserHistory() {
+        LocalDateTime deleteTime = LocalDateTime.now().minusSeconds(USER_HISTORY_DELETE_SECOND);
+        userRepository.deleteOldAnonymousUser(deleteTime);
         userHistoryRepository.deleteOldHistory(deleteTime);
-        userRepository.deleteOldAnonymousUser();
     }
 }
