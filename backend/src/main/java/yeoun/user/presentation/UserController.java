@@ -21,7 +21,7 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/public/logout")
-    public HttpEntity<?> logout(HttpServletResponse response) {
+    public ResponseEntity<?> logout(HttpServletResponse response) {
 
         // check if anonymous
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
