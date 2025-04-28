@@ -23,7 +23,7 @@ public class CommentController {
 
     @GetMapping("/all/{questionId}")
     public ResponseEntity<SuccessResponse> getAllComments(
-            @PathVariable Long questionId,
+            @PathVariable("questionId") Long questionId,
             @PageableDefault(sort = "createTime", direction = Sort.Direction.ASC) Pageable pageable
     ) {
         Long userId = JwtService.getUserIdFromAuthentication();

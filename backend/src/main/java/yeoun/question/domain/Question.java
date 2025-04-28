@@ -8,8 +8,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 import org.springframework.data.annotation.CreatedDate;
 import yeoun.comment.domain.Comment;
+import yeoun.notification.domain.Notification;
 import yeoun.user.domain.User;
 
 import java.time.LocalDateTime;
@@ -18,6 +21,8 @@ import java.util.List;
 @Entity
 @Table(name = "question")
 @Getter
+@SQLDelete(sql = "UPDATE question SET delete_time = CURRENT_TIMESTAMP WHERE id = ?") // soft delete
+@SQLRestriction("delete_time IS NULL") // 지워지지 않은 레코드에 대한 조건
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Question {
 
@@ -39,14 +44,20 @@ public class Question {
     @OnDelete(action = OnDeleteAction.SET_NULL)
     private Category category;
 
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<Comment> comments;
-
     @CreatedDate
     private final LocalDateTime createTime = LocalDateTime.now();
 
     @Column
     private LocalDateTime deleteTime;
+
+    @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    private List<Comment> comments;
+
+    @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    private List<Notification> notifications;
+
+    @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    private List<QuestionHistory> questionHistories;
 
     @Builder
     public Question(Long id, String content, User user, Category category) {
