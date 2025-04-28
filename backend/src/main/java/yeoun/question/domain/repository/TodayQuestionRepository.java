@@ -29,4 +29,12 @@ public interface TodayQuestionRepository extends JpaRepository<Question, Long> {
             """)
     Optional<Question> findTodayQuestion(@Param("userId") Long userId);
 
+    @Query("""
+        SELECT CASE WHEN h.comment IS NOT NULL THEN true ELSE false END
+        FROM QuestionHistory h
+        WHERE h.question.id = :questionId
+        AND h.user.id = :userId
+        """)
+    boolean existsCommentByQuestionIdAndUserId(@Param("questionId") Long questionId, @Param("userId") Long userId);
+
 }
