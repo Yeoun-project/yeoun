@@ -61,4 +61,8 @@ public class UserService {
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_PARAMETER, "유저 정보가 잘못 되었습니다"));
     }
 
+//    public void eraseAnonymous(long userId) {
+//        userRepository.deleteById(userId);
+//    }
+
 }
