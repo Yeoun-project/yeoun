@@ -6,9 +6,9 @@ import Response from '../../../type/response';
 
 const getTodayQuestionUrl = (type: UserType) => {
   if (type === 'User') {
-    return '/api/question/today';
+    return '/api/today-question';
   } else {
-    return '/public/question/today';
+    return '/public/today-question';
   }
 };
 
@@ -20,8 +20,17 @@ export const getTodayQuestion = async (userType: UserType): Promise<TodayQuestio
   return (await response.data).data;
 };
 
-export const addTodayQuestionComment = async (userType: UserType, content: string) => {
-  const response = await client.post(getTodayQuestionUrl(userType), { content });
+export const addTodayQuestionComment = async ({
+  questionId,
+  comment,
+}: {
+  questionId: number;
+  comment: string;
+}) => {
+  const response = await client.post(`/public/today-question/comment`, {
+    questionId,
+    comment,
+  });
 
   return response;
 };

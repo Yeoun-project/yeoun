@@ -1,6 +1,7 @@
 package yeoun.question.domain;
 
 import jakarta.persistence.*;
+import java.util.Date;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

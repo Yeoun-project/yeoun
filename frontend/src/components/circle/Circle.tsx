@@ -15,9 +15,9 @@ const getGradientColors = (category: QuestionCategory): CircleGradientColors => 
       topLeft: '#C5FFDF',
     },
     relationships: {
-      bottomLeft: '#AAEDFF',
-      right: '#C090FC',
-      topLeft: '#C8C5FF',
+      bottomLeft: '#38B1FC',
+      right: '#398DFA',
+      topLeft: '#7DD8FF',
     },
     valuesAndBeliefs: {
       bottomLeft: '#AAD2FF',
@@ -25,9 +25,9 @@ const getGradientColors = (category: QuestionCategory): CircleGradientColors => 
       topLeft: '#F3C5FF',
     },
     dreamsAndGoals: {
-      bottomLeft: '#2D449D',
-      right: '#4A60B5',
-      topLeft: '#A4A8B2',
+      bottomLeft: '#AAEDFF',
+      right: '#C090FC',
+      topLeft: '#C8C5FF',
     },
     memories: {
       bottomLeft: '#FFCCA7',
@@ -42,7 +42,7 @@ const getGradientColors = (category: QuestionCategory): CircleGradientColors => 
     mindAndEmotions: {
       bottomLeft: '#FFC3AA',
       right: '#FC9092',
-      topLeft: '#FFC9C5',
+      topLeft: '#FFC9C5 ',
     },
   };
   return gradientColors[category];
@@ -61,9 +61,9 @@ const Circle = ({ size = 150, category = 'valuesAndBeliefs', children, animate }
         </div>
       )}
       <MainCircle size={size} colors={gradientColors} />
-      <CircleTopLayer size={size + size / 10} colors={gradientColors} animate={animate} />
-      <CircleMiddleLayer size={size + size / 10} colors={gradientColors} animate={animate} />
-      <CircleBottomLayer size={size + size / 10} colors={gradientColors} animate={animate} />
+      <CircleTopLayer size={size + size / 18} colors={gradientColors} animate={animate} />
+      <CircleMiddleLayer size={size + size / 13} colors={gradientColors} animate={animate} />
+      <CircleBottomLayer size={size + size / 18} colors={gradientColors} animate={animate} />
     </div>
   );
 };

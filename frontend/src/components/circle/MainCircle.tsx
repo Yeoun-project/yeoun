@@ -13,7 +13,7 @@ const MainCircle = ({ size = 150, colors }: MainCircleProps) => {
       xmlns="http://www.w3.org/2000/svg"
       className="absolute z-5"
     >
-      <g opacity="0.8" filter="url(#filter0_dddddd_188_1110)" data-figma-bg-blur-radius="20">
+      <g opacity="0.9" filter="url(#filter0_dddddd_188_1110)">
         <path
           d="M143 78.5C143 114.122 114.122 143 78.5 143C42.8776 143 14 114.122 14 78.5C14 42.8776 42.8776 14 78.5 14C114.122 14 143 42.8776 143 78.5Z"
           fill="white"
@@ -131,9 +131,6 @@ const MainCircle = ({ size = 150, colors }: MainCircleProps) => {
             result="shape"
           />
         </filter>
-        <clipPath id="bgblur_0_188_1110_clip_path" transform="translate(6 6)">
-          <path d="M143 78.5C143 114.122 114.122 143 78.5 143C42.8776 143 14 114.122 14 78.5C14 42.8776 42.8776 14 78.5 14C114.122 14 143 42.8776 143 78.5Z" />
-        </clipPath>
 
         <radialGradient
           id={`paint0_radial_188_1110_${uniqueId}`}

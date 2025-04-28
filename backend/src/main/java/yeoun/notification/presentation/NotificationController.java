@@ -1,13 +1,17 @@
 package yeoun.notification.presentation;
 
-import yeoun.notification.dto.response.NotificationResponse;
-import yeoun.question.dto.response.QuestionResponse;
-import yeoun.notification.domain.Notification;
-import yeoun.question.domain.Question;
+import java.util.Map;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.RequestBody;
+import yeoun.common.SuccessResponse;
+import yeoun.notification.dto.response.NotificationListResponse;
 import yeoun.auth.service.JwtService;
 import yeoun.notification.service.NotificationService;
 import yeoun.notification.domain.NotificationType;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,10 +20,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import yeoun.question.dto.response.QuestionDetailResponse;
 
 @RestController
 @RequestMapping("/api/notification")
 @RequiredArgsConstructor
+@Slf4j
 public class NotificationController {
 
     private final NotificationService notificationService;
@@ -27,45 +33,34 @@ public class NotificationController {
     @GetMapping("/connect")
     public ResponseEntity<SseEmitter> connect() {
         Long userId = JwtService.getUserIdFromAuthentication();
-
         SseEmitter emitter = notificationService.getConnect(userId);
-
         return ResponseEntity.ok().body(emitter);
     }
 
     @GetMapping
-    public ResponseEntity<?> getNotifications() {
+    public ResponseEntity<?> getNotifications(@PageableDefault() final Pageable pageable) {
         Long userId = JwtService.getUserIdFromAuthentication();
-
-        List<Notification> entityList = notificationService.getAllNotifications(userId);
-
-        List<NotificationResponse> dtoList = entityList.stream()
-                .map(e->new NotificationResponse(e.getId(), e.getContent(), e.getNotificationType()))
-                .toList();
-
-        return ResponseEntity.ok().body(dtoList);
+        NotificationListResponse notificationListResponse = notificationService.getAllNotifications(userId, pageable);
+        return ResponseEntity.ok().body(
+                new SuccessResponse("알람 가져오기 성공", notificationListResponse));
     }
 
-    @GetMapping("/{notificationId}")
-    public ResponseEntity<?> readNotification(@PathVariable Long notificationId) {
+    @GetMapping("/{questionId}")
+    public ResponseEntity<?> readNotification(@PathVariable("questionId") Long questionId) {
         Long userId = JwtService.getUserIdFromAuthentication();
-
-        Question question = notificationService.readNotification(userId, notificationId);
-
-        QuestionResponse dto = QuestionResponse.builder()
-                .id(question.getId())
-                .content(question.getContent())
-                .categoryName(question.getCategory().getName())
-                .commentCount(question.getComments().size())
-                .createTime(question.getCreateTime())
-                .build();
-
-        return ResponseEntity.ok().body(dto);
+        QuestionDetailResponse questionDetailResponse = notificationService.getQuestionFromNotification(userId, questionId);
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new SuccessResponse("질문 상세 조회를 성공했습니다.", questionDetailResponse));
     }
 
     @PostMapping("/test")
-    public ResponseEntity<?> testAddNotification() {
-        notificationService.addNotification(JwtService.getUserIdFromAuthentication(), new NotificationResponse("content", NotificationType.COMMENT));
+    public ResponseEntity<?> testAddNotification(@RequestBody Map<String, Object> map) {
+        notificationService.addNotification(
+                JwtService.getUserIdFromAuthentication(),
+                Long.valueOf(map.get("receiver").toString()),
+                NotificationType.valueOf(map.get("type").toString()),
+                Long.valueOf(map.get("questionId").toString())
+        );
         return ResponseEntity.ok().build();
     }
 }

@@ -21,9 +21,12 @@
   --color-black-primary: #1a1a1a;
   --color-black-secondary: #1b1b1b;
 
+  --color-error: #ff2020;
+
   --animate-spin-first: spin 11s linear infinite;
-  --animate-spin-second: spin 13s linear infinite;
-  --animate-spin-third: spin 20s linear infinite;
+  --animate-spin-cube: spin 17s linear infinite;
+  --animate-spin-cube-reverse: spin 20s linear infinite reverse;
+  --animate-spin-circle-layer: spin 15s linear infinite;
 }
 
 :root {
@@ -71,6 +74,14 @@
       radial-gradient(at top left, transparent 100%, #ff41b394 90%);
     background-clip: text;
   }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }
 
 body {
@@ -85,4 +96,9 @@ body {
   background-color: #1a1a1a;
   min-height: 100svh;
   position: relative;
+}
+
+dialog::backdrop {
+  max-width: 430px;
+  margin: 0 auto;
 }
