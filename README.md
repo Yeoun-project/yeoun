@@ -3,7 +3,18 @@
     <h3><b>질문 하나, 마음속에 남는 여운</b></h3>
 </div>
 
-## <span>🙌 팀원 소개</span>
+## ⭐ 0. 목차
+
+1. [서비스 소개](#1)
+2. [팀원 소개](#2)
+3. [개발 일정](#3)
+4. [개발 환경 및 기술 스택](#4)
+
+## <span id="1">📢 1. 서비스 소개</span>
+
+<br />
+
+## <span id="2">🙌 2. 팀원 소개</span>
 
 <div align="center">
 
@@ -13,3 +24,13 @@
 | [정세빈](https://github.com/Jungsebeen) | [안정민](https://github.com/Ajungmiiin) | [변채원](https://github.com/bye-on) | [이희연](https://github.com/wheon06) | [이권희](https://github.com/kwonhee1) |
 
 </div>
+
+<br />
+
+## <span id="3">📅 3. 개발 일정</span>
+
+<br />
+
+## <span id="4">⚙️ 4. 개발 환경 및 기술 스택</span>
+
+<br />
