@@ -274,7 +274,7 @@ const AddQuestionPage = () => {
             form="add-question"
             className="font-desc h-[60px] w-full cursor-pointer rounded-xl bg-white py-4 font-bold text-black"
           >
-            여운 등록하기
+            질문 등록하기
           </button>
         </div>
       </main>
