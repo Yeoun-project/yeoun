@@ -1,3 +1,7 @@
+<div align='center'>
+    <h1><b>🌙 여운 Yeoun</b></h1>
+</div>
+
 ## <span>🙌 팀원 소개</span>
 
 <div align="center">
