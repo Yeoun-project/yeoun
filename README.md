@@ -1,5 +1,6 @@
 <div align='center'>
     <h1><b>🌙 여운 Yeoun</b></h1>
+    <h3><b>질문 하나, 마음속에 남는 여운</b></h3>
 </div>
 
 ## <span>🙌 팀원 소개</span>
