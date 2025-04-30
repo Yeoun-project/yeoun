@@ -49,6 +49,7 @@ pipeline {
 									docker rm -f yeoun-front || true
 
 									docker run -d \
+									--restart=always \
 									--name yeoun-front \
 									--network yeoun-network \
 									-p 80:80 -p 443:443 \
@@ -87,6 +88,7 @@ pipeline {
 									docker rm -f yeoun-back || true
 
 									docker run -d \
+									--restart=always \
 									--name yeoun-back \
 									--network yeoun-network \
 									-p 8080:8080 \

@@ -36,22 +36,34 @@ public class TodayQuestionService {
     public TodayQuestionResponse getTodayQuestionGuest(Long userId) {
         userService.validateUser(userId);
 
-        // 1. 오늘 질문이 있는 경우
-        Optional<Question> todayQuestionOpt = todayQuestionRepository.findTodayQuestion(userId);
-        if (todayQuestionOpt.isPresent()) {
-            return TodayQuestionResponse.of(todayQuestionOpt.get());
+        // 1. 오늘 질문 확인
+        Optional<Question> todayQuestion = todayQuestionRepository.findTodayQuestion(userId);
+        if (todayQuestion.isPresent()) {
+            return buildTodayQuestionResponse(todayQuestion.get(), userId);
         }
 
-        // 2. 오늘 질문이 없으면 인기 질문 중 랜덤
-        Optional<Question> popularQuestionOpt = questionRepository.findRandomPopularityQuestionExcludingHistory(userId);
-        if (popularQuestionOpt.isPresent()) {
-            saveTodayQuestionHistory(userId, popularQuestionOpt.get());
-            return TodayQuestionResponse.of(popularQuestionOpt.get());
+        // 2. 오늘 질문 없으면 인기 질문 중 랜덤
+        Optional<Question> popularQuestion = questionRepository.findRandomPopularityQuestionExcludingHistory(userId);
+        if (popularQuestion.isPresent()) {
+            saveTodayQuestionHistory(userId, popularQuestion.get());
+            return buildTodayQuestionResponse(popularQuestion.get(), userId);
         }
 
         // 3. 인기 질문도 없으면 고정 질문 중 랜덤
         Question fixedQuestion = findRandomFixedQuestionExcludingHistory(userId);
-        return TodayQuestionResponse.of(fixedQuestion);
+        return buildTodayQuestionResponse(fixedQuestion,userId);
+    }
+
+    private TodayQuestionResponse buildTodayQuestionResponse(Question question, Long userId) {
+        boolean hasComment = todayQuestionRepository.existsCommentByQuestionIdAndUserId(question.getId(), userId);
+        return TodayQuestionResponse.of(question, hasComment);
+    }
+
+    @Transactional
+    public TodayQuestionResponse getTodayQuestionMember(Long userId) {
+        Optional<Question> todayQuestionOpt = todayQuestionRepository.findTodayQuestion(userId);
+        Question todayQuestion = todayQuestionOpt.orElseGet(() -> findRandomFixedQuestionExcludingHistory(userId));
+        return buildTodayQuestionResponse(todayQuestion, userId);
     }
 
     private void saveTodayQuestionHistory(Long userId, Question question) {
@@ -61,13 +73,6 @@ public class TodayQuestionService {
                         .question(question)
                         .build()
         );
-    }
-
-    @Transactional
-    public TodayQuestionResponse getTodayQuestionMember(Long userId) {
-        Optional<Question> todayQuestionOpt = todayQuestionRepository.findTodayQuestion(userId);
-        Question todayQuestion = todayQuestionOpt.orElseGet(() -> findRandomFixedQuestionExcludingHistory(userId));
-        return TodayQuestionResponse.of(todayQuestion);
     }
 
     private Question findRandomFixedQuestionExcludingHistory(Long userId) {

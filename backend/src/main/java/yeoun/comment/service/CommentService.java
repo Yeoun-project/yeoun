@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.transaction.annotation.Transactional;
 import yeoun.auth.service.JwtService;
 import yeoun.comment.dto.request.SaveCommentRequest;
 import yeoun.comment.domain.Comment;
@@ -18,7 +19,6 @@ import yeoun.exception.CustomException;
 import yeoun.exception.ErrorCode;
 import yeoun.comment.domain.repository.CommentRepository;
 import jakarta.persistence.EntityManager;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -81,7 +81,7 @@ public class CommentService {
         commentRepository.deleteById(commentId);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public CommentListResponse getAllComments(Long questionId, Long userId, Pageable pageable) {
         Boolean isExistQuestion = questionService.isExistQuestion(questionId);
         if(!isExistQuestion) throw new CustomException(ErrorCode.INVALID_PARAMETER, "Invalid question id");
@@ -92,7 +92,11 @@ public class CommentService {
                 .orElse(null);
 
         Slice<Comment> comments = commentRepository.getAllCommentByQuestionExcludeMyself(questionId, userId, pageable);
-        final List<CommentResponse> commentResponses = getCommentResponses(comments.toList());
+        final List<CommentResponse> commentResponses = comments.stream()
+                .map(comment -> CommentResponse.of(
+                        comment,
+                        isLikedByUser(comment, userId)
+                )).toList();
 
         return new CommentListResponse(
                 myCommentResponse,
@@ -101,14 +105,10 @@ public class CommentService {
         );
     }
 
-    private List<CommentResponse> getCommentResponses(final List<Comment> comments) {
-        // 좋아요 유무 찾기
-
-        return comments.stream()
-                .map(comment -> CommentResponse.of(
-                        comment,
-                        false // 좋아요 정보
-                )).toList();
+    private boolean isLikedByUser(final Comment comment, final Long userId) {
+        return comment.getLikes().stream()
+                .anyMatch(like -> like.getUser().getId().equals(userId));
     }
+
 
 }

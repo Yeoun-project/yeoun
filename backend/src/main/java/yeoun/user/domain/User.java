@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Collection;
 
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,6 +15,11 @@ import org.hibernate.annotations.SQLRestriction;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import yeoun.comment.domain.Comment;
+import yeoun.like.domain.Like;
+import yeoun.notification.domain.Notification;
+import yeoun.question.domain.Question;
+import yeoun.question.domain.QuestionHistory;
 
 @Entity
 @Table(name = "user")
@@ -53,6 +59,30 @@ public class User implements UserDetails {
 
     @Column
     private LocalDateTime deleteTime;
+
+    // question : soft
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<Question> questions;
+
+    // notification : hard
+    @OneToMany(mappedBy = "receiver", cascade = CascadeType.REMOVE)
+    private List<Notification> notifications;
+
+    // comment : soft
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<Comment> comments;
+
+    // like : soft
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<Like> likes;
+
+    // question history : soft
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<QuestionHistory> questionHistory;
+
+    // user history : soft
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<UserHistory> userHistory;
 
     @Builder
     public User(Long id, String oAuthId, String oAuthPlatform, String name, String email, String phone, String role, String uuid) {
