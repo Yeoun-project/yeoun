@@ -34,6 +34,20 @@
 <br />
 
 ## <span id="4">⚙️ 4. 개발 환경 및 기술 스택</span>
+> <h3>프론트엔드</h3>
+`TypeScript` `React 19` `TailwindCSS`
+
+[![My Skills](https://skillicons.dev/icons?i=ts,react,tailwind&theme=light)](https://skillicons.dev)
+
+> <h3>백엔드</h3>
+`Java 21` `Spring Boot 3`
+
+[![My Skills](https://skillicons.dev/icons?i=java,spring&theme=light)](https://skillicons.dev)
+
+> <h3>인프라</h3>
+`Nginx` `Docker` `Github Action` `Jenkins`
+
+[![My Skills](https://skillicons.dev/icons?i=nginx,docker,githubactions,jenkins&theme=light)](https://skillicons.dev)
 
 <br />
 
