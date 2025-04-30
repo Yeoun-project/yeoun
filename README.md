@@ -35,19 +35,19 @@
 
 ## <span id="4">⚙️ 4. 개발 환경 및 기술 스택</span>
 > <h3>프론트엔드</h3>
-`TypeScript` `React 19` `TailwindCSS`
+`TypeScript` `React` `TailwindCSS` `React Query` `Zustand`
 
-[![My Skills](https://skillicons.dev/icons?i=ts,react,tailwind&theme=light)](https://skillicons.dev)
+![My Skills](https://go-skill-icons.vercel.app/api/icons?i=ts,react,tailwindcss,reactquery,zustand&titles=true)
 
 > <h3>백엔드</h3>
-`Java 21` `Spring Boot 3`
+`Java 21` `Spring Boot` `Spring Data JPA` `JWT` `MySQL`
 
-[![My Skills](https://skillicons.dev/icons?i=java,spring&theme=light)](https://skillicons.dev)
+![My Skills](https://go-skill-icons.vercel.app/api/icons?i=java,spring,jwt,mysql&titles=true)
 
 > <h3>인프라</h3>
 `Nginx` `Docker` `Github Action` `Jenkins`
 
-[![My Skills](https://skillicons.dev/icons?i=nginx,docker,githubactions,jenkins&theme=light)](https://skillicons.dev)
+![My Skills](https://go-skill-icons.vercel.app/api/icons?i=nginx,docker,githubactions,jenkins&titles=true)
 
 <br />
 
