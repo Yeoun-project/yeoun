@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import CATEGORY from '../../constant/category/Category';
@@ -31,7 +31,12 @@ const MyAnswersPage = () => {
     categoryId: categoryId as string,
   });
 
-  const { questions, questionsYear } = useQuestionGroupByYear(data ? data : [], 'latest');
+  const selectedCategoryName = useMemo(() => {
+    const category = CATEGORY.find((c) => c.id === Number(categoryId));
+    return category?.category; 
+  }, [categoryId]);
+
+  const { questions, questionsYear } = useQuestionGroupByYear(data ? data : [], 'latest', selectedCategoryName);
 
   const handleSelectCategory = (categoryId: number) => {
     setSearchParams({ q: categoryId.toString() });
