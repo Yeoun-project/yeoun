@@ -17,7 +17,7 @@ const TabNavPaths = [
     icon: (isActive: boolean) => <AddQuestionIcon isActive={isActive} />,
   },
   {
-    path: '/question-list',
+    path: '/question-list?q=0',
     label: '질문모음',
     icon: (isActive: boolean) => <QuestionListIcon isActive={isActive} />,
   },
