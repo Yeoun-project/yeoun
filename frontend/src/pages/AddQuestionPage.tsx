@@ -153,7 +153,7 @@ const AddQuestionPage = () => {
         if (response.code === 'MISSING_PARAMETER') {
           toast.addToast.error({
             title: '여운 등록 실패',
-            message: `질문을 등록해주세요!`,
+            message: `질문을 작성해주세요!`,
           });
         }
         if (response.code === 'BAD_REQUEST') {
