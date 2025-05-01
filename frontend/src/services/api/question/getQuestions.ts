@@ -24,6 +24,18 @@ const getCategoryName = (categoryId: string | undefined) => {
   return filteredCategory.category;
 };
 
+// 모든 질문 리스트
+const getAllQuestions = async ({ page = 1, categoryId }: QuestionListReq) => {
+  const response = await client.get<Response<QuestionList>>(
+    getQuestionListApiUrl('/api/question/all', {
+      page,
+      category: getCategoryName(categoryId) as QuestionCategory,
+    })
+  );
+
+  return response.data.data;
+};
+
 // 내가 [작성한] 질문 리스트
 const getMyQuestions = async ({ page = 1, categoryId }: QuestionListReq): Promise<QuestionList> => {
   const response = await client.get<Response<QuestionList>>(
@@ -61,4 +73,4 @@ const getTodayAnswersQuestions = async ({ page = 1 }: QuestionListReq): Promise<
 
   return response.data.data;
 };
-export { getMyQuestions, getAnsweredQuestions, getTodayAnswersQuestions };
+export { getAllQuestions, getMyQuestions, getAnsweredQuestions, getTodayAnswersQuestions };
