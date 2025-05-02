@@ -152,13 +152,13 @@ const AddQuestionPage = () => {
 
         if (response.code === 'MISSING_PARAMETER') {
           toast.addToast.error({
-            title: '질문 등록 실패',
-            message: `질문을 등록해주세요!`,
+            title: '여운 등록 실패',
+            message: `질문을 작성해주세요!`,
           });
         }
         if (response.code === 'BAD_REQUEST') {
           toast.addToast.error({
-            title: '질문 등록 실패',
+            title: '여운 등록 실패',
             message: `질문에 제한된 표현이 포함되어 있어요.
             수정 후 다시 등록해 주세요!`,
           });

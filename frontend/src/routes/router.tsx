@@ -26,6 +26,7 @@ import AlarmPage from '../pages/AlarmPage.tsx';
 
 import MyActivityPage from '../pages/my/MyActivityPage.tsx';
 import MyQuestionsPage from '../pages/my/MyQuestionsPage.tsx';
+import QuestionListPage from '../pages/QuestionListPage.tsx';
 import MyAnswersPage from '../pages/my/MyAnswersPage.tsx';
 
 const router = createBrowserRouter([
@@ -84,6 +85,10 @@ const router = createBrowserRouter([
                 element: <AddQuestionPage />,
               },
             ],
+          },
+          {
+            path: '/question-list',
+            element: <QuestionListPage />
           },
           {
             path: '/my',
