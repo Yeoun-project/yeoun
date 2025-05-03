@@ -45,7 +45,7 @@
 ![My Skills](https://go-skill-icons.vercel.app/api/icons?i=java,spring,jwt,mysql&titles=true)
 
 > <h3>인프라</h3>
-`ubuntu` `Nginx` `Docker` `Github Action` `Jenkins`
+`Ubuntu` `Nginx` `Docker` `Github Action` `Jenkins`
 
 ![My Skills](https://go-skill-icons.vercel.app/api/icons?i=ubuntu,nginx,docker,githubactions,jenkins&titles=true)
 
