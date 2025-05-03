@@ -5,6 +5,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import yeoun.common.SuccessResponse;
 import yeoun.question.dto.request.AddQuestionRequest;
+import yeoun.question.dto.response.CheckTodayQuestionWrittenResponse;
 import yeoun.question.dto.response.QuestionDetailResponse;
 import yeoun.question.dto.response.QuestionListResponse;
 import yeoun.auth.service.JwtService;
@@ -89,6 +90,14 @@ public class QuestionController {
         QuestionListResponse questionListResponse = questionService.getQuestionUserAnswered(JwtService.getUserIdFromAuthentication(), category, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(
                 new SuccessResponse("내가 답변한 질문 목록 조회를 성공했습니다.", questionListResponse));
+    }
+
+    @GetMapping("/api/question/written-today")
+    public ResponseEntity<?> isWrittenQuestionToday() {
+        Long userId = JwtService.getUserIdFromAuthentication();
+        CheckTodayQuestionWrittenResponse checkTodayQuestionWrittenResponse = questionService.isWrittenToday(userId);
+        return ResponseEntity.ok(
+                new SuccessResponse("회원의 오늘 질문 작성 유무 조회를 성공했습니다.", checkTodayQuestionWrittenResponse));
     }
 
     @GetMapping("/api/category")
