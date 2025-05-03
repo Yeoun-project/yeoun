@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import jakarta.persistence.EntityManager;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.transaction.annotation.Transactional;
 import yeoun.question.dto.request.AddQuestionRequest;
 import yeoun.question.domain.Category;
 import yeoun.question.domain.Question;
@@ -16,7 +17,6 @@ import yeoun.exception.CustomException;
 import yeoun.exception.ErrorCode;
 import yeoun.question.domain.repository.CategoryRepository;
 import yeoun.question.domain.repository.QuestionRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import yeoun.user.service.UserService;
@@ -85,12 +85,13 @@ public class QuestionService {
 //        questionRepository.delete(question);
 //    }
 
+    @Transactional(readOnly = true)
     public CheckTodayQuestionWrittenResponse isWrittenToday(final Long userId) {
         Boolean isWritten = questionRepository.existsByUserIdAndToday(userId);
         return new CheckTodayQuestionWrittenResponse(isWritten);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public QuestionListResponse getAllQuestions(String category, Pageable pageable) {
         LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
         LocalDateTime endOfDay = startOfDay.plusDays(1);
@@ -109,7 +110,7 @@ public class QuestionService {
         return new QuestionListResponse(questionResponseList, questionSlice.hasNext());
     }
 
-    @Transactional // 질문 상세 정보 조회는 사용자가 작성한 질문들 중에서만, 고정 질문 X
+    @Transactional(readOnly = true) // 질문 상세 정보 조회는 사용자가 작성한 질문들 중에서만, 고정 질문 X
     public QuestionDetailResponse getQuestionDetail(Long userId, Long questionId) {
         Question question = questionRepository.findByIdAndIsFixedIsFalse(questionId)
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_PARAMETER, "질문 ID가 잘못 되었습니다."));
@@ -120,7 +121,7 @@ public class QuestionService {
         return QuestionDetailResponse.of(question, isAuthor);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public QuestionListResponse getMyQuestions(Long userId, Pageable pageable) {
         // todo 추후 여기도 페이징 조회 처리
         List<Question> questions = questionRepository.findByUserId(userId);
@@ -139,7 +140,7 @@ public class QuestionService {
 //        return new CategoryListResponse(categoryResponses);
 //    }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public QuestionListResponse getQuestionUserAnswered(Long userId, String category, Pageable pageable) {
         Slice<Question> questionSlice = questionRepository.findAllCommentedQuestionsByUserIdAndCategory(userId, category, pageable);
         List<QuestionResponse> questionResponses = questionSlice.stream()
@@ -148,12 +149,12 @@ public class QuestionService {
         return new QuestionListResponse(questionResponses, questionSlice.hasNext());
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Boolean isExistQuestion(Long questionId) {
         return questionRepository.findQuestionById(questionId).isPresent();
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<CategoryResponse> getAllCategories() {
         List<CategoryResponseDao> categoryResponseDaos = questionRepository.findCategoriesWithCount();
         return categoryResponseDaos.stream()
