@@ -49,6 +49,11 @@
 
 ![My Skills](https://go-skill-icons.vercel.app/api/icons?i=ubuntu,nginx,docker,githubactions,jenkins&titles=true)
 
+> <h3>도구</h3>
+`Figma` `Notion` `Discord`
+
+![My Skills](https://go-skill-icons.vercel.app/api/icons?i=figma,notion,discord&titles=true)
+
 <br />
 
 ## <span id="5">🪐 5. 주요 기능 소개</span>
