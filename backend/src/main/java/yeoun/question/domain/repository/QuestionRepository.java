@@ -20,6 +20,16 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     Optional<Question> findQuestionById(@Param("id") Long id);
 
     @Query("""
+            SELECT CASE 
+                WHEN COUNT(question) > 0 THEN true 
+                ELSE false END
+            FROM Question question
+            WHERE question.user.id = :userId
+            AND DATE(question.createTime) = CURRENT_DATE
+            """)
+    Boolean existsByUserIdAndToday(@Param("userId") Long userId);
+
+    @Query("""
             SELECT q FROM Question q
             LEFT JOIN q.comments c
               ON c.createTime BETWEEN :start AND :end

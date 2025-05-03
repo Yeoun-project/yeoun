@@ -85,6 +85,11 @@ public class QuestionService {
 //        questionRepository.delete(question);
 //    }
 
+    public CheckTodayQuestionWrittenResponse isWrittenToday(final Long userId) {
+        Boolean isWritten = questionRepository.existsByUserIdAndToday(userId);
+        return new CheckTodayQuestionWrittenResponse(isWritten);
+    }
+
     @Transactional
     public QuestionListResponse getAllQuestions(String category, Pageable pageable) {
         LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
