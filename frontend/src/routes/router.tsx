@@ -28,6 +28,7 @@ import MyActivityPage from '../pages/my/MyActivityPage.tsx';
 import MyQuestionsPage from '../pages/my/MyQuestionsPage.tsx';
 import QuestionListPage from '../pages/QuestionListPage.tsx';
 import MyAnswersPage from '../pages/my/MyAnswersPage.tsx';
+import QuestionCommentPage from '../pages/question/QuestionCommentPage.tsx';
 
 const router = createBrowserRouter([
   {
@@ -84,6 +85,10 @@ const router = createBrowserRouter([
                 path: '/question/add-question',
                 element: <AddQuestionPage />,
               },
+              {
+                path: '/question/:id',
+                element: <QuestionCommentPage />,
+              }
             ],
           },
           {
