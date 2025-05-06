@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 public interface UserHistoryRepository extends JpaRepository<UserHistory, Long> {
 
     @Modifying
-    @Query(value = "delete from UserHistory h where h.lastLogin < :deleteTime")
+    @Query(value = "delete from UserHistory h where h.createTime < :deleteTime")
     void deleteOldHistory(@Param("deleteTime") LocalDateTime deleteTime);
 
 }
