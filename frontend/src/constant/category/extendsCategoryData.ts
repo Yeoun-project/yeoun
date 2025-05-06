@@ -9,6 +9,8 @@ interface ExtendsData {
   icon?: (size?: number) => JSX.Element;
   color?: string;
   examples?: string[];
+  example?: string;
+  desc?: string;
 }
 
 type ExtendsDataList = {
