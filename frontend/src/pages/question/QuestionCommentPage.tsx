@@ -114,7 +114,7 @@ const QuestionCommentPage = () => {
       </header>
       <main className="no-scrollbar h-[calc(100%-125px)] overflow-scroll px-6">
         <div className="flex h-[360px] items-center justify-center">
-          <Circle size={330} animate={true} category={questionDetail?.categoryName} >
+          <Circle size={330} animate={true} category={questionDetail?.categoryName}>
             <p className="text-blur text-black-primary px-8 text-xl break-keep">{content}</p>
           </Circle>
         </div>
@@ -152,6 +152,8 @@ const QuestionCommentPage = () => {
               likeCount={mycomment.likeCount}
               reportBtnClick={onClickReportBtn}
               onSubmit={() => console.log('삭제')}
+              questionId={questionId}
+              sortOrder={sortOrder}
             />
           </div>
         )}
@@ -166,6 +168,8 @@ const QuestionCommentPage = () => {
                 likeCount={comment.likeCount}
                 reportBtnClick={onClickReportBtn}
                 onSubmit={onSubmitModal}
+                questionId={questionId}
+                sortOrder={sortOrder}
               />
             </div>
           ))}
