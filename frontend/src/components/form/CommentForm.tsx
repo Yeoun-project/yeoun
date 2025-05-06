@@ -4,7 +4,7 @@ interface CommentFormProps {
   maxValue?: number;
   commentValue: string;
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
-  ref: React.RefObject<HTMLTextAreaElement | null>;
+  ref?: React.RefObject<HTMLTextAreaElement | null>;
 }
 
 const CommentForm = ({
