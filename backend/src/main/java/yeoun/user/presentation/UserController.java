@@ -51,19 +51,19 @@ public class UserController {
     public ResponseEntity<?> getUserAuthPlatform() {
         User user = userService.getUserInfo(JwtService.getUserIdFromAuthentication());
 
-        return ResponseEntity.status(HttpStatus.OK).body(UserAuthResponse.of(user));
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("success get Auth",UserAuthResponse.of(user)));
     }
 
     @GetMapping("/notification")
     public ResponseEntity<?> getUserAlarm() {
         User user = userService.getUserInfo(JwtService.getUserIdFromAuthentication());
 
-        return ResponseEntity.status(HttpStatus.OK).body(UserNotificationResponse.of(user));
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("success",UserNotificationResponse.of(user)));
     }
 
     @PostMapping("/notification")
     public ResponseEntity<?> setUserAlarm(@RequestBody @Valid IsNotificationRequest dto) {
         userService.setIsNotification(dto, JwtService.getUserIdFromAuthentication());
-        return ResponseEntity.status(HttpStatus.OK).body("설정 성공");
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("success"));
     }
 }

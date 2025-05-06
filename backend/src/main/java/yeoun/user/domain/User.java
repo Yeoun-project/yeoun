@@ -57,6 +57,9 @@ public class User implements UserDetails {
     @Column
     private final Boolean isNotification = false;
 
+    @Column
+    private int questionCount = 1;
+
     @CreatedDate
     private final LocalDateTime createTime = LocalDateTime.now();
 
