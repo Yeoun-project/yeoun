@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 // import { useParams } from 'react-router-dom';
 
 import useModalStore from '../../store/useModalStore';
@@ -11,12 +11,24 @@ import BackArrowButton from '../../components/button/BackArrowButton';
 import Modal from '../../components/modal/Modal';
 
 const MyTodayAnswerPage = () => {
+  const formRef = useRef<HTMLTextAreaElement>(null);
   const [edit, setEdit] = useState(false);
   const [comment, setComment] = useState(
     `다시 태어나면 여행 다니면서 살고 싶어✈️! 지금의 삶도 만족스럽지만 다음 생엔 더 많은 곳을 돌아다니면서 새로운 경험도 많이 해보고 싶어ㅋㅋ 이것저것 고민하느라 미루기보다는 그냥 하고 싶은 대로 도전하면서 신나게 살거야. 한 번 사는 인생이니까~😆`
   );
   const { openModal, modal } = useModalStore();
   //   const { questionId } = useParams();
+
+  useEffect(() => {
+    // edit 상태로 변했을 때 폼 focus
+    if (edit) {
+      if (!formRef.current) return;
+      const textLength = formRef.current.value.length;
+      formRef.current.focus();
+      formRef.current.setSelectionRange(textLength, textLength);
+    }
+  }, [edit]);
+
   return (
     <>
       {modal && (
@@ -68,6 +80,7 @@ const MyTodayAnswerPage = () => {
             )}
             {edit && (
               <CommentForm
+                ref={formRef}
                 commentValue={comment}
                 onChange={(e) => setComment(e.target.value)}
                 onSubmit={(e) => console.log(e.currentTarget)}

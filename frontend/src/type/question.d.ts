@@ -2,6 +2,7 @@ import QuestionCategory from './questionCategory';
 export interface TodayQuestion {
   id: number;
   content: string;
+  hasComment: boolean;
 }
 
 export interface MyTodayQuestionListItem extends TodayQuestion {
@@ -20,6 +21,6 @@ export interface Question {
 }
 
 export interface QuestionList {
-  question: Question[];
+  questions: Question[];
   hasNext: boolean;
 }
