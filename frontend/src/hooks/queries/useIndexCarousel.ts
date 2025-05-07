@@ -1,68 +1,117 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 const useIndexCarousel = (MIN_MOVE: number, carouselLimit: number) => {
   const carouselRef = useRef<HTMLDivElement>(null);
   const isDraggingRef = useRef<boolean>(false);
-  const getCarouselItemWidth = () => {
+
+  const touchStartRef = useRef<number>(0);
+  const currentTransXRef = useRef<number>(0);
+  const animationFrameIdRef = useRef<number | null>(null);
+
+  const [currentCarousel, setCurrentCarousel] = useState(0);
+
+  const getCarouselItemWidth = useCallback(() => {
     if (carouselRef.current) {
       return carouselRef.current.clientWidth;
     }
     return 0;
-  };
+  }, []);
 
-  const [currentCarousel, setCurrentCarousel] = useState(0);
-  const [touchStartX, setTouchStartX] = useState(0);
-  const [transX, setTransX] = useState(0);
-  const [touchStart, setTouchStart] = useState(false);
+  const applyTransform = useCallback(() => {
+    if (carouselRef.current) {
+      const itemWidth = getCarouselItemWidth();
+      const newTransform = -currentCarousel * itemWidth + currentTransXRef.current;
+      carouselRef.current.style.transform = `translateX(${newTransform}px)`;
+    }
+  }, [currentCarousel, getCarouselItemWidth]);
+
+  useEffect(() => {
+    currentTransXRef.current = 0;
+    if (carouselRef.current) {
+      carouselRef.current.style.transition = 'transform 0.3s ease-out';
+    }
+    applyTransform();
+  }, [currentCarousel, applyTransform]);
+
   const handleTouchStart = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
     isDraggingRef.current = false;
-    setTouchStart(true);
-    setTouchStartX(e.clientX);
+    touchStartRef.current = e.clientX;
+    currentTransXRef.current = 0;
+
+    if (carouselRef.current) {
+      carouselRef.current.style.transition = 'none';
+    }
+
+    if (animationFrameIdRef.current) {
+      cancelAnimationFrame(animationFrameIdRef.current);
+    }
   }, []);
 
   const handleTouchMove = useCallback(
     (e: React.PointerEvent<HTMLDivElement>) => {
-      if (touchStart) {
-        setTransX(e.clientX - touchStartX);
-
-        if (!isDraggingRef.current && Math.abs(e.clientX - touchStartX) > 5) {
-          isDraggingRef.current = true;
-        }
-      } else {
+      if (touchStartRef.current === 0 && !isDraggingRef.current) {
         return;
       }
+
+      const deltaX = e.clientX - touchStartRef.current;
+      currentTransXRef.current = deltaX;
+
+      if (!isDraggingRef.current && Math.abs(deltaX) > 5) {
+        isDraggingRef.current = true;
+      }
+
+      if (animationFrameIdRef.current) {
+        cancelAnimationFrame(animationFrameIdRef.current);
+      }
+
+      animationFrameIdRef.current = requestAnimationFrame(applyTransform);
     },
-    [touchStart, touchStartX]
+    [applyTransform]
   );
-
   const handleTouchEnd = useCallback(() => {
-    if (transX < -MIN_MOVE) {
-      //next
-      setCurrentCarousel((prev) => (prev < carouselLimit ? prev + 1 : prev));
+    if (animationFrameIdRef.current) {
+      cancelAnimationFrame(animationFrameIdRef.current);
+      animationFrameIdRef.current = null;
     }
-    if (transX > MIN_MOVE) {
-      //prev
-      setCurrentCarousel((prev) => (prev > 0 ? prev - 1 : prev));
+
+    if (carouselRef.current) {
+      carouselRef.current.style.transition = 'transform 0.3s ease-out';
     }
-    setTransX(0);
-    setTouchStartX(0);
-    setTouchStart(false);
-  }, [MIN_MOVE, carouselLimit, transX]);
 
-  const getTranslate = () => {
-    return `translateX(${-currentCarousel * getCarouselItemWidth() + transX}px)`;
-  };
+    const movedDistance = currentTransXRef.current;
+    let newCurrentCarousel = currentCarousel;
 
-  const getScale = () => {
+    if (movedDistance < -MIN_MOVE) {
+      newCurrentCarousel = Math.min(currentCarousel + 1, carouselLimit);
+    } else if (movedDistance > MIN_MOVE) {
+      newCurrentCarousel = Math.max(currentCarousel - 1, 0);
+    }
+
+    touchStartRef.current = 0;
+
+    if (newCurrentCarousel !== currentCarousel) {
+      setCurrentCarousel(newCurrentCarousel);
+    } else {
+      currentTransXRef.current = 0;
+      applyTransform();
+    }
+    isDraggingRef.current = false;
+  }, [MIN_MOVE, carouselLimit, currentCarousel, applyTransform]);
+
+  const getTranslateValue = useCallback(() => {
+    return -currentCarousel * getCarouselItemWidth();
+  }, [currentCarousel, getCarouselItemWidth]);
+
+  const getScale = useCallback((): string => {
     return `scale(1)`;
-  };
+  }, []);
 
   return {
     carouselRef,
     handleTouchStart,
     handleTouchMove,
     handleTouchEnd,
-    getTranslate,
+    getTranslateValue,
     getScale,
     setCurrentCarousel,
     currentCarousel,

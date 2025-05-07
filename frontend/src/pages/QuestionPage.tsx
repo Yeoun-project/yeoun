@@ -86,7 +86,6 @@ const QuestionPage = () => {
     handleTouchStart,
     handleTouchMove,
     handleTouchEnd,
-    getTranslate,
     setCurrentCarousel,
     isDraggingRef,
   } = useIndexCarousel(30, QuestionCategoryList.length - 1);
@@ -130,7 +129,6 @@ const QuestionPage = () => {
 
         {/* 카테고리 캐러셀 */}
         <Carousel.Wrapper
-          getTranslate={getTranslate}
           handleTouchEnd={handleTouchEnd}
           handleTouchMove={handleTouchMove}
           handleTouchStart={handleTouchStart}
