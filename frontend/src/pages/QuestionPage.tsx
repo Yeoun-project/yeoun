@@ -135,27 +135,25 @@ const QuestionPage = () => {
           carouselRef={carouselRef}
         >
           {QuestionCategoryList.map((category, idx) => (
-            <>
-              <Carousel.Item
-                currentItem={currentCarousel}
-                idx={idx}
-                key={`${idx}-${category.category}`}
+            <Carousel.Item
+              currentItem={currentCarousel}
+              idx={idx}
+              key={`${idx}-${category.category}`}
+            >
+              <div
+                className="cursor-pointer touch-none"
+                onClick={async () => await handleCheckQuestionToday(category.id)}
               >
-                <div
-                  className="cursor-pointer touch-none"
-                  onClick={async () => await handleCheckQuestionToday(category.id)}
-                >
-                  <Circle size={250} animate category={category.category as QuestionCategory}>
-                    <div className="flex flex-col items-center justify-center">
-                      {category.icon && category.icon(64)}
-                      <p className="text-blur text-xl" style={{ color: category.color }}>
-                        {category.name}
-                      </p>
-                    </div>
-                  </Circle>
-                </div>
-              </Carousel.Item>
-            </>
+                <Circle size={250} animate category={category.category as QuestionCategory}>
+                  <div className="flex flex-col items-center justify-center">
+                    {category.icon && category.icon(64)}
+                    <p className="text-blur text-xl" style={{ color: category.color }}>
+                      {category.name}
+                    </p>
+                  </div>
+                </Circle>
+              </div>
+            </Carousel.Item>
           ))}
         </Carousel.Wrapper>
         <div className="w-full px-6 pt-2">
