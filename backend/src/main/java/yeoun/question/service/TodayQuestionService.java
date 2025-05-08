@@ -1,12 +1,10 @@
 package yeoun.question.service;
 
 import jakarta.persistence.EntityManager;
-import jakarta.transaction.Transactional;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import yeoun.comment.dto.request.SaveCommentRequest;
+import org.springframework.transaction.annotation.Transactional;
 import yeoun.exception.CustomException;
 import yeoun.exception.ErrorCode;
 import yeoun.question.domain.Question;
@@ -32,7 +30,7 @@ public class TodayQuestionService {
     private final TodayQuestionRepository todayQuestionRepository;
     private final QuestionHistoryRepository questionHistoryRepository;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public TodayQuestionResponse getTodayQuestionGuest(Long userId) {
         userService.validateUser(userId);
 
@@ -59,7 +57,7 @@ public class TodayQuestionService {
         return TodayQuestionResponse.of(question, hasComment);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public TodayQuestionResponse getTodayQuestionMember(Long userId) {
         Optional<Question> todayQuestionOpt = todayQuestionRepository.findTodayQuestion(userId);
         Question todayQuestion = todayQuestionOpt.orElseGet(() -> findRandomFixedQuestionExcludingHistory(userId));
@@ -103,6 +101,18 @@ public class TodayQuestionService {
         }
 
         questionHistoryRepository.addCommentToTodayQuestion(userId, request.getQuestionId(), request.getComment());
+    }
+
+    @Transactional
+    public void updateTodayQuestionComment(Long userId, AddTodayQuestionCommentRequest request) {
+        userService.validateUser(userId);
+
+        QuestionHistory questionHistory = questionHistoryRepository.findTodayHistoryByQuestionIdAndUser(
+                        userId, request.getQuestionId())
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_PARAMETER, "질문을 찾을 수 없습니다."));
+        if (questionHistory.getComment() == null) throw new CustomException(ErrorCode.CONFLICT, "수정할 댓글이 없습니다.");
+
+        questionHistory.setComment(request.getComment());
     }
 
 }
