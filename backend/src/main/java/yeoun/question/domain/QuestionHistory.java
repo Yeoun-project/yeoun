@@ -1,11 +1,8 @@
 package yeoun.question.domain;
 
 import jakarta.persistence.*;
-import java.util.Date;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.SQLDelete;
@@ -27,6 +24,7 @@ public class QuestionHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter
     @Column(columnDefinition = "varchar(500)")
     private String comment;
 
@@ -35,6 +33,9 @@ public class QuestionHistory {
 
     @CreatedDate
     private final LocalDateTime createTime = LocalDateTime.now();
+
+    @Column
+    private LocalDateTime updateTime;
 
     @Column
     private LocalDateTime deleteTime;
@@ -53,5 +54,10 @@ public class QuestionHistory {
         this.user = user;
         this.question = question;
         this.comment = comment;
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updateTime = LocalDateTime.now();
     }
 }
