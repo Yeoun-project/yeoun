@@ -19,6 +19,14 @@ public interface UserRepository extends JpaRepository<User, Long> {
     String updateUUID(@Param("userId") String userId, @Param("uuid") String uuid);
 
     @Modifying
+    @Query("delete from User u where u.id not in (select h.user.id from UserHistory h group by h.user.id) and u.role = 'ANONYMOUS'")
+    void deleteOldAnonymousUser();
+
+    @Modifying
+    @Query("update User u set u.isNotification = :isNotification where u.id = :userId")
+    void setIsNotification(@Param("isNotification") boolean isNotification,@Param("userId") long userId);
+  
+    @Modifying
     @Query("delete from User u where u.id not in (select h.user.id from UserHistory h group by h.user.id) and u.role = 'ANONYMOUS' and u.createTime < :deleteTime")
     void deleteOldAnonymousUser(@Param("deleteTime") LocalDateTime deleteTime);
 }

@@ -5,7 +5,7 @@ import yeoun.auth.vo.NaverUserInfo;
 import yeoun.user.domain.User;
 import yeoun.user.domain.repository.UserRepository;
 import yeoun.user.service.UserService;
-import yeoun.user.vo.UserRegisterInfoVo;
+import yeoun.user.dto.request.UserRegisterInfoVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;

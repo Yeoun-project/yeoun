@@ -6,7 +6,7 @@ import yeoun.user.domain.User;
 import yeoun.user.domain.repository.UserRepository;
 import yeoun.user.service.UserService;
 import yeoun.util.FormattingUtil;
-import yeoun.user.vo.UserRegisterInfoVo;
+import yeoun.user.dto.request.UserRegisterInfoVo;
 import io.netty.handler.codec.http.HttpHeaderValues;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
