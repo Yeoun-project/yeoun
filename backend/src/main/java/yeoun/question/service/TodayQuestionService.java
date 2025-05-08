@@ -77,7 +77,7 @@ public class TodayQuestionService {
         Question newTodayQuestion = todayQuestionRepository.findRandomFixedQuestionExcludingHistory(userId)
                 // 오늘의 질문을 한개도 못 가져오는 경우는 is_fixed 질문이 한개도 없는 경우 밖에 없음
                 .orElseThrow(() -> new CustomException(ErrorCode.INTERNAL_SERVER_ERROR, "오늘의 질문을 가져오는데 실패했습니다."));
-
+// test
         questionHistoryRepository.save(
                 QuestionHistory.builder()
                         .user(entityManager.getReference(User.class, userId))
