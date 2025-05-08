@@ -27,7 +27,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     @Query("""
             SELECT c FROM Comment c
             WHERE c.question.id = :questionId
-            AND c.user.id <> :userId
+            AND ( c.user.id <> :userId or c.user.id is null)
             """)
     Slice<Comment> getAllCommentByQuestionExcludeMyself(
             @Param("questionId") Long questionId,

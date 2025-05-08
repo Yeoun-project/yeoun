@@ -1,14 +1,16 @@
 package yeoun.user.service;
 
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 import yeoun.exception.CustomException;
 import yeoun.exception.ErrorCode;
+import yeoun.question.domain.repository.QuestionRepository;
 import yeoun.user.domain.User;
 import yeoun.auth.service.JwtService;
 import yeoun.user.domain.repository.UserRepository;
 import yeoun.user.domain.Role;
 import yeoun.user.vo.UserRegisterInfoVo;
-import jakarta.transaction.Transactional;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final QuestionRepository questionRepository;
 
     @Transactional
     public User registerByUserInfo(UserRegisterInfoVo vo) {
@@ -61,8 +64,22 @@ public class UserService {
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_PARAMETER, "유저 정보가 잘못 되었습니다"));
     }
 
-    public void deleteUser(Long userId) {
+    public void softDeleteUser(Long userId) {
         userRepository.deleteById(userId);
+    }
+
+    @Transactional
+    public void hardDeleteAll(Long userId){
+        // like(userId) -> notification(receiverId, questionId) -> userHistory(userId, questionId) -> comment(question_id) -> question_history(user_id, question_id) -> question(user_id) -> user
+        List<Long> questionIdList = questionRepository.findByUserId(userId).stream().map(e->e.getId()).toList();
+        userRepository.deleteLike(userId);
+        userRepository.deleteNotification(userId, questionIdList);
+        userRepository.deleteUserHistory(userId);
+        userRepository.deleteComment(userId, questionIdList);
+        userRepository.deleteQuestionHistory(userId, questionIdList);
+        userRepository.deleteQuestion(userId);
+        userRepository.updateComment(userId);
+        userRepository.hardDeleteUser(userId);
     }
 
 }
