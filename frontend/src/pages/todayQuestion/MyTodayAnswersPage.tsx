@@ -15,6 +15,7 @@ import SubPageHeader from '../../components/ui/SubPageHeader';
 import QuestionListYearSection from '../../components/questionList/QuestionListYearSection';
 import ListMoreButton from '../../components/questionList/ListMoreButton';
 import QuestionList from '../../components/questionList/QuestionList';
+import useAuthStore from '../../store/useAuthStore';
 
 type sortOrder = 'latest' | 'old';
 
@@ -30,6 +31,7 @@ const SORTORDER_CHECKBOXS = [
 ];
 
 const MyTodayAnswersPage = () => {
+  const { userType } = useAuthStore();
   const [sortOrder, setSortOrder] = useState<sortOrder>('latest');
 
   const { data, fetchNextPage, hasNextPage } = useInfiniteQuery({
@@ -42,7 +44,7 @@ const MyTodayAnswersPage = () => {
     getNextPageParam: (lastPage, allPages) => (lastPage.hasNext ? allPages.length + 1 : undefined),
     select: (data) => {
       // 새로 불러온 데이터들이 있다면 기존 데이터들과 매핑 후 반환
-      return data.pages.flatMap((page) => page.question || []);
+      return data.pages.flatMap((page) => page.questions || []);
     },
   });
 
@@ -87,7 +89,7 @@ const MyTodayAnswersPage = () => {
           </div>
         )}
       </main>
-      <BottomTabBar />
+      {userType !== 'Guest' && <BottomTabBar />}
     </div>
   );
 };
