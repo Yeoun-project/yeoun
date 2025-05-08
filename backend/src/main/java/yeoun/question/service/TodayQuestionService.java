@@ -30,7 +30,7 @@ public class TodayQuestionService {
     private final TodayQuestionRepository todayQuestionRepository;
     private final QuestionHistoryRepository questionHistoryRepository;
 
-    @Transactional(readOnly = true)
+    @Transactional
     public TodayQuestionResponse getTodayQuestionGuest(Long userId) {
         userService.validateUser(userId);
 
@@ -57,7 +57,7 @@ public class TodayQuestionService {
         return TodayQuestionResponse.of(question, hasComment);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public TodayQuestionResponse getTodayQuestionMember(Long userId) {
         Optional<Question> todayQuestionOpt = todayQuestionRepository.findTodayQuestion(userId);
         Question todayQuestion = todayQuestionOpt.orElseGet(() -> findRandomFixedQuestionExcludingHistory(userId));
