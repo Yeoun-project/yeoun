@@ -36,12 +36,10 @@ public class Question {
     @Column
     private final boolean isFixed = false;
 
-    @ManyToOne
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
     private User user;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @OnDelete(action = OnDeleteAction.SET_NULL)
+    @ManyToOne(targetEntity = Category.class, fetch = FetchType.EAGER)
     private Category category;
 
     @CreatedDate
