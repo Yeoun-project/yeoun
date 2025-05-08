@@ -35,11 +35,9 @@ public class Comment {
     private Long likeCount = 0L;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private Question question;
 
     @BatchSize(size = 100)
