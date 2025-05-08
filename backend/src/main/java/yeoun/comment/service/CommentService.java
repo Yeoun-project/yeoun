@@ -12,7 +12,10 @@ import yeoun.comment.dto.request.SaveCommentRequest;
 import yeoun.comment.domain.Comment;
 import yeoun.comment.dto.response.CommentListResponse;
 import yeoun.comment.dto.response.CommentResponse;
+import yeoun.notification.domain.NotificationType;
+import yeoun.notification.service.NotificationService;
 import yeoun.question.domain.Question;
+import yeoun.question.domain.repository.QuestionRepository;
 import yeoun.question.service.QuestionService;
 import yeoun.user.domain.User;
 import yeoun.exception.CustomException;
@@ -29,16 +32,24 @@ public class CommentService {
     private final EntityManager entityManager;
     private final QuestionService questionService;
     private final CommentRepository commentRepository;
+    private final NotificationService notificationService;
+    private final QuestionRepository questionRepository;
 
     @Transactional
     public Comment saveComment(SaveCommentRequest commentDto) {
         Long userId = JwtService.getUserIdFromAuthentication();
         commentDto.setUserId(userId);
 
+        Question targetQuestion = questionRepository.findQuestionById(commentDto.getQuestionId()).orElseThrow(
+            ()-> {throw new CustomException(ErrorCode.INVALID_PARAMETER, "Invalid question id");}
+        );
+
         Optional<Comment> comment = commentRepository.getCommentByUserId(userId, commentDto.getQuestionId());
 
         if(comment.isPresent())
             throw new CustomException(ErrorCode.ALREADY_EXIST, "이미 존재합니다");
+
+        notificationService.addNotification(userId, targetQuestion.getUser().getId(), NotificationType.NEW_COMMENT, commentDto.getQuestionId());
 
         return commentRepository.save(Comment.builder()
                 .id(commentDto.getId())
