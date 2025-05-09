@@ -27,6 +27,9 @@ public class LikeService {
     public void update(final Long userId, final Long commentId, final LikeRequest likeRequest) {
         Comment comment = getCommentOrThrow(commentId);
 
+        if(comment.getUser().getId() == userId)
+            throw new CustomException(ErrorCode.BAD_REQUEST, "본인 답변의 좋아요를 수정할 수 없습니다");
+
         if (likeRequest.getIsLike()) {
             like(comment, userId);
         } else {
