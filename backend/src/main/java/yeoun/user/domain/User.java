@@ -24,7 +24,7 @@ import yeoun.question.domain.QuestionHistory;
 @Entity
 @Table(name = "user")
 @Getter
-@SQLDelete(sql = "UPDATE user SET delete_time = CURRENT_TIMESTAMP, uuid = 'deleted' WHERE id = ?") // soft delete
+@SQLDelete(sql = "UPDATE user SET delete_time = CURRENT_TIMESTAMP, uuid = 'deleted' , is_notification = false WHERE id = ?") // soft delete
 @SQLRestriction("delete_time IS NULL") // 지워지지 않은 레코드에 대한 조건
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User implements UserDetails {
@@ -66,6 +66,10 @@ public class User implements UserDetails {
     @Column
     private LocalDateTime deleteTime;
 
+    // like : soft
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<Like> likes;
+
     // question : soft
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Question> questions;
@@ -77,10 +81,6 @@ public class User implements UserDetails {
     // comment : soft
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Comment> comments;
-
-    // like : soft
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    private List<Like> likes;
 
     // question history : soft
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)

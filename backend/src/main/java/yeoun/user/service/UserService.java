@@ -10,12 +10,12 @@ import yeoun.user.domain.User;
 import yeoun.auth.service.JwtService;
 import yeoun.user.domain.repository.UserRepository;
 import yeoun.user.domain.Role;
-import yeoun.user.vo.UserRegisterInfoVo;
+import yeoun.user.dto.request.IsNotificationRequest;
+import yeoun.user.dto.request.UserRegisterInfoVo;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import yeoun.user.dto.request.IsNotificationRequest;
 
 @Service
 @RequiredArgsConstructor
