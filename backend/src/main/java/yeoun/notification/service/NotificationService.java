@@ -84,11 +84,15 @@ public class NotificationService {
         boolean isAuthor = false;
         if (question.getUser() != null) isAuthor = question.getUser().getId().equals(userId);
 
-        return QuestionDetailResponse.of(question, isAuthor);
+        boolean isDeleted = question.getDeleteTime()!=null;
+
+        return QuestionDetailResponse.of(question, isAuthor, isDeleted);
     }
 
     @Transactional
     public void addNotification(Long senderId, Long receiverId, NotificationType type, Long questionId) {
+        if(receiverId == null) return;
+
         Question question = questionRepository.findById(questionId).orElseThrow(
             () -> {throw new CustomException(ErrorCode.NOT_FOUND, "question not found");}
         );
@@ -119,7 +123,11 @@ public class NotificationService {
     // Sse 관련 함수들
     public void sendUnReadNotificationCount(Long userId) {
         //Integer count = notificationRepository.getUnReadNotificationsCount(userId); // 개수를 반환암함 (유무만 반환)
-        User user = userRepository.findById(userId).orElseThrow(()->{throw new CustomException(ErrorCode.NOT_FOUND);});
+        Optional<User> optionalUser = userRepository.findById(userId);
+
+        if(optionalUser.isEmpty()) return; // 받을 사람이 없는 경우 : delete 된경우 아무 notification을 발생 시키지 않음
+
+        User user = optionalUser.get();
 
         if(user.getIsNotification())
             sendSSEData(emitterMap.get(userId), 1);
