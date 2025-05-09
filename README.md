@@ -62,6 +62,6 @@
 
 ## <span id="6">✏️ 6. ERD 다이어그램</span>
 
-<img src="https://github.com/user-attachments/assets/706248c8-13d7-40c3-b915-bfb8592bd760"/>
+<img src="https://github.com/user-attachments/assets/3f3c5867-e60f-4bc2-868d-15fa9acd55f6"/>
 
 <br />
