@@ -84,7 +84,7 @@ public class NotificationService {
         boolean isAuthor = false;
         if (question.getUser() != null) isAuthor = question.getUser().getId().equals(userId);
 
-        boolean isDeleted = question.getDeleteTime()==null;
+        boolean isDeleted = question.getDeleteTime()!=null;
 
         return QuestionDetailResponse.of(question, isAuthor, isDeleted);
     }
