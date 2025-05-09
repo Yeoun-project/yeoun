@@ -54,6 +54,12 @@ public class User implements UserDetails {
     @Column(nullable = true)
     private String uuid;
 
+    @Column
+    private final Boolean isNotification = false;
+
+    @Column
+    private int questionCount = 1;
+
     @CreatedDate
     private final LocalDateTime createTime = LocalDateTime.now();
 
@@ -61,27 +67,27 @@ public class User implements UserDetails {
     private LocalDateTime deleteTime;
 
     // question : soft
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Question> questions;
 
     // notification : hard
-    @OneToMany(mappedBy = "receiver", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "receiver", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Notification> notifications;
 
     // comment : soft
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Comment> comments;
 
     // like : soft
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Like> likes;
 
     // question history : soft
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<QuestionHistory> questionHistory;
 
     // user history : soft
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<UserHistory> userHistory;
 
     @Builder

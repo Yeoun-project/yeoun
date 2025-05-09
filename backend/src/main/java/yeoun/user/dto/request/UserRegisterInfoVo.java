@@ -1,4 +1,4 @@
-package yeoun.user.vo;
+package yeoun.user.dto.request;
 
 import lombok.*;
 

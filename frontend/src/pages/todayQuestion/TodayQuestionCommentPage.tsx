@@ -12,11 +12,14 @@ import Squre from '../../assets/Squre';
 import BackArrowButton from '../../components/button/BackArrowButton';
 import CommentForm from '../../components/form/CommentForm';
 import BasicButton from '../../components/button/BasicButton';
+import useToastStore from '../../store/useToastStore';
+import { queryClient } from '../../utils/queryClient';
 
 const TodayQuestionCommentPage = () => {
   const navigate = useNavigate();
   const [value, setValue] = useState<string>('');
 
+  const { addToast } = useToastStore();
   const { userType } = useAuthStore();
   const { data: todayQuestion } = useGetTodayQuestion(userType);
 
@@ -24,7 +27,14 @@ const TodayQuestionCommentPage = () => {
     e.preventDefault();
     try {
       await addTodayQuestionComment({ questionId: todayQuestion!.id, comment: value });
-      return navigate('/today-question');
+      queryClient.invalidateQueries({ queryKey: [userType, 'today-question'] });
+      navigate('/today-question');
+      addToast.notification({
+        title: '여운 등록 완료',
+        message: '오늘의 질문에 당신의 여운이 남겨졌어요.',
+      });
+
+      return;
     } catch (err) {
       console.log(err);
     }

@@ -29,11 +29,9 @@ public class Notification {
     private boolean isRead;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private User receiver;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private User sender;
 
     @ManyToOne(fetch = FetchType.EAGER)

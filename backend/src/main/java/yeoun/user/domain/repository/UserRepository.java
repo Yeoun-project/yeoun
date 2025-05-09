@@ -19,6 +19,14 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("update User as u set u.uuid = :uuid where u.id = :userId")
     String updateUUID(@Param("userId") String userId, @Param("uuid") String uuid);
 
+    @Modifying
+    @Query("update User u set u.isNotification = :isNotification where u.id = :userId")
+    void setIsNotification(@Param("isNotification") boolean isNotification,@Param("userId") long userId);
+
+    @Modifying
+    @Query("delete from User u where u.id not in (select h.user.id from UserHistory h group by h.user.id) and u.role = 'ANONYMOUS' and u.createTime < :deleteTime")
+    void deleteOldAnonymousUser(@Param("deleteTime") LocalDateTime deleteTime);
+
 
     // ------------- 회원 탈퇴 (모든 정보 삭제) ----------
     // table 삭제 순서 : like(userId) -> notification(receiverId, questionId) -> userHistory(userId) -> comment(question_id) -> question_history(user_id, question_id) -> question(user_id) -> user

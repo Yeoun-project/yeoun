@@ -4,12 +4,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import yeoun.auth.service.JwtService;
 import yeoun.common.SuccessResponse;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import yeoun.question.dto.request.AddTodayQuestionCommentRequest;
 import yeoun.question.dto.response.TodayQuestionResponse;
 import yeoun.question.service.TodayQuestionService;
@@ -44,6 +41,16 @@ public class TodayQuestionController {
         todayQuestionService.addTodayQuestionComment(userId, request);
         return ResponseEntity.status(HttpStatus.OK).body(
                 new SuccessResponse("오늘의 질문 답변 추가를 성공했습니다.", null));
+    }
+
+    @PatchMapping("/public/today-question/comment")
+    public ResponseEntity<?> updateTodayQuestionComment(
+            @RequestBody @Valid AddTodayQuestionCommentRequest request
+    ) {
+        Long userId = JwtService.getUserIdFromAuthentication();
+        todayQuestionService.updateTodayQuestionComment(userId, request);
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new SuccessResponse("오늘의 질문 답변 수정을 성공했습니다.", null));
     }
 
 }

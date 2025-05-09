@@ -15,6 +15,7 @@ import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import yeoun.user.dto.request.IsNotificationRequest;
 
 @Service
 @RequiredArgsConstructor
@@ -57,6 +58,17 @@ public class UserService {
                 .name("비회원")
                 .build()
             );
+    }
+
+    public User getUserInfo(Long userId) {
+        return userRepository.findById(userId).orElseThrow(
+            () -> {throw new CustomException(ErrorCode.NOT_FOUND);}
+        );
+    }
+
+    @Transactional
+    public void setIsNotification(IsNotificationRequest dto, long userId) {
+        userRepository.setIsNotification(dto.getIsNotification(), userId);
     }
 
     public void validateUser(Long userId) {

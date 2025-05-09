@@ -42,7 +42,7 @@
 > <h3>백엔드</h3>
 `Java 21` `Spring Boot` `Spring Data JPA` `JWT` `MySQL`
 
-![My Skills](https://go-skill-icons.vercel.app/api/icons?i=java,spring,jwt,mysql&titles=true)
+![My Skills](https://go-skill-icons.vercel.app/api/icons?i=java,spring,springdatajpa,jwt,mysql&titles=true)
 
 > <h3>인프라</h3>
 `Ubuntu` `Nginx` `Docker` `Github Action` `Jenkins`
@@ -62,6 +62,6 @@
 
 ## <span id="6">✏️ 6. ERD 다이어그램</span>
 
-<img src="https://github.com/user-attachments/assets/706248c8-13d7-40c3-b915-bfb8592bd760"/>
+<img src="https://github.com/user-attachments/assets/3f3c5867-e60f-4bc2-868d-15fa9acd55f6"/>
 
 <br />

@@ -10,6 +10,8 @@ import yeoun.exception.ErrorCode;
 import yeoun.like.domain.Like;
 import yeoun.like.domain.repository.LikeRepository;
 import yeoun.like.dto.request.LikeRequest;
+import yeoun.notification.domain.NotificationType;
+import yeoun.notification.service.NotificationService;
 import yeoun.user.domain.repository.UserRepository;
 
 @Service
@@ -20,6 +22,7 @@ public class LikeService {
     private final LikeRepository likeRepository;
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
 
     public void update(final Long userId, final Long commentId, final LikeRequest likeRequest) {
         Comment comment = getCommentOrThrow(commentId);
@@ -37,6 +40,9 @@ public class LikeService {
         }
 
         comment.updateAddLike();
+
+        notificationService.addNotification(userId, comment.getUser().getId(), NotificationType.COMMENT_LIKE, comment.getQuestion().getId());
+
         likeRepository.save(Like.builder()
                 .user(userRepository.getReferenceById(userId))
                 .comment(comment)
