@@ -3,10 +3,13 @@ package yeoun.auth.infrastructure;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 
 import java.util.Arrays;
 import java.util.Optional;
+import org.springframework.http.ResponseEntity;
+import yeoun.common.SuccessResponse;
 
 public class CookieUtil {
 
@@ -35,5 +38,10 @@ public class CookieUtil {
             }
         }
         return null;
+    }
+
+    public static void logout(HttpServletResponse response) {
+        addCookie(response, "accessToken", "", 0L);
+        addCookie(response, "refreshToken", "", 0L);
     }
 }

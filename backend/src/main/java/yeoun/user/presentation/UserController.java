@@ -2,6 +2,7 @@ package yeoun.user.presentation;
 
 import jakarta.validation.Valid;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,21 +31,25 @@ public class UserController {
     private final UserService userService;
 
     @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteUser() {
-        userService.deleteUser(JwtService.getUserIdFromAuthentication());
-        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse(null));
+    public ResponseEntity<?> deleteUser(@PathParam("hard") Boolean hard, HttpServletResponse response) {
+        Long userId = JwtService.getUserIdFromAuthentication();
+        if(hard) {
+            userService.hardDeleteAll(userId);
+        }else{
+            userService.softDeleteUser(userId);
+        }
+        // logout
+        CookieUtil.logout(response);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("success", null));
     }
 
     @GetMapping("/logout")
     public ResponseEntity<?> logout(HttpServletResponse response) {
 
-        // check if anonymous
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        CookieUtil.logout(response);
 
-        CookieUtil.addCookie(response, "accessToken", "", 0L);
-        CookieUtil.addCookie(response, "refreshToken", "", 0L);
-
-        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse(null));
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("success", null));
     }
 
     @GetMapping("/oAuth")

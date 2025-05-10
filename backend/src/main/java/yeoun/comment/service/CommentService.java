@@ -44,12 +44,19 @@ public class CommentService {
             ()-> {throw new CustomException(ErrorCode.INVALID_PARAMETER, "Invalid question id");}
         );
 
+        User writer = targetQuestion.getUser();
+
+        if(writer != null && writer.getId() == commentDto.getUserId()) {
+            throw new CustomException(ErrorCode.BAD_REQUEST, "본인의 게시글에 답변을 등록할 수 없습니다");
+        }
+
         Optional<Comment> comment = commentRepository.getCommentByUserId(userId, commentDto.getQuestionId());
 
         if(comment.isPresent())
             throw new CustomException(ErrorCode.ALREADY_EXIST, "이미 존재합니다");
 
-        notificationService.addNotification(userId, targetQuestion.getUser().getId(), NotificationType.NEW_COMMENT, commentDto.getQuestionId());
+        if(writer != null)
+            notificationService.addNotification(userId, targetQuestion.getUser().getId(), NotificationType.NEW_COMMENT, commentDto.getQuestionId());
 
         return commentRepository.save(Comment.builder()
                 .id(commentDto.getId())
