@@ -129,6 +129,12 @@ const AddQuestionPage = () => {
   const handleSelect = (id: number) => {
     setCategoryId(id);
     setIsOpen(false);
+    setHasError(false);
+
+    const editor = document.getElementById('editor');
+    if (editor) {
+      editor.innerText = content;
+    }
   };
   // 질문하기 버튼 클릭 시
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
