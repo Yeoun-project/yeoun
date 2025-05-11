@@ -1,12 +1,22 @@
 import Modal from './Modal';
 
-const RegisterModal = ({ content, onSubmit }: { content: string; onSubmit: () => void }) => {
+const RegisterModal = ({
+  value,
+  content,
+  maxLength,
+  onSubmit,
+}: {
+  value: string;
+  content: string;
+  maxLength: number;
+  onSubmit: () => void;
+}) => {
   return (
     <Modal>
       <Modal.Header>
         <Modal.Title>이대로 등록하시겠습니까?</Modal.Title>
         <Modal.SubTitle>
-          작성한 질문은 한 번 등록하면{' '}
+          작성한 {value}은 한 번 등록하면{' '}
           <span className="text-[#FF2020]">수정이나 삭제가 불가능합니다!</span>
         </Modal.SubTitle>
       </Modal.Header>
@@ -15,7 +25,7 @@ const RegisterModal = ({ content, onSubmit }: { content: string; onSubmit: () =>
           {content}
         </div>
         <div className="font-desc mt-2 text-right text-sm text-[#6D6D6D]">
-          {content.length} / 30
+          {content.length} / {maxLength}
         </div>
       </Modal.Content>
       <Modal.Footer>
