@@ -112,7 +112,7 @@ const QuestionCommentPage = () => {
           {report && <ReportModal onSubmit={onSubmitModal} />}
         </div>
       </header>
-      <main className="no-scrollbar h-[calc(100%-125px)] overflow-scroll px-6">
+      <main className="no-scrollbar flex h-[calc(100%-125px)] flex-col overflow-scroll px-6 pb-8">
         <div className="flex h-[360px] items-center justify-center">
           <Circle size={330} animate={true} category={questionDetail?.categoryName}>
             <p className="text-blur text-black-primary px-8 text-xl break-keep">{content}</p>
@@ -126,22 +126,30 @@ const QuestionCommentPage = () => {
               ? questionDetail.commentCount > 99
                 ? '99+'
                 : questionDetail.commentCount.toString().padStart(2, '0')
-              : '00'}
+              : ''}
           </span>
         </p>
-        <div className="mb-3 flex items-center justify-start gap-2 py-3">
-          {SORTORDER_CHECKBOXS.map((option) => (
-            <CheckBox
-              key={option.id}
-              isChecked={sortOrder === option.id}
-              id="sortOrder"
-              name={option.id}
-              label={option.label}
-              value={option.id}
-              onChange={(e) => handleSelectSortOrder(e.target.value as sortOrder)}
-            />
-          ))}
-        </div>
+        {comments.length === 0 && !mycomment && (
+          <div className="font-desc flex flex-1 flex-col items-center justify-center gap-1 text-[#AAAAAA]">
+            <p>아직 남겨진 여운이 없어요</p>
+            <p className="font-bold">당신의 답변이 첫 여운이 되어주세요</p>
+          </div>
+        )}
+        {comments.length > 0 && !!mycomment && (
+          <div className="mb-3 flex items-center justify-start gap-2 py-3">
+            {SORTORDER_CHECKBOXS.map((option) => (
+              <CheckBox
+                key={option.id}
+                isChecked={sortOrder === option.id}
+                id="sortOrder"
+                name={option.id}
+                label={option.label}
+                value={option.id}
+                onChange={(e) => handleSelectSortOrder(e.target.value as sortOrder)}
+              />
+            ))}
+          </div>
+        )}
         {!!mycomment && (
           <div className="border-b border-[#FFFFFF80] py-4">
             <AnswerItem
@@ -186,7 +194,7 @@ const QuestionCommentPage = () => {
           form="add-question"
           className="font-desc h-[60px] w-full cursor-pointer rounded-xl bg-white py-4 font-bold text-black"
           onClick={() => {
-            if (!questionDetail?.isAuthor) {
+            if (questionDetail?.isAuthor) {
               toast.addToast.notification({
                 title: '여운 등록 실패',
                 message: '본인 답변에는 여운을 남길 수 없어요!',
