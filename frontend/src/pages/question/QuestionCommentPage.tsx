@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';
@@ -38,6 +38,22 @@ const SORTORDER_CHECKBOXS = [
 ];
 
 const QuestionCommentPage = () => {
+  const navigate = useNavigate();
+  const { state } = useLocation();
+
+  const modal = useModalStore();
+  const toast = useToastStore();
+
+  // 여운(답변) 등록 후 페이지 이동 시 토스트 출력
+  useEffect(() => {
+    if (state?.showToast) {
+      toast.addToast.notification({
+        title: '여운 등록 완료',
+        message: `당신의 답변이 누군가의 마음에 여운을 남길 거예요`,
+      });
+    }
+  }, [state, toast]);
+
   const [ref, inView] = useInView();
 
   const params = useParams();
@@ -67,9 +83,6 @@ const QuestionCommentPage = () => {
 
   const { comments } = useCommentGroup(comment, sortOrder);
 
-  const modal = useModalStore();
-  const toast = useToastStore();
-
   const [report, setReport] = useState(false);
   const [register, setRegister] = useState(false);
 
@@ -90,7 +103,7 @@ const QuestionCommentPage = () => {
     setReport(false);
     setRegister(false);
     modal.closeModal();
-    console.log('답변 작성 페이지로 이동');
+    navigate(`/question/comment/${questionId}`);
   };
 
   const handleSelectSortOrder = (sortOrder: sortOrder) => {
