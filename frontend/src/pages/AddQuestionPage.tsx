@@ -280,7 +280,9 @@ const AddQuestionPage = () => {
             forbidden={forbidden}
           />
         </div>
-        {first && <RegisterModal content={content} onSubmit={onRegister} />}
+        {first && (
+          <RegisterModal value="질문" content={content} maxLength={30} onSubmit={onRegister} />
+        )}
         {second && <ConfirmModal value="질문" onSubmit={onConfirm} />}
         <div className="absolute bottom-0 w-full p-6">
           <button
