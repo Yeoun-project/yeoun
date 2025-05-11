@@ -131,9 +131,9 @@ const AddQuestionPage = () => {
     setIsOpen(false);
     setHasError(false);
 
-    const editor = document.getElementById('editor');
-    if (editor) {
-      editor.innerText = content;
+    const $editor = document.getElementById('editor');
+    if ($editor) {
+      $editor.innerText = content;
     }
   };
   // 질문하기 버튼 클릭 시
@@ -209,12 +209,7 @@ const AddQuestionPage = () => {
         const range = document.createRange();
         const sel = window.getSelection();
         if (e.currentTarget.childNodes.length > 0 && sel) {
-          let node = e.currentTarget.childNodes[0];
-
-          // span 같은 태그 때문에 childNodes[0]이 span일 수도 있음
-          if (node.nodeType !== Node.TEXT_NODE) {
-            node = node.firstChild || node;
-          }
+          const node = e.currentTarget.childNodes[0];
 
           range.setStart(node, Math.min(newFocusOffset, node.textContent?.length || 0));
           range.collapse(true);
@@ -227,7 +222,19 @@ const AddQuestionPage = () => {
 
     if (hasError) {
       setHasError(false);
-      e.currentTarget.innerHTML = content;
+      const $editor = document.getElementById('editor');
+      if ($editor) {
+        e.currentTarget.innerHTML = e.currentTarget.innerText;
+
+        // 커서를 텍스트 끝으로 이동
+        const range = document.createRange();
+        const sel = window.getSelection();
+
+        range.selectNodeContents($editor);
+        range.collapse(false); // false = 끝으로
+        sel?.removeAllRanges();
+        sel?.addRange(range);
+      }
     }
   };
   //#endregion
