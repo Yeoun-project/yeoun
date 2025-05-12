@@ -189,52 +189,38 @@ const AddQuestionPage = () => {
     nav('/question');
   };
 
+  // 커서 복구
+  const cursorControl = (e: React.FormEvent<HTMLDivElement>) => {
+    const $editor = document.getElementById('editor');
+    if ($editor) {
+      e.currentTarget.innerHTML = e.currentTarget.innerText;
+
+      // 커서를 텍스트 끝으로 이동
+      const range = document.createRange();
+      const sel = window.getSelection();
+
+      range.selectNodeContents($editor);
+      range.collapse(false); // false = 끝으로
+      sel?.removeAllRanges();
+      sel?.addRange(range);
+    }
+  };
+
   const handleChange = (e: React.FormEvent<HTMLDivElement>) => {
-    const selection = window.getSelection();
-    if (!selection || !e.currentTarget) return;
-
-    const { focusOffset } = selection;
-
-    // 현재 커서 위치 저장
-    const newFocusOffset = Math.min(focusOffset, e.currentTarget.innerText.length);
-
     if (e.currentTarget?.innerHTML === '<br>') {
       setContent('');
       e.currentTarget.innerHTML = '';
     } else {
-      if (e.currentTarget?.innerText.length >= MAX_LENGTH) {
+      if (e.currentTarget?.innerText.length > MAX_LENGTH) {
         e.currentTarget.innerText = e.currentTarget.innerText.slice(0, MAX_LENGTH);
-
-        // 커서 복구
-        const range = document.createRange();
-        const sel = window.getSelection();
-        if (e.currentTarget.childNodes.length > 0 && sel) {
-          const node = e.currentTarget.childNodes[0];
-
-          range.setStart(node, Math.min(newFocusOffset, node.textContent?.length || 0));
-          range.collapse(true);
-          sel.removeAllRanges();
-          sel.addRange(range);
-        }
+        cursorControl(e);
       }
       setContent(e.currentTarget?.innerText);
     }
 
     if (hasError) {
       setHasError(false);
-      const $editor = document.getElementById('editor');
-      if ($editor) {
-        e.currentTarget.innerHTML = e.currentTarget.innerText;
-
-        // 커서를 텍스트 끝으로 이동
-        const range = document.createRange();
-        const sel = window.getSelection();
-
-        range.selectNodeContents($editor);
-        range.collapse(false); // false = 끝으로
-        sel?.removeAllRanges();
-        sel?.addRange(range);
-      }
+      cursorControl(e);
     }
   };
   //#endregion
