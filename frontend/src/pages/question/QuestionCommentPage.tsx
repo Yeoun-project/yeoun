@@ -18,6 +18,7 @@ import { getAllComments } from '../../services/api/comment/getComment';
 
 import useCommentGroup from '../../hooks/queries/useCommentGroup';
 import useGetQuestionDetail from '../../hooks/queries/useGetQuestionDetail';
+import FallBack from '../../components/ui/FallBack';
 
 type sortOrder = 'old' | 'latest' | 'like';
 
@@ -143,10 +144,7 @@ const QuestionCommentPage = () => {
           </span>
         </p>
         {comments.length === 0 && !mycomment && (
-          <div className="font-desc flex flex-1 flex-col items-center justify-center gap-1 text-[#AAAAAA]">
-            <p>아직 남겨진 여운이 없어요</p>
-            <p className="font-bold">당신의 답변이 첫 여운이 되어주세요</p>
-          </div>
+          <FallBack desc="아직 남겨진 여운이 없어요" subDesc="당신의 답변이 첫 여운이 되어주세요" />
         )}
         {comments.length > 0 && !!mycomment && (
           <div className="mb-3 flex items-center justify-start gap-2 py-3">
