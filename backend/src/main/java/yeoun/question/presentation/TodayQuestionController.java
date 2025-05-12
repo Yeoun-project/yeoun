@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import yeoun.auth.service.JwtService;
 import yeoun.common.SuccessResponse;
 import yeoun.question.dto.request.AddTodayQuestionCommentRequest;
+import yeoun.question.dto.response.TodayQuestionListResponse;
 import yeoun.question.dto.response.TodayQuestionResponse;
 import yeoun.question.service.TodayQuestionService;
 
@@ -51,6 +52,15 @@ public class TodayQuestionController {
         todayQuestionService.updateTodayQuestionComment(userId, request);
         return ResponseEntity.status(HttpStatus.OK).body(
                 new SuccessResponse("오늘의 질문 답변 수정을 성공했습니다.", null));
+    }
+
+    @GetMapping("/public/today-question/my")
+    public ResponseEntity<?> getAllCommentedMyTodayQuestions() {
+        Long userId = JwtService.getUserIdFromAuthentication();
+        TodayQuestionListResponse todayQuestionListResponse = todayQuestionService.getAllCommentedMyTodayQuestions(userId);
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new SuccessResponse("내가 답변한 오늘의 질문 리스트 조회를 성공했습니다.", todayQuestionListResponse)
+        );
     }
 
 }

@@ -13,10 +13,12 @@ import yeoun.question.domain.repository.QuestionHistoryRepository;
 import yeoun.question.domain.repository.QuestionRepository;
 import yeoun.question.domain.repository.TodayQuestionRepository;
 import yeoun.question.dto.request.AddTodayQuestionCommentRequest;
+import yeoun.question.dto.response.TodayQuestionListResponse;
 import yeoun.question.dto.response.TodayQuestionResponse;
 import yeoun.user.domain.User;
 import yeoun.user.service.UserService;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -112,6 +114,17 @@ public class TodayQuestionService {
         if (questionHistory.getComment() == null) throw new CustomException(ErrorCode.CONFLICT, "수정할 댓글이 없습니다.");
 
         questionHistory.setComment(request.getComment());
+    }
+
+    @Transactional(readOnly = true)
+    public TodayQuestionListResponse getAllCommentedMyTodayQuestions(final Long userId) {
+        List<QuestionHistory> questionHistories = questionHistoryRepository.findAllCommentedWithQuestionByUserId(userId);
+        List<TodayQuestionResponse> todayQuestionResponses = questionHistories.stream()
+                .map(questionHistory -> TodayQuestionResponse.of(
+                        questionHistory.getQuestion(),
+                        questionHistory.getComment() != null
+                )).toList();
+        return new TodayQuestionListResponse(todayQuestionResponses);
     }
 
 }
