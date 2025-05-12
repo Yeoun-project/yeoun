@@ -5,6 +5,7 @@ import Response from '../../../type/response';
 interface AlarmType {
   id: number;
   content: string;
+  createdTime: string;
 }
 
 export const postTestAlarm = async () => {
