@@ -54,7 +54,7 @@ public class TodayQuestionController {
                 new SuccessResponse("오늘의 질문 답변 수정을 성공했습니다.", null));
     }
 
-    @GetMapping("/public/today-question/my")
+    @GetMapping("/public/today-question/commented-by-me")
     public ResponseEntity<?> getAllCommentedMyTodayQuestions() {
         Long userId = JwtService.getUserIdFromAuthentication();
         TodayQuestionListResponse todayQuestionListResponse = todayQuestionService.getAllCommentedMyTodayQuestions(userId);
