@@ -8,9 +8,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import yeoun.util.FormattingUtil;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,26 +31,34 @@ public class ForbiddenWordService {
     }
 
     public List<String> getMatchedForbiddenWords(String content) {
-        String normalizedContent = FormattingUtil.cleanText(content);
+        List<ForbiddenWord> forbiddenWords = getAllForbiddenWords();
 
-        List<String> forbiddenWords = getAllForbiddenWords().stream()
-                .map(f -> FormattingUtil.cleanText(f.getWord()))
-                .toList();
+        List<String> matched = new ArrayList<>();
 
-        return forbiddenWords.stream()
-                .filter(word -> {
-                    String regex = wordToFlexibleRegex(word);
-                    return Pattern.compile(regex).matcher(normalizedContent).find();
-                })
-                .collect(Collectors.toList());
+        for (ForbiddenWord forbiddenWord : forbiddenWords) {
+            String word = FormattingUtil.cleanText(forbiddenWord.getWord());
+            String regex = wordToFlexibleRegex(word);
+
+            Matcher matcher = Pattern.compile(regex).matcher(content);
+            while (matcher.find()) {
+                matched.add(matcher.group());
+            }
+        }
+
+        return matched;
     }
 
     private String wordToFlexibleRegex(String word) {
+        if (word.length() == 1) {
+            // 앞뒤가 한글이 아닌 문자일 때만 매칭 (엿 먹어 -> O, 엿장수 -> X)
+            return "(?<![\\p{IsHangul}])" + Pattern.quote(word) + "(?![\\p{IsHangul}])";
+        }
+
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < word.length(); i++) {
             sb.append(Pattern.quote(String.valueOf(word.charAt(i))));
             if (i < word.length() - 1) {
-                sb.append("[\\s\\d\\p{Punct}]*"); // 공백, 숫자, 특수문자
+                sb.append("[\\s\\d\\p{Punct}]{0,3}");
             }
         }
         return sb.toString();
