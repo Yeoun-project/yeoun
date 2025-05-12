@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';
@@ -18,6 +18,7 @@ import { getAllComments } from '../../services/api/comment/getComment';
 
 import useCommentGroup from '../../hooks/queries/useCommentGroup';
 import useGetQuestionDetail from '../../hooks/queries/useGetQuestionDetail';
+import FallBack from '../../components/ui/FallBack';
 
 type sortOrder = 'old' | 'latest' | 'like';
 
@@ -38,6 +39,22 @@ const SORTORDER_CHECKBOXS = [
 ];
 
 const QuestionCommentPage = () => {
+  const navigate = useNavigate();
+  const { state } = useLocation();
+
+  const modal = useModalStore();
+  const toast = useToastStore();
+
+  // 여운(답변) 등록 후 페이지 이동 시 토스트 출력
+  useEffect(() => {
+    if (state?.showToast) {
+      toast.addToast.notification({
+        title: '여운 등록 완료',
+        message: `당신의 답변이 누군가의 마음에 여운을 남길 거예요`,
+      });
+    }
+  }, [state, toast]);
+
   const [ref, inView] = useInView();
 
   const params = useParams();
@@ -67,9 +84,6 @@ const QuestionCommentPage = () => {
 
   const { comments } = useCommentGroup(comment, sortOrder);
 
-  const modal = useModalStore();
-  const toast = useToastStore();
-
   const [report, setReport] = useState(false);
   const [register, setRegister] = useState(false);
 
@@ -90,7 +104,7 @@ const QuestionCommentPage = () => {
     setReport(false);
     setRegister(false);
     modal.closeModal();
-    console.log('답변 작성 페이지로 이동');
+    navigate(`/question/comment/${questionId}`);
   };
 
   const handleSelectSortOrder = (sortOrder: sortOrder) => {
@@ -112,7 +126,7 @@ const QuestionCommentPage = () => {
           {report && <ReportModal onSubmit={onSubmitModal} />}
         </div>
       </header>
-      <main className="no-scrollbar h-[calc(100%-125px)] overflow-scroll px-6">
+      <main className="no-scrollbar flex h-[calc(100%-125px)] flex-col overflow-scroll px-6 pb-8">
         <div className="flex h-[360px] items-center justify-center">
           <Circle size={330} animate={true} category={questionDetail?.categoryName}>
             <p className="text-blur text-black-primary px-8 text-xl break-keep">{content}</p>
@@ -126,22 +140,27 @@ const QuestionCommentPage = () => {
               ? questionDetail.commentCount > 99
                 ? '99+'
                 : questionDetail.commentCount.toString().padStart(2, '0')
-              : '00'}
+              : ''}
           </span>
         </p>
-        <div className="mb-3 flex items-center justify-start gap-2 py-3">
-          {SORTORDER_CHECKBOXS.map((option) => (
-            <CheckBox
-              key={option.id}
-              isChecked={sortOrder === option.id}
-              id="sortOrder"
-              name={option.id}
-              label={option.label}
-              value={option.id}
-              onChange={(e) => handleSelectSortOrder(e.target.value as sortOrder)}
-            />
-          ))}
-        </div>
+        {comments.length === 0 && !mycomment && (
+          <FallBack desc="아직 남겨진 여운이 없어요" subDesc="당신의 답변이 첫 여운이 되어주세요" />
+        )}
+        {comments.length > 0 && !!mycomment && (
+          <div className="mb-3 flex items-center justify-start gap-2 py-3">
+            {SORTORDER_CHECKBOXS.map((option) => (
+              <CheckBox
+                key={option.id}
+                isChecked={sortOrder === option.id}
+                id="sortOrder"
+                name={option.id}
+                label={option.label}
+                value={option.id}
+                onChange={(e) => handleSelectSortOrder(e.target.value as sortOrder)}
+              />
+            ))}
+          </div>
+        )}
         {!!mycomment && (
           <div className="border-b border-[#FFFFFF80] py-4">
             <AnswerItem
@@ -186,7 +205,7 @@ const QuestionCommentPage = () => {
           form="add-question"
           className="font-desc h-[60px] w-full cursor-pointer rounded-xl bg-white py-4 font-bold text-black"
           onClick={() => {
-            if (!questionDetail?.isAuthor) {
+            if (questionDetail?.isAuthor) {
               toast.addToast.notification({
                 title: '여운 등록 실패',
                 message: '본인 답변에는 여운을 남길 수 없어요!',
