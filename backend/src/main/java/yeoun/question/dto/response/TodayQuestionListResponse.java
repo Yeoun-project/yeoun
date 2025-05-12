@@ -1,23 +1,13 @@
 package yeoun.question.dto.response;
 
-import java.util.Date;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import java.util.List;
+
+import lombok.*;
 
 @Getter
-@Setter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class TodayQuestionListResponse {
 
-    private Long id;
-
-    private Date created_at;
-
-    private String content;
+    private final List<TodayQuestionResponse> questions;
 
 }

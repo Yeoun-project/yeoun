@@ -43,4 +43,13 @@ public interface QuestionHistoryRepository extends JpaRepository<QuestionHistory
         + "where qh.id = :id")
     Optional<QuestionHistory> findById(@Param("id") Long id);
 
+    @Query("""
+        SELECT questionHistory FROM QuestionHistory questionHistory
+        LEFT JOIN FETCH questionHistory.question question
+        WHERE questionHistory.user.id = :userId
+            AND questionHistory.comment IS NOT NULL
+        ORDER BY questionHistory.createTime DESC
+        """)
+    List<QuestionHistory> findAllCommentedWithQuestionByUserId(@Param("userId") Long userId);
+
 }
