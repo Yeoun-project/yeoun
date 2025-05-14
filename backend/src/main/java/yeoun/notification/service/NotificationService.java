@@ -59,7 +59,7 @@ public class NotificationService {
         return emitter;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public NotificationListResponse getAllNotifications(Long userId, Pageable pageable) {
         Slice<Notification> notifications = notificationRepository.findAllNotifications(userId, pageable);
         List<NotificationDetailResponse> notificationDetailResponses = notifications.stream()
