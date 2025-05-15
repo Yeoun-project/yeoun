@@ -3,6 +3,7 @@ package yeoun.question.dto.response;
 import java.time.LocalDateTime;
 import lombok.*;
 import yeoun.question.domain.Question;
+import yeoun.question.domain.QuestionHistory;
 
 @Getter
 @Builder
@@ -15,13 +16,15 @@ public class TodayQuestionResponse {
     final private boolean hasComment;
 
     public static TodayQuestionResponse of(
-            Question question,
+            QuestionHistory questionHistory,
             Boolean hasComment
     ) {
+        final Question question = questionHistory.getQuestion();
+
         return TodayQuestionResponse.builder()
                 .id(question.getId())
                 .content(question.getContent())
-                .createTime(question.getCreateTime())
+                .createTime(questionHistory.getCreateTime())
                 .hasComment(hasComment)
                 .build();
     }
