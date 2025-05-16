@@ -37,8 +37,8 @@ public interface TodayQuestionRepository extends JpaRepository<Question, Long> {
             SELECT questionHistory FROM QuestionHistory questionHistory
             JOIN FETCH questionHistory.question
             JOIN FETCH questionHistory.user
-            WHERE questionHistory.question = :questionId
-                AND questionHistory.user = :userId
+            WHERE questionHistory.question.id = :questionId
+                AND questionHistory.user.id = :userId
             """)
     Optional<QuestionHistory> findByQuestionIdAndUserId(
             @Param("questionId") final Long questionId,

@@ -7,7 +7,7 @@ import yeoun.question.domain.QuestionHistory;
 
 @Getter
 @Builder
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class TodayQuestionDetailResponse {
 
     private final Long id;
@@ -29,7 +29,7 @@ public class TodayQuestionDetailResponse {
         return TodayQuestionDetailResponse.builder()
                 .id(todayQuestion.getId())
                 .content(todayQuestion.getContent())
-                .createTime(todayQuestion.getCreateTime())
+                .createTime(questionHistory.getCreateTime())
                 .comment(comment)
                 .build();
     }

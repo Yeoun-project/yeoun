@@ -68,7 +68,7 @@ public class TodayQuestionController {
     @GetMapping("/public/today-question/{questionId}")
     public ResponseEntity<SuccessResponse> getTodayQuestionDetail(@PathVariable Long questionId) {
         Long userId = getUserIdFromAuthentication();
-        TodayQuestionDetailResponse todayQuestionDetailResponse = todayQuestionService.getTodayQuestionDetail(userId, questionId);
+        TodayQuestionDetailResponse todayQuestionDetailResponse = todayQuestionService.getTodayQuestionDetail(questionId, userId);
         return ResponseEntity.ok(new SuccessResponse("오늘의 질문 상세 조회를 성공했습니다.", todayQuestionDetailResponse));
     }
 
