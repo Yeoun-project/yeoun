@@ -13,6 +13,7 @@ import yeoun.question.domain.repository.QuestionHistoryRepository;
 import yeoun.question.domain.repository.QuestionRepository;
 import yeoun.question.domain.repository.TodayQuestionRepository;
 import yeoun.question.dto.request.AddTodayQuestionCommentRequest;
+import yeoun.question.dto.response.TodayQuestionDetailResponse;
 import yeoun.question.dto.response.TodayQuestionListResponse;
 import yeoun.question.dto.response.TodayQuestionResponse;
 import yeoun.user.domain.User;
@@ -122,6 +123,13 @@ public class TodayQuestionService {
                         questionHistory.getComment() != null
                 )).toList();
         return new TodayQuestionListResponse(todayQuestionResponses);
+    }
+
+    @Transactional(readOnly = true)
+    public TodayQuestionDetailResponse getTodayQuestionDetail(final Long questionId, final Long userId) {
+        QuestionHistory questionHistory = todayQuestionRepository.findByQuestionIdAndUserId(questionId, userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_PARAMETER, "오늘의 질문 ID가 잘못 되었습니다."));
+        return TodayQuestionDetailResponse.of(questionHistory);
     }
 
 }
