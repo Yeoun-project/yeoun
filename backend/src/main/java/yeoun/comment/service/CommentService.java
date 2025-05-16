@@ -44,6 +44,9 @@ public class CommentService {
             ()-> {throw new CustomException(ErrorCode.INVALID_PARAMETER, "Invalid question id");}
         );
 
+        if(targetQuestion.getDeleteTime() != null)
+            throw new CustomException(ErrorCode.CONFLICT, "작성자가 떠난 질문은 답변 등록이 불가합니다");
+
         User writer = targetQuestion.getUser();
 
         if(writer != null && writer.getId() == commentDto.getUserId()) {
