@@ -123,12 +123,11 @@ public class QuestionService {
 
     @Transactional(readOnly = true)
     public QuestionListResponse getMyQuestions(Long userId, Pageable pageable) {
-        // todo 추후 여기도 페이징 조회 처리
-        List<Question> questions = questionRepository.findByUserId(userId);
+        Slice<Question> questions = questionRepository.findByUserId(userId, pageable);
         List<QuestionResponse> questionResponses = questions.stream()
                 .map(QuestionResponse::of)
                 .toList();
-        return new QuestionListResponse(questionResponses, false);
+        return new QuestionListResponse(questionResponses, questions.hasNext());
     }
 
 //    @Transactional
