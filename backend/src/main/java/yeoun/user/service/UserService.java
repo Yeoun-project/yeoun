@@ -1,19 +1,19 @@
 package yeoun.user.service;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.transaction.annotation.Transactional;
 import yeoun.exception.CustomException;
 import yeoun.exception.ErrorCode;
-import yeoun.user.domain.User;
 import yeoun.auth.service.JwtService;
+import yeoun.user.domain.User;
 import yeoun.user.domain.repository.UserRepository;
 import yeoun.user.domain.Role;
 import yeoun.user.dto.request.IsNotificationRequest;
 import yeoun.user.dto.request.UserRegisterInfoVo;
 import java.util.Optional;
 import java.util.UUID;
-import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
