@@ -14,8 +14,8 @@ import yeoun.user.dto.request.IsNotificationRequest;
 import yeoun.user.dto.request.UserRegisterInfoVo;
 import java.util.Optional;
 import java.util.UUID;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor

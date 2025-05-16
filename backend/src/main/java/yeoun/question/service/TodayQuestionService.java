@@ -13,10 +13,13 @@ import yeoun.question.domain.repository.QuestionHistoryRepository;
 import yeoun.question.domain.repository.QuestionRepository;
 import yeoun.question.domain.repository.TodayQuestionRepository;
 import yeoun.question.dto.request.AddTodayQuestionCommentRequest;
+import yeoun.question.dto.response.TodayQuestionDetailResponse;
+import yeoun.question.dto.response.TodayQuestionListResponse;
 import yeoun.question.dto.response.TodayQuestionResponse;
 import yeoun.user.domain.User;
 import yeoun.user.service.UserService;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -35,37 +38,36 @@ public class TodayQuestionService {
         userService.validateUser(userId);
 
         // 1. 오늘 질문 확인
-        Optional<Question> todayQuestion = todayQuestionRepository.findTodayQuestion(userId);
-        if (todayQuestion.isPresent()) {
-            return buildTodayQuestionResponse(todayQuestion.get(), userId);
+        Optional<QuestionHistory> questionHistoryOpt = todayQuestionRepository.findQuestionHistoryWithQuestionByUserId(userId);
+        if (questionHistoryOpt.isPresent()) {
+            return buildTodayQuestionResponse(questionHistoryOpt.get());
         }
 
         // 2. 오늘 질문 없으면 인기 질문 중 랜덤
         Optional<Question> popularQuestion = questionRepository.findRandomPopularityQuestionExcludingHistory(userId);
         if (popularQuestion.isPresent()) {
-            saveTodayQuestionHistory(userId, popularQuestion.get());
-            return buildTodayQuestionResponse(popularQuestion.get(), userId);
+            QuestionHistory questionHistory = saveTodayQuestionHistory(userId, popularQuestion.get());
+            return buildTodayQuestionResponse(questionHistory);
         }
 
         // 3. 인기 질문도 없으면 고정 질문 중 랜덤
-        Question fixedQuestion = findRandomFixedQuestionExcludingHistory(userId);
-        return buildTodayQuestionResponse(fixedQuestion,userId);
+        QuestionHistory questionHistory = findRandomFixedQuestionExcludingHistory(userId);
+        return buildTodayQuestionResponse(questionHistory);
     }
 
-    private TodayQuestionResponse buildTodayQuestionResponse(Question question, Long userId) {
-        boolean hasComment = todayQuestionRepository.existsCommentByQuestionIdAndUserId(question.getId(), userId);
-        return TodayQuestionResponse.of(question, hasComment);
+    private TodayQuestionResponse buildTodayQuestionResponse(QuestionHistory questionHistory) {
+        return TodayQuestionResponse.of(questionHistory, questionHistory.getComment() != null);
     }
 
     @Transactional
     public TodayQuestionResponse getTodayQuestionMember(Long userId) {
-        Optional<Question> todayQuestionOpt = todayQuestionRepository.findTodayQuestion(userId);
-        Question todayQuestion = todayQuestionOpt.orElseGet(() -> findRandomFixedQuestionExcludingHistory(userId));
-        return buildTodayQuestionResponse(todayQuestion, userId);
+        Optional<QuestionHistory> questionHistoryOpt = todayQuestionRepository.findQuestionHistoryWithQuestionByUserId(userId);
+        QuestionHistory questionHistory = questionHistoryOpt.orElseGet(() -> findRandomFixedQuestionExcludingHistory(userId));
+        return buildTodayQuestionResponse(questionHistory);
     }
 
-    private void saveTodayQuestionHistory(Long userId, Question question) {
-        questionHistoryRepository.save(
+    private QuestionHistory saveTodayQuestionHistory(Long userId, Question question) {
+        return questionHistoryRepository.save(
                 QuestionHistory.builder()
                         .user(entityManager.getReference(User.class, userId))
                         .question(question)
@@ -73,18 +75,16 @@ public class TodayQuestionService {
         );
     }
 
-    private Question findRandomFixedQuestionExcludingHistory(Long userId) {
+    private QuestionHistory findRandomFixedQuestionExcludingHistory(Long userId) {
         Question newTodayQuestion = todayQuestionRepository.findRandomFixedQuestionExcludingHistory(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.INTERNAL_SERVER_ERROR, "오늘의 질문을 가져오는데 실패했습니다."));
 
-        questionHistoryRepository.save(
+        return questionHistoryRepository.save(
                 QuestionHistory.builder()
                         .user(entityManager.getReference(User.class, userId))
                         .question(newTodayQuestion)
                         .build()
         );
-
-        return newTodayQuestion;
     }
 
     @Transactional
@@ -112,6 +112,24 @@ public class TodayQuestionService {
         if (questionHistory.getComment() == null) throw new CustomException(ErrorCode.CONFLICT, "수정할 댓글이 없습니다.");
 
         questionHistory.setComment(request.getComment());
+    }
+
+    @Transactional(readOnly = true)
+    public TodayQuestionListResponse getAllCommentedMyTodayQuestions(final Long userId) {
+        List<QuestionHistory> questionHistories = questionHistoryRepository.findAllCommentedWithQuestionByUserId(userId);
+        List<TodayQuestionResponse> todayQuestionResponses = questionHistories.stream()
+                .map(questionHistory -> TodayQuestionResponse.of(
+                        questionHistory,
+                        questionHistory.getComment() != null
+                )).toList();
+        return new TodayQuestionListResponse(todayQuestionResponses);
+    }
+
+    @Transactional(readOnly = true)
+    public TodayQuestionDetailResponse getTodayQuestionDetail(final Long questionId, final Long userId) {
+        QuestionHistory questionHistory = todayQuestionRepository.findByQuestionIdAndUserId(questionId, userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_PARAMETER, "오늘의 질문 ID가 잘못 되었습니다."));
+        return TodayQuestionDetailResponse.of(questionHistory);
     }
 
 }

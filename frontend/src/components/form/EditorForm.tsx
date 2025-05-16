@@ -46,16 +46,16 @@ const EditorForm = ({
   return (
     <form id={formId} onSubmit={onSubmit} className="h-[192px]">
       <div
+        id="editor"
         ref={valueRef}
         contentEditable
         suppressContentEditableWarning={true}
         onBeforeInput={(e) => {
-          if(value.length >= maxLength) {
-            if(valueRef.current) {
+          if (value.length >= maxLength) {
+            if (valueRef.current) {
               valueRef.current.contentEditable = 'false';
               setTimeout(() => {
-                if(valueRef.current)
-                  valueRef.current.contentEditable = 'true';
+                if (valueRef.current) valueRef.current.contentEditable = 'true';
               }, 0);
             }
             e.preventDefault();

@@ -39,10 +39,10 @@ public class User implements UserDetails {
     @Column(nullable = true)
     private String oAuthPlatform;
 
-    @Column(nullable = false)
+    @Column
     private String name;
 
-    @Column(nullable = true)
+    @Column
     private String email;
 
     @Column

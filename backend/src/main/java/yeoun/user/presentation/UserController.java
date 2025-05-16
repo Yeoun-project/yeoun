@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import yeoun.auth.infrastructure.CookieUtil;
 import yeoun.user.dto.request.IsNotificationRequest;
 import yeoun.common.SuccessResponse;
 import yeoun.user.service.UserService;

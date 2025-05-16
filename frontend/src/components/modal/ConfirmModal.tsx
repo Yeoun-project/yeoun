@@ -6,7 +6,8 @@ const ConfirmModal = ({ value, onSubmit }: { value: string; onSubmit: () => void
       <Modal.Header>
         <Modal.Title>작성하신 {value}을 등록하시겠습니까?</Modal.Title>
         <Modal.SubTitle>
-          등록 후 <span className="text-[#FF2020]">{value} 수정이나 삭제는 불가능합니다.</span>
+          등록 후 {value}
+          <span className="text-[#FF2020]"> 수정이나 삭제는 불가능합니다.</span>
         </Modal.SubTitle>
       </Modal.Header>
       <Modal.Footer>

@@ -4,6 +4,7 @@ interface CommentFormProps {
   maxValue?: number;
   commentValue: string;
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  hasError?: boolean;
   ref?: React.RefObject<HTMLTextAreaElement | null>;
 }
 
@@ -13,6 +14,7 @@ const CommentForm = ({
   maxValue = 500,
   commentValue,
   onChange,
+  hasError,
   ref,
 }: CommentFormProps) => {
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -34,10 +36,14 @@ const CommentForm = ({
           name="comment"
           id="comment"
           maxLength={maxValue}
-          className="font-desc z-30 h-[250px] w-full resize-none rounded-sm border border-white/50 bg-white/5 px-5 py-4 text-base/relaxed backdrop-blur-xs outline-none placeholder:text-white"
+          className={`font-desc z-30 h-[250px] w-full resize-none rounded-sm border px-5 py-4 text-base/relaxed backdrop-blur-xs outline-none placeholder:text-white focus:outline-none focus:before:content-[''] ${
+            hasError
+              ? 'border-[#FF202080] bg-[#FF20200D] focus:border-[#FF202080]'
+              : 'border-[#99999999] bg-[#ffffff1a]'
+          } `}
           placeholder="답변을 작성해주세요"
         />
-        <div className="font-desc w-full text-right text-sm">{`${commentValue.length || 0} / 500`}</div>
+        <div className="font-desc w-full text-right text-sm">{`${commentValue.length || 0} / ${maxValue}`}</div>
       </div>
     </form>
   );
