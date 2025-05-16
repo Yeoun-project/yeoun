@@ -5,17 +5,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import yeoun.exception.CustomException;
 import yeoun.exception.ErrorCode;
-import yeoun.user.domain.User;
 import yeoun.auth.service.JwtService;
+import yeoun.user.domain.User;
 import yeoun.user.domain.repository.UserRepository;
 import yeoun.user.domain.Role;
 import yeoun.user.dto.request.IsNotificationRequest;
 import yeoun.user.dto.request.UserRegisterInfoVo;
 import java.util.Optional;
 import java.util.UUID;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.scheduling.annotation.Scheduled;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor

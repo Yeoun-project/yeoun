@@ -59,7 +59,7 @@ public class NotificationService {
         return emitter;
     }
 
-    @Transactional(readOnly = true)
+    // @Transactional
     public NotificationListResponse getAllNotifications(Long userId, Pageable pageable) {
         Slice<Notification> notifications = notificationRepository.findAllNotifications(userId, pageable);
         List<NotificationDetailResponse> notificationDetailResponses = notifications.stream()
@@ -73,7 +73,7 @@ public class NotificationService {
         return notificationListResponse;
     }
 
-    @Transactional
+    // @Transactional
     public QuestionDetailResponse getQuestionFromNotification(Long userId, Long questionId) {
         Question question = notificationRepository.getQuestion(userId, questionId).orElseThrow(
             () -> new CustomException(ErrorCode.NOT_FOUND, "no notification with question id")
@@ -87,7 +87,7 @@ public class NotificationService {
         return QuestionDetailResponse.of(question, isAuthor);
     }
 
-    @Transactional
+    // @Transactional
     public void addNotification(Long senderId, Long receiverId, NotificationType type, Long questionId) {
         Question question = questionRepository.findById(questionId).orElseThrow(
             () -> {throw new CustomException(ErrorCode.NOT_FOUND, "question not found");}

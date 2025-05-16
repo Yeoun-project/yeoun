@@ -29,6 +29,7 @@ import MyQuestionsPage from '../pages/my/MyQuestionsPage.tsx';
 import QuestionListPage from '../pages/QuestionListPage.tsx';
 import MyAnswersPage from '../pages/my/MyAnswersPage.tsx';
 import QuestionCommentPage from '../pages/question/QuestionCommentPage.tsx';
+import CommentPage from '../pages/question/CommentPage.tsx';
 
 const router = createBrowserRouter([
   {
@@ -88,12 +89,16 @@ const router = createBrowserRouter([
               {
                 path: '/question/:id',
                 element: <QuestionCommentPage />,
-              }
+              },
+              {
+                path: '/question/comment/:id',
+                element: <CommentPage />,
+              },
             ],
           },
           {
             path: '/question-list',
-            element: <QuestionListPage />
+            element: <QuestionListPage />,
           },
           {
             path: '/my',
