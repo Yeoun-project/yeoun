@@ -4,8 +4,9 @@ interface CommentFormProps {
   maxValue?: number;
   commentValue: string;
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
-  hasError?: boolean;
   ref?: React.RefObject<HTMLTextAreaElement | null>;
+  placeholder?: string;
+  error?: boolean;
 }
 
 const CommentForm = ({
@@ -14,8 +15,9 @@ const CommentForm = ({
   maxValue = 500,
   commentValue,
   onChange,
-  hasError,
   ref,
+  placeholder,
+  error = false,
 }: CommentFormProps) => {
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     // maxLength 한글 인식 이슈
@@ -36,12 +38,8 @@ const CommentForm = ({
           name="comment"
           id="comment"
           maxLength={maxValue}
-          className={`font-desc z-30 h-[250px] w-full resize-none rounded-sm border px-5 py-4 text-base/relaxed backdrop-blur-xs outline-none placeholder:text-white focus:outline-none focus:before:content-[''] ${
-            hasError
-              ? 'border-[#FF202080] bg-[#FF20200D] focus:border-[#FF202080]'
-              : 'border-[#99999999] bg-[#ffffff1a]'
-          } `}
-          placeholder="답변을 작성해주세요"
+          className={`font-desc z-30 h-[250px] w-full resize-none rounded-sm border px-5 py-4 text-base/relaxed backdrop-blur-xs outline-none placeholder:text-white ${error ? 'border-error bg-error/5' : 'border-white/50 bg-white/5'} transition-colors`}
+          placeholder={placeholder || '답변을 작성해주세요'}
         />
         <div className="font-desc w-full text-right text-sm">{`${commentValue.length || 0} / ${maxValue}`}</div>
       </div>

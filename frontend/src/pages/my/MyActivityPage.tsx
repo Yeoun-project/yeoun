@@ -5,6 +5,8 @@ import ProfileIcon from '../../assets/Icons/ProfileIcon.svg?react';
 import BottomTabBar from '../../components/nav/BottomTabBar';
 import TopNavBar from '../../components/nav/TopNavBar';
 import AuthLogoIcon from '../../components/AuthLogoIcon';
+import { useQuery } from '@tanstack/react-query';
+import getAuthInfo from '../../services/api/auth/getAuthInfo';
 
 const MY_PAGE_NAV_PATHS = [
   {
@@ -21,7 +23,38 @@ const MY_PAGE_NAV_PATHS = [
   },
 ];
 
+const identifyAuth = (identifier: 'KAKAO' | 'NAVER' | 'GOOGLE') => {
+  switch (identifier) {
+    case 'KAKAO':
+      return {
+        identifier: 'kakao' as const,
+        label: '카카오',
+      };
+    case 'NAVER':
+      return {
+        identifier: 'naver' as const,
+        label: '네이버',
+        fill: '#03C75A',
+      };
+    case 'GOOGLE':
+      return {
+        identifier: 'google' as const,
+        label: '구글',
+      };
+  }
+};
+
 const MyActivityPage = () => {
+  const { data } = useQuery({
+    queryKey: ['user', 'oAuth'],
+    queryFn: getAuthInfo,
+  });
+
+  if (!data) {
+    return null;
+  }
+  const AuthIndeitity = identifyAuth(data.oauthPlatform);
+
   return (
     <>
       <div>
@@ -33,10 +66,14 @@ const MyActivityPage = () => {
             <div className="flex items-center gap-4 rounded-3xl border border-white/50 bg-gradient-to-b from-[#ffffff]/5 to-[#FC90D1]/5 px-5 py-6 bg-blend-difference">
               <ProfileIcon />
               <div className="font-desc font-bold">
-                <p className="mb-2">email@naver.com</p>
+                <p className="mb-2">{data.email}</p>
                 <p className="flex items-center gap-2">
-                  <AuthLogoIcon identifier="naver" size={24} fill="#03C75A" />
-                  <span>네이버 로그인</span>
+                  <AuthLogoIcon
+                    identifier={AuthIndeitity!.identifier}
+                    size={24}
+                    fill={AuthIndeitity.fill}
+                  />
+                  <span>{AuthIndeitity.label} 로그인</span>
                 </p>
               </div>
             </div>

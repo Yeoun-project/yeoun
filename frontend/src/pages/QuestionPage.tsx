@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import useModalStore from '../store/useModalStore';
@@ -78,7 +78,7 @@ const QuestionPage = () => {
 
   const { modal, openModal, closeModal } = useModalStore();
 
-  const QuestionCategoryList = extendsCategoryData(extnedsCategoryIconAndColor);
+  const QuestionCategoryList = useMemo(() => extendsCategoryData(extnedsCategoryIconAndColor), []);
 
   const {
     carouselRef,
@@ -144,7 +144,7 @@ const QuestionPage = () => {
                 className="cursor-pointer touch-none"
                 onClick={async () => await handleCheckQuestionToday(category.id)}
               >
-                <Circle size={250} animate category={category.category as QuestionCategory}>
+                <Circle size={250} category={category.category as QuestionCategory} animate>
                   <div className="flex flex-col items-center justify-center">
                     {category.icon && category.icon(64)}
                     <p className="text-blur text-xl" style={{ color: category.color }}>
@@ -158,7 +158,7 @@ const QuestionPage = () => {
         </Carousel.Wrapper>
         <div className="w-full px-6 pt-2">
           <div className="font-desc flex h-[150px] flex-col items-center justify-center gap-1 rounded-lg border border-white/70 bg-white/10 p-6 text-center text-base/6">
-            <p className="break-after-all">{QuestionCategoryList[currentCarousel].desc}</p>
+            <p>{QuestionCategoryList[currentCarousel].desc}</p>
             <p className="text-[#aaaaaa]">{`EX. "${QuestionCategoryList[currentCarousel].example}"`}</p>
           </div>
         </div>

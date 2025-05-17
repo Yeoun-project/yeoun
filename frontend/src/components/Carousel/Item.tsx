@@ -20,11 +20,10 @@ const Item = ({
 
   return (
     <div
-      className="flex w-full shrink-0 touch-none justify-center will-change-transform select-none"
+      className="flex w-full shrink-0 touch-none justify-center select-none"
       style={{
         transform: getScaleAndTranslate(),
-        transitionDuration: '200ms',
-        transitionTimingFunction: 'ease-out',
+        transition: 'transform 250ms ease-in-out',
       }}
     >
       {children}

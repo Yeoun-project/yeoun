@@ -18,16 +18,12 @@ const Wrapper = ({
   return (
     <div className="overflow-hidden">
       <div
-        className="flex py-3"
+        className="flex touch-pan-y py-3"
         onPointerDown={handleTouchStart}
         onPointerMove={handleTouchMove}
         onPointerUp={handleTouchEnd}
         onPointerLeave={handleTouchEnd}
         ref={carouselRef}
-        style={{
-          transitionDuration: '300ms',
-          transitionTimingFunction: 'ease-out',
-        }}
       >
         {children}
       </div>
