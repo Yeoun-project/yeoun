@@ -1,6 +1,5 @@
 import { useState } from 'react';
 
-import BottomTabBar from '../components/nav/BottomTabBar';
 import BackArrowButton from '../components/button/BackArrowButton';
 import useAuthStore from '../store/useAuthStore';
 import { useNavigate } from 'react-router-dom';
@@ -97,7 +96,6 @@ const SettingPage = () => {
           )}
         </ul>
       </main>
-      {userType === 'User' && <BottomTabBar />}
     </>
   );
 };

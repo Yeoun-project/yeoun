@@ -36,7 +36,6 @@ const AlarmPage = () => {
           </ul>
         </div>
       </main>
-      <BottomTabBar />
     </>
   );
 };
