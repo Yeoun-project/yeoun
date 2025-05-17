@@ -9,6 +9,7 @@ import HomePage from '../pages/HomePage.tsx';
 import QuestionPage from '../pages/QuestionPage.tsx';
 import AddQuestionPage from '../pages/AddQuestionPage.tsx';
 import SettingPage from '../pages/SettingPage.tsx';
+import UserDeletePage from '../pages/UserDeletePage.tsx';
 
 //로그인
 import LoginPage from '../pages/login/LoginPage.tsx';
@@ -39,6 +40,7 @@ const router = createBrowserRouter([
       { index: true, element: <HomePage /> },
       { path: '/setting', element: <SettingPage /> },
       { path: '/notification', element: <AlarmPage /> },
+      { path: '/user-delete', element: <UserDeletePage /> },
       {
         path: '/login',
         element: <LoginPage />,
