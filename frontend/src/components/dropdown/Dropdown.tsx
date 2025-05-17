@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { ExtendedCategory } from '../../constant/category/extendsCategoryData';
 import QuestionCategory from '../../type/questionCategory';
 
@@ -24,9 +25,24 @@ const Dropdown = ({
   selected,
   location,
 }: DropdownProps) => {
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const clickOutside = (e: MouseEvent) => {
+      if (isOpen && dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        onClick();
+      }
+    };
+
+    document.addEventListener('mousedown', clickOutside);
+    return () => {
+      document.removeEventListener('mousedown', clickOutside);
+    };
+  }, [isOpen, onClick]);
+
   return (
     <>
-      <div className={`${location}`}>
+      <div ref={dropdownRef} className={`${location} relative`}>
         <div
           onClick={onClick}
           className={`flex cursor-pointer items-center justify-between border border-white/20 bg-white/10 px-4 py-2 backdrop-blur-md transition ${isOpen ? 'rounded-t-md rounded-b-none' : 'rounded-md'}`}
@@ -43,7 +59,7 @@ const Dropdown = ({
           />
         </div>
         {isOpen && (
-          <ul className="absolute left-0 z-10 max-h-72 w-full overflow-y-auto bg-transparent px-6 shadow-lg backdrop-blur-md">
+          <ul className="absolute z-10 max-h-72 w-full overflow-y-auto bg-white/10 shadow-lg backdrop-blur-md">
             {all && (
               <li
                 key={0}
