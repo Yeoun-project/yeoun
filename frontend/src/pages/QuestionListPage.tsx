@@ -37,9 +37,9 @@ const QuestionListPage = () => {
     setIsOpen(false);
   };
   return (
-    <div className="h-[100vh]">
+    <div className="h-[calc(100svh-140px)]">
       <SubPageHeader pageTitle="질문 모음" backButtonPath="/today-question" />
-      <main className="flex h-[calc(100%-140px)] flex-col">
+      <main className="flex h-full flex-col">
         <Dropdown
           id={Number(categoryId) || 0}
           isOpen={isOpen}
