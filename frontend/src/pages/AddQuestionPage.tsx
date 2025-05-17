@@ -186,6 +186,7 @@ const AddQuestionPage = () => {
     // 등록 후 초기화
     setSecond(false);
     setContent('');
+    modal.closeModal();
     nav('/question');
   };
 
