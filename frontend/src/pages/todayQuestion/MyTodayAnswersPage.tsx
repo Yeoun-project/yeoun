@@ -85,7 +85,7 @@ const MyTodayAnswersPage = () => {
           <div className="no-scrollbar overflow-scroll pb-6">
             {questionsYear.map((year) => (
               <QuestionListYearSection key={year} year={year}>
-                <QuestionList questions={questions[year]} path="question" />
+                <QuestionList questions={questions[year]} path="today-question" />
               </QuestionListYearSection>
             ))}
 
