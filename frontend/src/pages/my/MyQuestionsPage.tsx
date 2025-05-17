@@ -51,7 +51,7 @@ const MyQuestionsPage = () => {
           handleSelect={handleSelectCategory}
           selected={CATEGORY[Number(categoryId) - 1]}
           id={Number(categoryId) || 0}
-          location="px-6"
+          location="w-full"
         />
 
         {questionsYear.length === 0 && (
