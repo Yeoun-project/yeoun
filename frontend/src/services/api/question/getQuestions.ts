@@ -66,7 +66,7 @@ const getAnsweredQuestions = async ({
 // [오늘의 질문] 답변 리스트
 const getTodayAnswersQuestions = async ({ page = 1 }: QuestionListReq): Promise<QuestionList> => {
   const response = await client.get<Response<QuestionList>>(
-    getQuestionListApiUrl('/public/today-question/my', {
+    getQuestionListApiUrl('/public/today-question/commented-by-me', {
       page,
     })
   );
