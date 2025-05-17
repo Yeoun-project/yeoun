@@ -111,6 +111,8 @@ const QuestionCommentPage = () => {
     setSortOrder(sortOrder);
   };
 
+  console.log(questionDetail?.commentCount);
+
   return (
     <div className="h-[100vh]">
       <header className="relative flex justify-center p-6">
@@ -127,16 +129,16 @@ const QuestionCommentPage = () => {
         </div>
       </header>
       <main className="no-scrollbar flex h-[calc(100%-125px)] flex-col overflow-scroll px-6 pb-8">
-        <div className="flex h-[360px] items-center justify-center">
+        <div className="flex h-[380px] items-center justify-center">
           <Circle size={330} animate={true} category={questionDetail?.categoryName}>
             <p className="text-blur text-black-primary px-8 text-xl break-keep">{content}</p>
           </Circle>
         </div>
 
-        <p className="py-2">
+        <p className="py-3">
           이 질문에 대한 답변{' '}
           <span className="font-desc text-[#AAAAAA]">
-            {questionDetail?.commentCount != null
+            {questionDetail?.commentCount != null && questionDetail.commentCount > 0
               ? questionDetail.commentCount > 99
                 ? '99+'
                 : questionDetail.commentCount.toString().padStart(2, '0')

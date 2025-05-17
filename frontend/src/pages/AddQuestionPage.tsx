@@ -245,7 +245,7 @@ const AddQuestionPage = () => {
             handleSelect={handleSelect}
             categories={categories}
             selected={selected}
-            location={'w-full px-6 text-white font-desc mb-4'}
+            location={'w-full text-white font-desc mb-4'}
           />
           <ul className="font-desc flex list-none flex-col gap-1 px-6 text-white">
             <span className="text-[#999999]">(예시)</span>
