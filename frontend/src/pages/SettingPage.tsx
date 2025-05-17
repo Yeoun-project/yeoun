@@ -14,7 +14,7 @@ const SettingPage = () => {
     try {
       const response = await logout();
       if (response.status === 200) {
-        setUserType('Guest');
+        setUserType(null);
         navigate('/login');
       }
     } catch (err) {
