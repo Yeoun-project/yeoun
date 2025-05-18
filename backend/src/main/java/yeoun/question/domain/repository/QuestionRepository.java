@@ -59,8 +59,12 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
             Pageable pageable
     );
 
-    @Query("SELECT question FROM Question question WHERE question.user.id = :userId")
-    Slice<Question> findByUserId(@Param("userId")Long userId, Pageable pageable);
+    @Query("""
+            SELECT question FROM Question question
+            WHERE (question.category = :category OR :category = null)
+                AND question.user.id = :userId
+            """)
+    Slice<Question> findByUserId(@Param("userId")Long userId, @Param("category") String category, Pageable pageable);
 
     // 이전에 조회된 적 없는 인기 질문들 중 랜덤 1개의 질문 조회
     @Query("""

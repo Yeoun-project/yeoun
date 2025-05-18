@@ -75,9 +75,12 @@ public class QuestionController {
     }
 
     @GetMapping("/api/question/my")
-    public ResponseEntity<?> getMyQuestion(@PageableDefault() final Pageable pageable) {
+    public ResponseEntity<?> getMyQuestion(
+            @RequestParam("category") String category,
+            @PageableDefault() final Pageable pageable
+    ) {
         Long userId = JwtService.getUserIdFromAuthentication();
-        QuestionListResponse questionListResponse = questionService.getMyQuestions(userId, pageable);
+        QuestionListResponse questionListResponse = questionService.getMyQuestions(userId, category, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(
                 new SuccessResponse("내가 작성한 질문 목록 조회를 성공했습니다.", questionListResponse));
     }
