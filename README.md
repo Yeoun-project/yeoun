@@ -1,5 +1,6 @@
 <div align='center'>
     <h1><b>🌙 여운 Yeoun</b></h1>
+    <img src="https://github.com/user-attachments/assets/c973344d-1417-4523-8814-1e4e6af17102" />
     <h3><b>질문 하나, 마음속에 남는 여운</b></h3>
 </div>
 
