@@ -2,14 +2,14 @@ package yeoun.question.domain;
 
 import jakarta.persistence.*;
 import java.util.Date;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.annotations.*;
 import org.springframework.data.annotation.CreatedDate;
 import yeoun.comment.domain.Comment;
 import yeoun.notification.domain.Notification;
@@ -48,13 +48,14 @@ public class Question {
     @Column
     private LocalDateTime deleteTime;
 
-    @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @BatchSize(size = 100)
+    @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
     private List<Comment> comments;
 
-    @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
     private List<Notification> notifications;
 
-    @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
     private List<QuestionHistory> questionHistories;
 
     @Builder
