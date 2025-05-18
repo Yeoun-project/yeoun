@@ -130,8 +130,8 @@ public class QuestionService {
     }
 
     @Transactional(readOnly = true)
-    public QuestionListResponse getMyQuestions(Long userId, Pageable pageable) {
-        Slice<Question> questions = questionRepository.findByUserId(userId, pageable);
+    public QuestionListResponse getMyQuestions(Long userId, String category, Pageable pageable) {
+        Slice<Question> questions = questionRepository.findByUserId(userId, category, pageable);
         List<QuestionResponse> questionResponses = questions.stream()
                 .map(QuestionResponse::of)
                 .toList();
