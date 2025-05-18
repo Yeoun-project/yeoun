@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,25 +41,25 @@ public class CommentService {
         Long userId = JwtService.getUserIdFromAuthentication();
         commentDto.setUserId(userId);
 
-        Question targetQuestion = questionRepository.findQuestionById(commentDto.getQuestionId()).orElseThrow(
-            ()-> {throw new CustomException(ErrorCode.INVALID_PARAMETER, "Invalid question id");}
+        Question targetQuestion = questionRepository.findQuestionById(commentDto.getQuestionId())
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_PARAMETER, "Invalid question id")
         );
 
-        if(targetQuestion.getDeleteTime() != null)
+        if (targetQuestion.getDeleteTime() != null)
             throw new CustomException(ErrorCode.CONFLICT, "작성자가 떠난 질문은 답변 등록이 불가합니다");
 
         User writer = targetQuestion.getUser();
 
-        if(writer != null && writer.getId() == commentDto.getUserId()) {
+        if (writer != null && Objects.equals(writer.getId(), commentDto.getUserId())) {
             throw new CustomException(ErrorCode.BAD_REQUEST, "본인의 게시글에 답변을 등록할 수 없습니다");
         }
 
         Optional<Comment> comment = commentRepository.getCommentByUserId(userId, commentDto.getQuestionId());
 
-        if(comment.isPresent())
+        if (comment.isPresent())
             throw new CustomException(ErrorCode.ALREADY_EXIST, "이미 존재합니다");
 
-        if(writer != null)
+        if (writer != null)
             notificationService.addNotification(userId, targetQuestion.getUser().getId(), NotificationType.NEW_COMMENT, commentDto.getQuestionId());
 
         return commentRepository.save(Comment.builder()
@@ -73,12 +74,12 @@ public class CommentService {
     public void updateComment(SaveCommentRequest commentDto) {
         Optional<Comment> commentOptional = commentRepository.getCommentById(commentDto.getId());
 
-        if(commentOptional.isEmpty())
+        if (commentOptional.isEmpty())
             throw new CustomException(ErrorCode.NOT_FOUND, "존재하지 않습니다");
 
         User user = commentOptional.get().getUser();
 
-        if(user.getId() != commentDto.getUserId())
+        if (!Objects.equals(user.getId(), commentDto.getUserId()))
             throw new CustomException(ErrorCode.INVALID_PARAMETER, "작성자가 아닙니다");
 
         commentRepository.save(Comment.builder()
@@ -93,10 +94,10 @@ public class CommentService {
     public void deleteComment(Long commentId, Long userId) {
         Optional<Comment> commentOptional = commentRepository.getCommentById(commentId);
 
-        if(commentOptional.isEmpty())
+        if (commentOptional.isEmpty())
             throw new CustomException(ErrorCode.NOT_FOUND, "존재하지 않습니다");
 
-        if(!Objects.equals(commentOptional.get().getUser().getId(), userId))
+        if (!Objects.equals(commentOptional.get().getUser().getId(), userId))
             throw new CustomException(ErrorCode.BAD_REQUEST, "작성자가 아닙니다");
 
         commentRepository.deleteById(commentId);
@@ -105,14 +106,27 @@ public class CommentService {
     @Transactional(readOnly = true)
     public CommentListResponse getAllComments(Long questionId, Long userId, Pageable pageable) {
         Boolean isExistQuestion = questionService.isExistQuestion(questionId);
-        if(!isExistQuestion) throw new CustomException(ErrorCode.INVALID_PARAMETER, "Invalid question id");
+        if (!isExistQuestion) throw new CustomException(ErrorCode.INVALID_PARAMETER, "Invalid question id");
 
         Optional<Comment> myCommentOpt = commentRepository.findTopByUserIdAndQuestionId(userId, questionId);
         CommentResponse myCommentResponse = myCommentOpt
                 .map(comment -> CommentResponse.of(comment, false))
                 .orElse(null);
 
-        Slice<Comment> comments = commentRepository.getAllCommentByQuestionExcludeMyself(questionId, userId, pageable);
+        boolean isLikeSort = pageable.getSort().getOrderFor("LIKE") != null;
+        Slice<Comment> comments;
+
+        if (isLikeSort) {
+            Pageable noSortPageable = PageRequest.of(
+                    pageable.getPageNumber(),
+                    pageable.getPageSize()
+            );
+
+            comments = commentRepository.findAllByQuestionIdExcludeMineOrderByLikeCountDesc(questionId, userId, noSortPageable);
+        } else {
+            comments = commentRepository.getAllCommentByQuestionExcludeMyself(questionId, userId, pageable);
+        }
+
         final List<CommentResponse> commentResponses = comments.stream()
                 .map(comment -> CommentResponse.of(
                         comment,

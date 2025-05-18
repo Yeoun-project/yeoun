@@ -35,5 +35,19 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
             Pageable pageable
     );
 
+    @Query("""
+            SELECT c
+            FROM Comment c
+            LEFT JOIN c.likes l
+            WHERE c.question.id = :questionId AND c.user.id <> :userId
+            GROUP BY c
+            ORDER BY COUNT(l.id) DESC
+            """)
+    Slice<Comment> findAllByQuestionIdExcludeMineOrderByLikeCountDesc(
+            @Param("questionId") Long questionId,
+            @Param("userId") Long userId,
+            Pageable pageable
+    );
+
     Optional<Comment> findTopByUserIdAndQuestionId(@Param("userId") Long userId, @Param("questionId") Long questionId);
 }
