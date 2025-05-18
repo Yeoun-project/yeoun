@@ -73,6 +73,7 @@ const CommentPage = () => {
     setContent('');
 
     queryClient.invalidateQueries({ queryKey: ['comment', questionId, 'old'] });
+    modal.closeModal();
     navigate(`/question/${questionId}`);
   };
 

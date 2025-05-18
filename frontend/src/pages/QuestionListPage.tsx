@@ -48,7 +48,7 @@ const QuestionListPage = () => {
           handleSelect={handleSelect}
           categories={CATEGORY}
           selected={CATEGORY[Number(categoryId) - 1]}
-          location={'w-full text-white font-desc'}
+          location={'w-full text-white font-desc mb-2'}
         />
         {questionsYear.length > 0 && (
           <>

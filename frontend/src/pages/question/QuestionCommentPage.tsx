@@ -19,6 +19,7 @@ import { getAllComments } from '../../services/api/comment/getComment';
 import useCommentGroup from '../../hooks/queries/useCommentGroup';
 import useGetQuestionDetail from '../../hooks/queries/useGetQuestionDetail';
 import FallBack from '../../components/ui/FallBack';
+import Modal from '../../components/modal/Modal';
 
 type sortOrder = 'old' | 'latest' | 'like';
 
@@ -100,10 +101,23 @@ const QuestionCommentPage = () => {
     setSortOrder(sortOrder);
   };
 
-  console.log(questionDetail?.commentCount);
+  const onClickComment = () => {
+    if (questionDetail?.isAuthor) {
+      toast.addToast.notification({
+        title: '여운 등록 실패',
+        message: '본인 답변에는 여운을 남길 수 없어요!',
+      });
+    } else if (mycomment === null) {
+      setReport(false);
+      setRegister(true);
+      modal.openModal();
+    } else {
+      modal.openModal();
+    }
+  };
 
   return (
-    <div className="h-[100vh]">
+    <div className="h-[100svh]">
       <header className="relative flex justify-center p-6">
         <div className="absolute left-6">
           <BackArrowButton />
@@ -119,9 +133,11 @@ const QuestionCommentPage = () => {
       </header>
       <main className="no-scrollbar flex h-[calc(100%-125px)] flex-col overflow-scroll px-6 pb-8">
         <div className="flex h-[380px] items-center justify-center">
-          <Circle size={330} animate={true} category={questionDetail?.categoryName}>
-            <p className="text-blur text-black-primary px-8 text-xl break-keep">{content}</p>
-          </Circle>
+          <button onClick={onClickComment} className="cursor-pointer">
+            <Circle size={280} animate={true} category={questionDetail?.categoryName}>
+              <p className="text-blur text-black-primary px-8 text-xl break-keep">{content}</p>
+            </Circle>
+          </button>
         </div>
 
         <p className="py-3">
@@ -197,22 +213,24 @@ const QuestionCommentPage = () => {
         <button
           form="add-question"
           className="font-desc h-[60px] w-full cursor-pointer rounded-xl bg-white py-4 font-bold text-black"
-          onClick={() => {
-            if (questionDetail?.isAuthor) {
-              toast.addToast.notification({
-                title: '여운 등록 실패',
-                message: '본인 답변에는 여운을 남길 수 없어요!',
-              });
-            } else {
-              setReport(false);
-              setRegister(true);
-              modal.openModal();
-            }
-          }}
+          onClick={onClickComment}
         >
           답변 작성하기
         </button>
       </div>
+      {!!mycomment && (
+        <Modal>
+          <Modal.Header>
+            <Modal.Title>질문당 답변은 1번만 가능합니다.</Modal.Title>
+            <Modal.SubTitle>
+              <span className="text-[#FF2020]">이 질문에 이미 답변을 작성하셨습니다.</span>
+            </Modal.SubTitle>
+          </Modal.Header>
+          <Modal.Footer>
+            <Modal.CancleButton>확인</Modal.CancleButton>
+          </Modal.Footer>
+        </Modal>
+      )}
     </div>
   );
 };

@@ -55,17 +55,6 @@ const AnswerItem = ({
             {likeCount.toString().padStart(2, '0')}
           </p>
         </div>
-        {my && (
-          <div className="justify-between">
-            <button
-              className="min-h-6 min-w-6 cursor-pointer bg-[url(/icons/bigX.svg)] bg-contain bg-center bg-no-repeat"
-              onClick={() => {
-                onSubmit();
-              }}
-            />
-            <p className="font-desc text-[14px]">삭제</p>
-          </div>
-        )}
         {!my && (
           <div className="justify-between">
             <button
