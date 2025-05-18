@@ -20,7 +20,6 @@ import java.util.List;
 @Table(name = "comment")
 @Getter
 @SQLDelete(sql = "UPDATE comment SET delete_time = CURRENT_TIMESTAMP WHERE id = ?") // soft delete
-@SQLRestriction("delete_time IS NULL") // 지워지지 않은 레코드에 대한 조건
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Comment {
 
@@ -41,7 +40,7 @@ public class Comment {
     private Question question;
 
     @BatchSize(size = 100)
-    @OneToMany(mappedBy = "comment", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "comment")
     private List<Like> likes;
 
     @CreatedDate
