@@ -8,8 +8,6 @@ import { getAnsweredQuestions } from '../../services/api/question/getQuestions';
 import useGetInfiniteQuestion from '../../hooks/queries/useGetInfiniteQuestion';
 import useQuestionGroupByYear from '../../hooks/useQuestionGroupByYear';
 
-import BottomTabBar from '../../components/nav/BottomTabBar';
-
 import FallBack from '../../components/ui/FallBack';
 import SubPageHeader from '../../components/ui/SubPageHeader';
 
@@ -76,7 +74,6 @@ const MyAnswersPage = () => {
           </div>
         )}
       </main>
-      {questionsYear.length > 0 && <BottomTabBar />}
     </div>
   );
 };
