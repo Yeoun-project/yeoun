@@ -25,7 +25,7 @@ const getCategoryName = (categoryId: string | undefined) => {
 };
 
 // 모든 질문 리스트
-const getAllQuestions = async ({ page = 1, categoryId }: QuestionListReq) => {
+const getAllQuestions = async ({ page = 0, categoryId }: QuestionListReq) => {
   const response = await client.get<Response<QuestionList>>(
     getQuestionListApiUrl('/api/question/all', {
       page,
