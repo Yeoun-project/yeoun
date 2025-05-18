@@ -35,7 +35,7 @@
 
 ## <span id="4">⚙️ 4. 개발 환경 및 기술 스택</span>
 > <h3>프론트엔드</h3>
-`TypeScript` `React` `TailwindCSS` `React Query` `Zustand`
+`TypeScript` `React` `TailwindCSS` `TanStack Query` `Zustand`
 
 ![My Skills](https://go-skill-icons.vercel.app/api/icons?i=ts,react,tailwindcss,reactquery,zustand&titles=true)
 
