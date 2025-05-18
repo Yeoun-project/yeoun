@@ -30,28 +30,26 @@ const QuestionListPage = () => {
   });
 
   const { questions, questionsYear } = useQuestionGroupByYear(data ? data : [], 'latest');
+  console.log(data);
 
   const handleSelect = (categoryId: number) => {
     setSearchParams({ q: categoryId.toString() });
     setIsOpen(false);
   };
   return (
-    <div className="h-[100vh]">
+    <div className="h-[calc(100svh-140px)]">
       <SubPageHeader pageTitle="질문 모음" backButtonPath="/today-question" />
-
-      <main className="flex h-[calc(100%-140px)] flex-col">
-        <div className="mb-3 flex items-center justify-end gap-2 px-6">
-          <Dropdown
-            id={Number(categoryId) || 0}
-            isOpen={isOpen}
-            all={true}
-            onClick={() => setIsOpen((prev) => !prev)}
-            handleSelect={handleSelect}
-            categories={CATEGORY}
-            selected={CATEGORY[Number(categoryId) - 1]}
-            location={'w-full text-white font-desc'}
-          />
-        </div>
+      <main className="flex h-full flex-col">
+        <Dropdown
+          id={Number(categoryId) || 0}
+          isOpen={isOpen}
+          all={true}
+          onClick={() => setIsOpen((prev) => !prev)}
+          handleSelect={handleSelect}
+          categories={CATEGORY}
+          selected={CATEGORY[Number(categoryId) - 1]}
+          location={'w-full text-white font-desc'}
+        />
         {questionsYear.length > 0 && (
           <>
             <div className="font-desc gap-2.5 px-6 text-[14px]">

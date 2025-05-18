@@ -1,6 +1,5 @@
 import AlarmItem from '../components/alarmList/AlarmItem';
 
-import BottomTabBar from '../components/nav/BottomTabBar';
 import FallBack from '../components/ui/FallBack';
 import SubPageHeader from '../components/ui/SubPageHeader';
 
@@ -36,7 +35,6 @@ const AlarmPage = () => {
           </ul>
         </div>
       </main>
-      <BottomTabBar />
     </>
   );
 };

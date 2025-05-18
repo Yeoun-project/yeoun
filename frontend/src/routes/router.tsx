@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 
 import App from '../App.tsx';
@@ -6,9 +7,10 @@ import App from '../App.tsx';
 import PrivateRoute from './PrivateRoute.tsx';
 
 import HomePage from '../pages/HomePage.tsx';
-import QuestionPage from '../pages/QuestionPage.tsx';
+const QuestionPage = lazy(() => import('../pages/QuestionPage.tsx'));
 import AddQuestionPage from '../pages/AddQuestionPage.tsx';
 import SettingPage from '../pages/SettingPage.tsx';
+import UserDeletePage from '../pages/UserDeletePage.tsx';
 
 //로그인
 import LoginPage from '../pages/login/LoginPage.tsx';
@@ -21,7 +23,9 @@ import TodayQuestionLayout, {
 import TodayQuestionPage from '../pages/todayQuestion/TodayQuestionPage.tsx';
 import TodayQuestionCommentPage from '../pages/todayQuestion/TodayQuestionCommentPage.tsx';
 import MyTodayAnswersPage from '../pages/todayQuestion/MyTodayAnswersPage.tsx';
-import MyTodayAnswerPage from '../pages/todayQuestion/MyTodayAnswerPage.tsx';
+import MyTodayAnswerPage, {
+  loader as TodayQuestionCommentLoader,
+} from '../pages/todayQuestion/MyTodayAnswerPage.tsx';
 import AlarmPage from '../pages/AlarmPage.tsx';
 
 import MyActivityPage from '../pages/my/MyActivityPage.tsx';
@@ -39,6 +43,7 @@ const router = createBrowserRouter([
       { index: true, element: <HomePage /> },
       { path: '/setting', element: <SettingPage /> },
       { path: '/notification', element: <AlarmPage /> },
+      { path: '/user-delete', element: <UserDeletePage /> },
       {
         path: '/login',
         element: <LoginPage />,
@@ -67,6 +72,7 @@ const router = createBrowserRouter([
             element: <MyTodayAnswersPage />,
           },
           {
+            loader: TodayQuestionCommentLoader,
             path: '/today-question/:questionId',
             element: <MyTodayAnswerPage />,
           },
@@ -80,7 +86,11 @@ const router = createBrowserRouter([
             children: [
               {
                 index: true,
-                element: <QuestionPage />,
+                element: (
+                  <Suspense fallback={<p>Loading ......</p>}>
+                    <QuestionPage />
+                  </Suspense>
+                ),
               },
               {
                 path: '/question/add-question',

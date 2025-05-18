@@ -4,7 +4,7 @@ import QuestionListItem from './QuestionListItem';
 
 interface QuestionListProps {
   questions: Question[];
-  path: 'today' | 'question'; // 질문 path 경로
+  path: 'today-question' | 'question'; // 질문 path 경로
 }
 
 const QuestionList = ({ questions, path }: QuestionListProps) => {

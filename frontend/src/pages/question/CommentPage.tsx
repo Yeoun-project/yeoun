@@ -99,7 +99,7 @@ const CommentPage = () => {
             onChange={onChange}
             onSubmit={handleSubmit}
             maxValue={50}
-            hasError={hasError}
+            error={hasError}
           />
 
           {/* Backgroun Squre */}

@@ -19,6 +19,7 @@ import yeoun.question.domain.repository.CategoryRepository;
 import yeoun.question.domain.repository.QuestionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import yeoun.user.domain.repository.UserRepository;
 import yeoun.user.service.UserService;
 
 import java.util.List;
@@ -33,10 +34,14 @@ public class QuestionService {
     private final ForbiddenWordService forbiddenWordService;
     private final CategoryRepository categoryRepository;
     private final QuestionRepository questionRepository;
+    private final UserRepository userRepository;
 
     @Transactional
     public void addNewQuestion(AddQuestionRequest dto) throws CustomException {
-        userService.validateUser(dto.getUserId());
+        // user의 question count 가 남앖는지 확인
+        User user = userService.getUserInfo(dto.getUserId());
+        if(user.getQuestionCount() == 0)
+            throw new CustomException(ErrorCode.BAD_REQUEST, "오늘의 질문 기회를 모두 소진하였습니다");
 
         Category category = categoryRepository.findById(dto.getCategoryId())
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_PARAMETER, "카테고리 ID가 잘못 되었습니다."));
@@ -49,6 +54,7 @@ public class QuestionService {
                 .category(category)
                 .build()
         );
+        userRepository.setQuestionCount(user.getId());
     }
 
 //    @Transactional
