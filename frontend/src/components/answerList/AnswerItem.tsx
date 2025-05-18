@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { changeCommentLike } from '../../services/api/comment/commentLike';
 
 import ReportModal from '../modal/ReportModal';
+import useToastStore from '../../store/useToastStore';
 
 const AnswerItem = ({
   my,
@@ -26,6 +27,7 @@ const AnswerItem = ({
   questionId: number;
   sortOrder: 'old' | 'latest' | 'like';
 }) => {
+  const toast = useToastStore();
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
@@ -48,7 +50,14 @@ const AnswerItem = ({
           <button
             className={`min-h-6 min-w-6 cursor-pointer bg-contain bg-center bg-no-repeat ${isLike ? 'bg-[url(/icons/filledHeart.svg)]' : 'bg-[url(/icons/heart.svg)]'} `}
             onClick={() => {
-              mutation.mutate({ id, isLike });
+              if (!my) {
+                mutation.mutate({ id, isLike });
+              } else {
+                toast.addToast.notification({
+                  title: '좋아요 등록 실패',
+                  message: '본인 답글에는 좋아요를 남길 수 없어요!',
+                });
+              }
             }}
           />
           <p className="font-desc text-center text-[14px]">
