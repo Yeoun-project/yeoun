@@ -40,7 +40,7 @@ public class Comment {
     private Question question;
 
     @BatchSize(size = 100)
-    @OneToMany(targetEntity = Like.class, mappedBy = "comment", fetch = FetchType.LAZY, cascade = {})
+    @OneToMany(mappedBy = "comment")
     private List<Like> likes;
 
     @CreatedDate

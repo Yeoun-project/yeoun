@@ -8,6 +8,7 @@ import yeoun.exception.ErrorCode;
 import yeoun.question.domain.repository.QuestionRepository;
 import yeoun.user.domain.User;
 import yeoun.auth.service.JwtService;
+import yeoun.user.domain.repository.UserDeleteRepository;
 import yeoun.user.domain.repository.UserRepository;
 import yeoun.user.domain.Role;
 import yeoun.user.dto.request.IsNotificationRequest;
@@ -23,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserDeleteRepository deleteRepository;
     private final QuestionRepository questionRepository;
 
     @Transactional
@@ -84,14 +86,14 @@ public class UserService {
     public void hardDeleteAll(Long userId){
         // like(userId) -> notification(receiverId, questionId) -> userHistory(userId, questionId) -> comment(question_id) -> question_history(user_id, question_id) -> question(user_id) -> user
         List<Long> questionIdList = questionRepository.findByUserId(userId).stream().map(e->e.getId()).toList();
-        userRepository.deleteLike(userId);
-        userRepository.deleteNotification(userId, questionIdList);
-        userRepository.deleteUserHistory(userId);
-        userRepository.deleteComment(userId, questionIdList);
-        userRepository.deleteQuestionHistory(userId, questionIdList);
-        userRepository.deleteQuestion(userId);
-        userRepository.updateComment(userId);
-        userRepository.hardDeleteUser(userId);
+        deleteRepository.deleteLike(userId);
+        deleteRepository.deleteNotification(userId, questionIdList);
+        deleteRepository.deleteUserHistory(userId);
+        deleteRepository.deleteComment(userId, questionIdList);
+        deleteRepository.deleteQuestionHistory(userId, questionIdList);
+        deleteRepository.deleteQuestion(userId);
+        deleteRepository.updateComment(userId);
+        deleteRepository.hardDeleteUser(userId);
     }
 
 }

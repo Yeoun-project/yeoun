@@ -12,6 +12,7 @@ import yeoun.notification.dto.response.NotificationListResponse;
 import yeoun.question.domain.Question;
 import yeoun.question.domain.repository.QuestionRepository;
 import yeoun.question.dto.response.QuestionDetailResponse;
+import yeoun.question.service.QuestionService;
 import yeoun.user.domain.User;
 import yeoun.exception.CustomException;
 import yeoun.exception.ErrorCode;
@@ -38,9 +39,9 @@ public class NotificationService {
     private final NotificationRepository notificationRepository;
     private final QuestionRepository questionRepository;
     private final EntityManager entityManager;
+    private final QuestionService questionService;
 
     private static HashMap<Long, SseEmitter> emitterMap = new HashMap<>();
-    private final UserService userService;
     private final UserRepository userRepository;
 
     public SseEmitter getConnect(Long userId) {
@@ -75,18 +76,7 @@ public class NotificationService {
 
     // @Transactional
     public QuestionDetailResponse getQuestionFromNotification(Long userId, Long questionId) {
-        Question question = notificationRepository.getQuestion(userId, questionId).orElseThrow(
-            () -> new CustomException(ErrorCode.NOT_FOUND, "no notification with question id")
-        );
-
-        notificationRepository.removeByQuestion(userId, questionId);
-
-        boolean isAuthor = false;
-        if (question.getUser() != null) isAuthor = question.getUser().getId().equals(userId);
-
-        boolean isDeleted = question.getDeleteTime()!=null;
-
-        return QuestionDetailResponse.of(question, isAuthor, isDeleted);
+        return questionService.getQuestionDetail(userId, questionId);
     }
 
     // @Transactional
