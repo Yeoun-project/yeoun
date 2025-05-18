@@ -76,7 +76,7 @@ public class QuestionController {
 
     @GetMapping("/api/question/my")
     public ResponseEntity<?> getMyQuestion(
-            @RequestParam("category") String category,
+            @RequestParam(value = "category", required = false) String category,
             @PageableDefault() final Pageable pageable
     ) {
         Long userId = JwtService.getUserIdFromAuthentication();
