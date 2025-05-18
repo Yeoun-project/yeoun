@@ -8,6 +8,7 @@ const Item = ({
   idx: number;
 }) => {
   const getScaleAndTranslate = () => {
+    if (Math.abs(currentItem - idx) > 2) return '';
     if (idx === currentItem - 1) {
       return `translate(8.5rem) scale(0.8)`;
     }
