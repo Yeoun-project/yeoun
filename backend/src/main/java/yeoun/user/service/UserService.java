@@ -99,6 +99,7 @@ public class UserService {
         deleteRepository.deleteQuestion(userId);
         deleteRepository.updateComment(userId);
         deleteRepository.hardDeleteUser(userId);
+    }
 
      // scheduler set user question count = 1, every day
     @Transactional
