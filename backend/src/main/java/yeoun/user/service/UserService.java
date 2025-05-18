@@ -1,5 +1,8 @@
 package yeoun.user.service;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.transaction.annotation.Transactional;
 import yeoun.exception.CustomException;
 import yeoun.exception.ErrorCode;
 import yeoun.auth.service.JwtService;
@@ -10,15 +13,17 @@ import yeoun.user.dto.request.IsNotificationRequest;
 import yeoun.user.dto.request.UserRegisterInfoVo;
 import java.util.Optional;
 import java.util.UUID;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class UserService {
+
+    @Value("${user.default-question-count}")
+    private int DEFAULT_QUESTION_COUNT;
 
     private final UserRepository userRepository;
 
@@ -75,6 +80,13 @@ public class UserService {
 
     public void deleteUser(Long userId) {
         userRepository.deleteById(userId);
+    }
+
+     // scheduler set user question count = 1, every day
+    @Transactional
+    @Scheduled(cron="${scheduler.every-day}")
+    public void deleteOldUserHistory() {
+        userRepository.setAllUserQuestionCount(DEFAULT_QUESTION_COUNT);
     }
 
 }

@@ -29,5 +29,14 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Query("delete from User u where u.id not in (select h.user.id from UserHistory h group by h.user.id) and u.role = 'ANONYMOUS' and u.createTime < :deleteTime")
     void deleteOldAnonymousUser(@Param("deleteTime") LocalDateTime deleteTime);
+
+    @Modifying
+    @Query("update User u set u.questionCount = u.questionCount -1 where u.id = :userId")
+    void setQuestionCount(@Param("userId") long userId);
+
+    @Modifying
+    @Query("update User u set u.questionCount =  :count where u.role in ('USER', 'ADMIN') ")
+    void setAllUserQuestionCount(@Param("count") int count);
+
 }
 
