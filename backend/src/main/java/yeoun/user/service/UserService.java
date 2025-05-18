@@ -90,7 +90,7 @@ public class UserService {
     @Transactional
     public void hardDeleteAll(Long userId){
         // like(userId) -> notification(receiverId, questionId) -> userHistory(userId, questionId) -> comment(question_id) -> question_history(user_id, question_id) -> question(user_id) -> user
-        List<Long> questionIdList = questionRepository.findByUserId(userId).stream().map(e->e.getId()).toList();
+        List<Long> questionIdList = questionRepository.findAllIdsByUserId(userId);
         deleteRepository.deleteLike(userId);
         deleteRepository.deleteNotification(userId, questionIdList);
         deleteRepository.deleteUserHistory(userId);
