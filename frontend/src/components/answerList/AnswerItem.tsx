@@ -9,6 +9,7 @@ const AnswerItem = ({
   id,
   isLike,
   likeCount,
+  content,
   reportBtnClick,
   onSubmit,
   questionId,
@@ -19,6 +20,7 @@ const AnswerItem = ({
   id: number;
   isLike: boolean;
   likeCount: number;
+  content: string;
   reportBtnClick: () => void;
   onSubmit: () => void;
   questionId: number;
@@ -38,8 +40,8 @@ const AnswerItem = ({
   return (
     <div className="flex min-h-12 justify-between">
       <div className="gap-21px w-[calc(100%-100px)] break-all">
-        {my && <p className="text-[#FC90D1]">댓글</p>}
-        {!my && <p className="font-desc text-[14px]">댓글</p>}
+        {my && <p className="text-[#FC90D1]">{content}</p>}
+        {!my && <p className="font-desc text-[14px]">{content}</p>}
       </div>
       <div className="flex gap-4">
         <div className="justify-between">

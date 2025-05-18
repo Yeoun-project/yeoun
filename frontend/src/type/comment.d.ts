@@ -15,11 +15,11 @@ export interface Comment {
   content: string;
   likeCount: number;
   isLike: boolean;
-  createdTime: string;
+  createTime: string;
 }
 
 export interface CommentList {
-  mycomment: Comment;
-  comment: Comment[];
+  myComment: Comment;
+  comments: Comment[];
   hasNext: boolean;
 }

@@ -73,11 +73,7 @@ const CommentPage = () => {
     setContent('');
 
     queryClient.invalidateQueries({ queryKey: ['comment', questionId, 'old'] });
-    navigate(`/question/${questionId}`, {
-      state: {
-        showToast: true,
-      },
-    });
+    navigate(`/question/${questionId}`);
   };
 
   return (
