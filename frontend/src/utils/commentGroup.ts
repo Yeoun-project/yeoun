@@ -6,14 +6,14 @@ export const sortedCommentGroup = (comment: Comment[], sortOrder: 'old' | 'lates
   // 오래된 순
   if (sortOrder === 'old') {
     return sorted.sort(
-      (a, b) => new Date(a.createdTime).getTime() - new Date(b.createdTime).getTime()
+      (a, b) => new Date(a.createTime).getTime() - new Date(b.createTime).getTime()
     );
   }
 
   // 최신순
   if (sortOrder === 'latest') {
     return sorted.sort(
-      (a, b) => new Date(b.createdTime).getTime() - new Date(a.createdTime).getTime()
+      (a, b) => new Date(b.createTime).getTime() - new Date(a.createTime).getTime()
     );
   }
 
