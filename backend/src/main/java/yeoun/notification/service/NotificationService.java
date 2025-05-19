@@ -1,7 +1,10 @@
 package yeoun.notification.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,35 +35,18 @@ import yeoun.user.service.UserService;
 @RequiredArgsConstructor
 public class NotificationService {
 
-    //    @Value("${sse.connection_time}")
-    private final Long SSE_CONNECTION_TIME = Long.MAX_VALUE;
-    private final Long SEE_RECONNECTION_TIME = 1000 * 10L; // 10초
-
     private final NotificationRepository notificationRepository;
     private final QuestionRepository questionRepository;
     private final EntityManager entityManager;
     private final QuestionService questionService;
-
-    private static HashMap<Long, SseEmitter> emitterMap = new HashMap<>();
+    private final SseService sseService;
     private final UserRepository userRepository;
 
     public SseEmitter getConnect(Long userId) {
-        SseEmitter oldEmitter = emitterMap.get(userId);
-        if(oldEmitter != null) {
-            oldEmitter.complete();
-        }
-
-        SseEmitter emitter = new SseEmitter(SSE_CONNECTION_TIME);
-        emitter.onTimeout(()->{ emitterMap.remove(userId); });
-        emitter.onCompletion(() -> { emitterMap.remove(userId); });
-        emitterMap.put(userId, emitter);
-
-        sendUnReadNotificationCount(userId);
-
-        return emitter;
+        return sseService.createSseEmitter(userId, notificationRepository.getUnReadNotificationsCount(userId));
     }
 
-    // @Transactional
+    @Transactional
     public NotificationListResponse getAllNotifications(Long userId, Pageable pageable) {
         Slice<Notification> notifications = notificationRepository.findAllNotifications(userId, pageable);
         List<NotificationDetailResponse> notificationDetailResponses = notifications.stream()
@@ -74,12 +60,12 @@ public class NotificationService {
         return notificationListResponse;
     }
 
-    // @Transactional
+    @Transactional
     public QuestionDetailResponse getQuestionFromNotification(Long userId, Long questionId) {
         return questionService.getQuestionDetail(userId, questionId);
     }
 
-    // @Transactional
+    @Transactional
     public void addNotification(Long senderId, Long receiverId, NotificationType type, Long questionId) {
         if(receiverId == null) return;
 
@@ -110,32 +96,15 @@ public class NotificationService {
         sendUnReadNotificationCount(receiverId);
     }
 
-    // Sse 관련 함수들
-    public void sendUnReadNotificationCount(Long userId) {
-        //Integer count = notificationRepository.getUnReadNotificationsCount(userId); // 개수를 반환암함 (유무만 반환)
+    private void sendUnReadNotificationCount(Long userId) {
         Optional<User> optionalUser = userRepository.findById(userId);
 
-        if(optionalUser.isEmpty()) return; // 받을 사람이 없는 경우 : delete 된경우 아무 notification을 발생 시키지 않음
+        if(optionalUser.isEmpty()) return;
 
         User user = optionalUser.get();
 
         if(user.getIsNotification())
-            sendSSEData(emitterMap.get(userId), 1);
+            sseService.sendData(userId, "notification", notificationRepository.getUnReadNotificationsCount(userId));
     }
 
-    private void sendSSEData(SseEmitter sseEmitter, Object data) {
-        log.info("try send " + data.toString());
-        if(sseEmitter == null) {
-            log.info("sseEmitter is null");
-            return;
-        }
-
-        try {
-            sseEmitter.send(SseEmitter.event().name("notification").data(data.toString()).reconnectTime(SEE_RECONNECTION_TIME).build());
-            log.info("sseEmitter sended");
-        } catch (IOException e) {
-            log.info("sseEmitter send error");
-        }
-        log.info("Sse send end");
-    }
 }
