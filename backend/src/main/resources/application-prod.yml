@@ -21,8 +21,8 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
-    show-sql: true
+      ddl-auto: none
+    show-sql: false
     defer-datasource-initialization: true
 
 jwt:
@@ -38,3 +38,8 @@ scheduler:
   # cron: 0 0 2 * * ?  # 매일 오전 2시에 실행됨
   user_history_delete_second: 30 # 60 * 2  test 환경 2분
   # user_history_delete_second: 18144000 # 한달 (30일)
+  every-day: "0 0 0 * * *"
+
+user:
+  default-question-count:
+    1

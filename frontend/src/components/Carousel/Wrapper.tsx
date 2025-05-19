@@ -5,7 +5,6 @@ interface CarouselWrapperProps {
   handleTouchStart: (e: React.PointerEvent<HTMLDivElement>) => void;
   handleTouchMove: (e: React.PointerEvent<HTMLDivElement>) => void;
   handleTouchEnd: () => void;
-  getTranslate: () => string;
   carouselRef: React.RefObject<HTMLDivElement | null>;
 }
 
@@ -15,22 +14,16 @@ const Wrapper = ({
   handleTouchEnd,
   handleTouchMove,
   handleTouchStart,
-  getTranslate,
 }: CarouselWrapperProps) => {
   return (
     <div className="overflow-hidden">
       <div
-        className="flex py-3 will-change-transform"
+        className="flex touch-pan-y py-3"
         onPointerDown={handleTouchStart}
         onPointerMove={handleTouchMove}
         onPointerUp={handleTouchEnd}
         onPointerLeave={handleTouchEnd}
         ref={carouselRef}
-        style={{
-          transform: `${getTranslate()}`,
-          transitionDuration: '300ms',
-          transitionTimingFunction: 'ease-out',
-        }}
       >
         {children}
       </div>

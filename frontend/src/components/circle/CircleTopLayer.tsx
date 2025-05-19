@@ -11,7 +11,7 @@ const CircleTopLayer = ({ size = 150, animate = false, colors }: CircleLayerProp
       viewBox="1 -2 150 162"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={`absolute z-4 ${animate && 'animate-spin-circle-layer will-change-transform'}`}
+      className={`absolute z-4 ${animate && 'animate-spin-circle-layer'}`}
     >
       <g id="Vector 15" opacity="0.6" filter="url(#filter0_dddddd_98_1052)">
         <path

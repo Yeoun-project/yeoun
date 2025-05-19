@@ -15,6 +15,7 @@ import SubPageHeader from '../../components/ui/SubPageHeader';
 import QuestionListYearSection from '../../components/questionList/QuestionListYearSection';
 import ListMoreButton from '../../components/questionList/ListMoreButton';
 import QuestionList from '../../components/questionList/QuestionList';
+import useAuthStore from '../../store/useAuthStore';
 
 type sortOrder = 'latest' | 'old';
 
@@ -30,6 +31,7 @@ const SORTORDER_CHECKBOXS = [
 ];
 
 const MyTodayAnswersPage = () => {
+  const { userType } = useAuthStore();
   const [sortOrder, setSortOrder] = useState<sortOrder>('latest');
 
   const { data, fetchNextPage, hasNextPage } = useInfiniteQuery({
@@ -42,7 +44,7 @@ const MyTodayAnswersPage = () => {
     getNextPageParam: (lastPage, allPages) => (lastPage.hasNext ? allPages.length + 1 : undefined),
     select: (data) => {
       // 새로 불러온 데이터들이 있다면 기존 데이터들과 매핑 후 반환
-      return data.pages.flatMap((page) => page.question || []);
+      return data.pages.flatMap((page) => page.questions || []);
     },
   });
 
@@ -53,22 +55,27 @@ const MyTodayAnswersPage = () => {
   };
   return (
     <div className="h-[100svh] overflow-hidden">
-      <SubPageHeader pageTitle="답변목록" backButtonPath="/my" />
+      <SubPageHeader
+        pageTitle="답변목록"
+        backButtonPath={userType === 'Guest' ? '/today-question' : '/my'}
+      />
 
       <main className="flex h-[calc(100%-140px)] flex-col">
-        <div className="mb-3 flex items-center justify-end gap-2 px-6">
-          {SORTORDER_CHECKBOXS.map((option) => (
-            <CheckBox
-              key={option.id}
-              isChecked={sortOrder === option.id}
-              id="sortOrder"
-              name={option.id}
-              label={option.label}
-              value={option.id}
-              onChange={(e) => handleSelectSortOrder(e.target.value as sortOrder)}
-            />
-          ))}
-        </div>
+        {questionsYear.length > 0 && (
+          <div className="mb-3 flex items-center justify-end gap-2 px-6">
+            {SORTORDER_CHECKBOXS.map((option) => (
+              <CheckBox
+                key={option.id}
+                isChecked={sortOrder === option.id}
+                id="sortOrder"
+                name={option.id}
+                label={option.label}
+                value={option.id}
+                onChange={(e) => handleSelectSortOrder(e.target.value as sortOrder)}
+              />
+            ))}
+          </div>
+        )}
 
         {questionsYear.length === 0 && (
           <FallBack desc="아직 남겨진 여운이 없어요" subDesc="오늘, 당신의 여운을 남겨볼까요?" />
@@ -78,7 +85,7 @@ const MyTodayAnswersPage = () => {
           <div className="no-scrollbar overflow-scroll pb-6">
             {questionsYear.map((year) => (
               <QuestionListYearSection key={year} year={year}>
-                <QuestionList questions={questions[year]} path="question" />
+                <QuestionList questions={questions[year]} path="today-question" />
               </QuestionListYearSection>
             ))}
 
@@ -87,7 +94,7 @@ const MyTodayAnswersPage = () => {
           </div>
         )}
       </main>
-      <BottomTabBar />
+      {userType !== 'Guest' && <BottomTabBar />}
     </div>
   );
 };

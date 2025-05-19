@@ -1,5 +1,6 @@
 package yeoun.user.domain.repository;
 
+import java.time.LocalDateTime;
 import yeoun.user.domain.UserHistory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Repository;
 public interface UserHistoryRepository extends JpaRepository<UserHistory, Long> {
 
     @Modifying
-    @Query(value = "delete from user_history where last_login < NOW() - INTERVAL :deleteTime SECOND", nativeQuery = true)
-    void deleteOldHistory(@Param("deleteTime") long deleteTime);
+    @Query(value = "delete from UserHistory h where h.createTime < :deleteTime")
+    void deleteOldHistory(@Param("deleteTime") LocalDateTime deleteTime);
 
 }

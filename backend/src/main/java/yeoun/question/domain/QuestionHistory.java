@@ -1,13 +1,12 @@
 package yeoun.question.domain;
 
 import jakarta.persistence.*;
-import java.util.Date;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 import org.springframework.data.annotation.CreatedDate;
 import yeoun.user.domain.User;
 
@@ -16,6 +15,8 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "question_history")
 @Getter
+@SQLDelete(sql = "UPDATE question_history SET delete_time = CURRENT_TIMESTAMP WHERE id = ?") // soft delete
+@SQLRestriction("delete_time IS NULL") // 지워지지 않은 레코드에 대한 조건
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class QuestionHistory {
 
@@ -23,6 +24,7 @@ public class QuestionHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter
     @Column(columnDefinition = "varchar(500)")
     private String comment;
 
@@ -31,6 +33,12 @@ public class QuestionHistory {
 
     @CreatedDate
     private final LocalDateTime createTime = LocalDateTime.now();
+
+    @Column
+    private LocalDateTime updateTime;
+
+    @Column
+    private LocalDateTime deleteTime;
 
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -46,5 +54,10 @@ public class QuestionHistory {
         this.user = user;
         this.question = question;
         this.comment = comment;
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updateTime = LocalDateTime.now();
     }
 }

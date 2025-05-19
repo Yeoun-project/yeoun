@@ -16,10 +16,12 @@ public class QuestionDetailResponse {
     private final String categoryName;
     private final LocalDateTime createTime;
     private final Boolean isAuthor;
+    private final Boolean isDeleted;
 
     public static QuestionDetailResponse of(
         final Question question,
-        final Boolean isAuthor
+        final Boolean isAuthor,
+        final Boolean isDeleted
     ) {
 
         return QuestionDetailResponse.builder()
@@ -29,6 +31,7 @@ public class QuestionDetailResponse {
             .categoryName(question.getCategory().getName())
             .createTime(question.getCreateTime())
             .isAuthor(isAuthor)
+            .isDeleted(isDeleted)
             .build();
     }
 

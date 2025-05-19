@@ -5,7 +5,7 @@ import yeoun.auth.vo.GoogleUserInfo;
 import yeoun.user.domain.repository.UserRepository;
 import yeoun.user.service.UserService;
 import yeoun.util.FormattingUtil;
-import yeoun.user.vo.UserRegisterInfoVo;
+import yeoun.user.dto.request.UserRegisterInfoVo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

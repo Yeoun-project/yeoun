@@ -21,11 +21,11 @@ const useGetInfiniteQuestion = <T>({
         page: pageParam as number,
         categoryId: categoryId === '0' ? undefined : (categoryId as string),
       }),
-    initialPageParam: 1,
-    getNextPageParam: (lastPage, allPages) => (lastPage.hasNext ? allPages.length + 1 : undefined),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, allPages) => (lastPage.hasNext ? allPages.length : undefined),
     select: (data) => {
       // 새로 불러온 데이터들이 있다면 기존 데이터들과 매핑 후 반환
-      return data.pages.flatMap((page) => page.question || []);
+      return data.pages.flatMap((page) => page.questions || []);
     },
   });
 };

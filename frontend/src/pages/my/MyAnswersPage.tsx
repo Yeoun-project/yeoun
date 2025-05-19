@@ -8,8 +8,6 @@ import { getAnsweredQuestions } from '../../services/api/question/getQuestions';
 import useGetInfiniteQuestion from '../../hooks/queries/useGetInfiniteQuestion';
 import useQuestionGroupByYear from '../../hooks/useQuestionGroupByYear';
 
-import BottomTabBar from '../../components/nav/BottomTabBar';
-
 import FallBack from '../../components/ui/FallBack';
 import SubPageHeader from '../../components/ui/SubPageHeader';
 
@@ -43,16 +41,18 @@ const MyAnswersPage = () => {
       <SubPageHeader pageTitle="내가 답변한 질문" backButtonPath="/my" />
 
       <main className="flex h-[calc(100%-140px)] flex-col">
-        <Dropdown
-          isOpen={dropdown}
-          onClick={() => setDropdown((prev) => !prev)}
-          all
-          categories={CATEGORY}
-          handleSelect={handleSelectCategory}
-          selected={CATEGORY[Number(categoryId) - 1]}
-          id={Number(categoryId) || 0}
-          location="px-6"
-        />
+        {questionsYear.length > 0 && (
+          <Dropdown
+            isOpen={dropdown}
+            onClick={() => setDropdown((prev) => !prev)}
+            all
+            categories={CATEGORY}
+            handleSelect={handleSelectCategory}
+            selected={CATEGORY[Number(categoryId) - 1]}
+            id={Number(categoryId) || 0}
+            location="font-desc"
+          />
+        )}
 
         {questionsYear.length === 0 && (
           <FallBack
@@ -74,7 +74,6 @@ const MyAnswersPage = () => {
           </div>
         )}
       </main>
-      <BottomTabBar />
     </div>
   );
 };

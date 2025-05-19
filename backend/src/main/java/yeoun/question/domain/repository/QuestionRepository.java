@@ -20,12 +20,22 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     Optional<Question> findQuestionById(@Param("id") Long id);
 
     @Query("""
-            SELECT q FROM Question q
-            LEFT JOIN q.comments c
-              ON c.createTime BETWEEN :start AND :end
-            WHERE q.isFixed = false
-            GROUP BY q
-            ORDER BY COUNT(c) DESC, q.createTime ASC
+            SELECT CASE 
+                WHEN COUNT(question) > 0 THEN true 
+                ELSE false END
+            FROM Question question
+            WHERE question.user.id = :userId
+            AND DATE(question.createTime) = CURRENT_DATE
+            """)
+    Boolean existsByUserIdAndToday(@Param("userId") Long userId);
+
+    @Query("""
+            SELECT question FROM Question question
+            LEFT JOIN question.comments comment
+              ON comment.createTime BETWEEN :start AND :end
+            WHERE question.isFixed = false
+            GROUP BY question
+            ORDER BY COUNT(comment) DESC, question.createTime DESC
         """)
     Slice<Question> findAllOrderByCommentsCount(
             @Param("start") LocalDateTime start,
@@ -49,8 +59,12 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
             Pageable pageable
     );
 
-    @Query("select q from Question q left join fetch q.comments where q.user.id = :userId")
-    List<Question> findByUserId(@Param("userId")Long userId);
+    @Query("""
+            SELECT question FROM Question question
+            WHERE (question.category.name = :category OR :category = null)
+                AND question.user.id = :userId
+            """)
+    Slice<Question> findByUserId(@Param("userId")Long userId, @Param("category") String category, Pageable pageable);
 
     // 이전에 조회된 적 없는 인기 질문들 중 랜덤 1개의 질문 조회
     @Query("""
@@ -81,5 +95,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     List<CategoryResponseDao> findCategoriesWithCount();
 
     Optional<Question> findByIdAndIsFixedIsFalse(Long id);
+
+    List<Long> findAllIdsByUserId(@Param("userId") final Long userId);
 
 }

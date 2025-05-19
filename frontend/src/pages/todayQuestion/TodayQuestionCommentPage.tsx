@@ -12,19 +12,38 @@ import Squre from '../../assets/Squre';
 import BackArrowButton from '../../components/button/BackArrowButton';
 import CommentForm from '../../components/form/CommentForm';
 import BasicButton from '../../components/button/BasicButton';
+import useToastStore from '../../store/useToastStore';
+import { queryClient } from '../../utils/queryClient';
 
 const TodayQuestionCommentPage = () => {
   const navigate = useNavigate();
   const [value, setValue] = useState<string>('');
-
+  const [error, setError] = useState<boolean>(false);
+  const { addToast } = useToastStore();
   const { userType } = useAuthStore();
   const { data: todayQuestion } = useGetTodayQuestion(userType);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (value.trim().length === 0) {
+      setError(true);
+      setTimeout(() => setError(false), 2300);
+      addToast.error({ title: '여운 등록 실패', message: '답변을 작성해주세요!' });
+      return;
+    }
+
     try {
       await addTodayQuestionComment({ questionId: todayQuestion!.id, comment: value });
-      return navigate('/today-question');
+      queryClient.invalidateQueries({ queryKey: [userType, 'today-question'] });
+      queryClient.invalidateQueries({ queryKey: ['my', 'today-question', 'answers'] });
+      navigate('/today-question');
+      addToast.notification({
+        title: '여운 등록 완료',
+        message: '오늘의 질문에 당신의 여운이 남겨졌어요.',
+      });
+
+      return;
     } catch (err) {
       console.log(err);
     }
@@ -54,6 +73,8 @@ const TodayQuestionCommentPage = () => {
               onChange={onChange}
               onSubmit={handleSubmit}
               maxValue={500}
+              placeholder="오늘의 질문에 당신의 생각을 작성해주세요"
+              error={error}
             />
 
             {/* Backgroun Squre */}

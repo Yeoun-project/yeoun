@@ -49,7 +49,7 @@ public class NotificationController {
     public ResponseEntity<?> readNotification(@PathVariable("questionId") Long questionId) {
         Long userId = JwtService.getUserIdFromAuthentication();
         QuestionDetailResponse questionDetailResponse = notificationService.getQuestionFromNotification(userId, questionId);
-        return ResponseEntity.status(HttpStatus.OK).body(
+        return ResponseEntity.ok().body(
                 new SuccessResponse("질문 상세 조회를 성공했습니다.", questionDetailResponse));
     }
 

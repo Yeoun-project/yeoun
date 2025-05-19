@@ -24,6 +24,18 @@ const getCategoryName = (categoryId: string | undefined) => {
   return filteredCategory.category;
 };
 
+// 모든 질문 리스트
+const getAllQuestions = async ({ page = 0, categoryId }: QuestionListReq) => {
+  const response = await client.get<Response<QuestionList>>(
+    getQuestionListApiUrl('/api/question/all', {
+      page,
+      category: getCategoryName(categoryId) as QuestionCategory,
+    })
+  );
+
+  return response.data.data;
+};
+
 // 내가 [작성한] 질문 리스트
 const getMyQuestions = async ({ page = 1, categoryId }: QuestionListReq): Promise<QuestionList> => {
   const response = await client.get<Response<QuestionList>>(
@@ -54,11 +66,11 @@ const getAnsweredQuestions = async ({
 // [오늘의 질문] 답변 리스트
 const getTodayAnswersQuestions = async ({ page = 1 }: QuestionListReq): Promise<QuestionList> => {
   const response = await client.get<Response<QuestionList>>(
-    getQuestionListApiUrl('/public/today-question/my', {
+    getQuestionListApiUrl('/public/today-question/commented-by-me', {
       page,
     })
   );
 
   return response.data.data;
 };
-export { getMyQuestions, getAnsweredQuestions, getTodayAnswersQuestions };
+export { getAllQuestions, getMyQuestions, getAnsweredQuestions, getTodayAnswersQuestions };

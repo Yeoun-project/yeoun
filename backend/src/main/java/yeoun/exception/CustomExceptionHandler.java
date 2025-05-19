@@ -1,5 +1,6 @@
 package yeoun.exception;
 
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import yeoun.common.ErrorResponse;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,7 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<?> handleCustomException(CustomException e) {
+        e.printStackTrace();
         return ResponseEntity.status(e.errorCode.getHttpStatusCode()).body(new ErrorResponse(e.errorCode.getCode(), e.getMessage(), e.data));
     }
 
@@ -41,6 +43,12 @@ public class CustomExceptionHandler {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ErrorResponse("INVALID_PARAMETER", errorMessage != null ? errorMessage : "파라미터 값이 잘못되었습니다"));
         }
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse("MISSING_PARAMETER","요청 본문을 입력하세요"));
     }
 
     @ExceptionHandler(NoResourceFoundException.class)

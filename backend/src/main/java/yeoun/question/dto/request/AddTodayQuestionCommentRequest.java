@@ -3,11 +3,13 @@ package yeoun.question.dto.request;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 @Getter
-@AllArgsConstructor
+@Setter
+@RequiredArgsConstructor
 public class AddTodayQuestionCommentRequest {
 
     @NotNull(message = "질문 ID를 입력해주세요.")

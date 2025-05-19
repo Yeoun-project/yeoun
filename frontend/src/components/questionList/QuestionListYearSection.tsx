@@ -10,7 +10,7 @@ const QuestionListYearSection = ({ children, year }: QuestionListYearSectionProp
   return (
     <div className="pb-3">
       <p
-        className={`relative py-3 text-center text-sm ${afterStyle} ${beforeStyle}`}
+        className={`relative py-4 text-center text-sm ${afterStyle} ${beforeStyle}`}
       >{`${year}년`}</p>
       {children}
     </div>

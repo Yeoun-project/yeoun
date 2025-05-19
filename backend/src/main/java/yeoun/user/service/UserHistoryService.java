@@ -5,12 +5,10 @@ import yeoun.user.domain.UserHistory;
 import yeoun.user.domain.repository.UserHistoryRepository;
 import yeoun.user.domain.repository.UserRepository;
 import jakarta.persistence.EntityManager;
-import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -18,7 +16,7 @@ import org.springframework.stereotype.Service;
 public class UserHistoryService {
 
     @Value("${scheduler.user_history_delete_second}")
-    private Long deleteTime;
+    private Long USER_HISTORY_DELETE_SECOND;
 
     private final UserRepository userRepository;
     private final UserHistoryRepository userHistoryRepository;

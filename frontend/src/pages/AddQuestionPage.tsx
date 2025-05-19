@@ -129,6 +129,12 @@ const AddQuestionPage = () => {
   const handleSelect = (id: number) => {
     setCategoryId(id);
     setIsOpen(false);
+    setHasError(false);
+
+    const $editor = document.getElementById('editor');
+    if ($editor) {
+      $editor.innerText = content;
+    }
   };
   // 질문하기 버튼 클릭 시
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -152,13 +158,13 @@ const AddQuestionPage = () => {
 
         if (response.code === 'MISSING_PARAMETER') {
           toast.addToast.error({
-            title: '질문 등록 실패',
-            message: `질문을 등록해주세요!`,
+            title: '여운 등록 실패',
+            message: `질문을 작성해주세요!`,
           });
         }
         if (response.code === 'BAD_REQUEST') {
           toast.addToast.error({
-            title: '질문 등록 실패',
+            title: '여운 등록 실패',
             message: `질문에 제한된 표현이 포함되어 있어요.
             수정 후 다시 등록해 주세요!`,
           });
@@ -180,48 +186,42 @@ const AddQuestionPage = () => {
     // 등록 후 초기화
     setSecond(false);
     setContent('');
+    modal.closeModal();
     nav('/question');
   };
 
+  // 커서 복구
+  const cursorControl = (e: React.FormEvent<HTMLDivElement>) => {
+    const $editor = document.getElementById('editor');
+    if ($editor) {
+      e.currentTarget.innerHTML = e.currentTarget.innerText;
+
+      // 커서를 텍스트 끝으로 이동
+      const range = document.createRange();
+      const sel = window.getSelection();
+
+      range.selectNodeContents($editor);
+      range.collapse(false); // false = 끝으로
+      sel?.removeAllRanges();
+      sel?.addRange(range);
+    }
+  };
+
   const handleChange = (e: React.FormEvent<HTMLDivElement>) => {
-    const selection = window.getSelection();
-    if (!selection || !e.currentTarget) return;
-
-    const { focusOffset } = selection;
-
-    // 현재 커서 위치 저장
-    const newFocusOffset = Math.min(focusOffset, e.currentTarget.innerText.length);
-
     if (e.currentTarget?.innerHTML === '<br>') {
       setContent('');
       e.currentTarget.innerHTML = '';
     } else {
-      if (e.currentTarget?.innerText.length >= MAX_LENGTH) {
+      if (e.currentTarget?.innerText.length > MAX_LENGTH) {
         e.currentTarget.innerText = e.currentTarget.innerText.slice(0, MAX_LENGTH);
-
-        // 커서 복구
-        const range = document.createRange();
-        const sel = window.getSelection();
-        if (e.currentTarget.childNodes.length > 0 && sel) {
-          let node = e.currentTarget.childNodes[0];
-
-          // span 같은 태그 때문에 childNodes[0]이 span일 수도 있음
-          if (node.nodeType !== Node.TEXT_NODE) {
-            node = node.firstChild || node;
-          }
-
-          range.setStart(node, Math.min(newFocusOffset, node.textContent?.length || 0));
-          range.collapse(true);
-          sel.removeAllRanges();
-          sel.addRange(range);
-        }
+        cursorControl(e);
       }
       setContent(e.currentTarget?.innerText);
     }
 
     if (hasError) {
       setHasError(false);
-      e.currentTarget.innerHTML = content;
+      cursorControl(e);
     }
   };
   //#endregion
@@ -246,7 +246,7 @@ const AddQuestionPage = () => {
             handleSelect={handleSelect}
             categories={categories}
             selected={selected}
-            location={'w-full px-6 text-white font-desc mb-4'}
+            location={'w-full text-white font-desc mb-4'}
           />
           <ul className="font-desc flex list-none flex-col gap-1 px-6 text-white">
             <span className="text-[#999999]">(예시)</span>
@@ -267,7 +267,9 @@ const AddQuestionPage = () => {
             forbidden={forbidden}
           />
         </div>
-        {first && <RegisterModal content={content} onSubmit={onRegister} />}
+        {first && (
+          <RegisterModal value="질문" content={content} maxLength={30} onSubmit={onRegister} />
+        )}
         {second && <ConfirmModal value="질문" onSubmit={onConfirm} />}
         <div className="absolute bottom-0 w-full p-6">
           <button

@@ -12,6 +12,7 @@ import yeoun.notification.dto.response.NotificationListResponse;
 import yeoun.question.domain.Question;
 import yeoun.question.domain.repository.QuestionRepository;
 import yeoun.question.dto.response.QuestionDetailResponse;
+import yeoun.question.service.QuestionService;
 import yeoun.user.domain.User;
 import yeoun.exception.CustomException;
 import yeoun.exception.ErrorCode;
@@ -23,6 +24,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import yeoun.user.domain.repository.UserRepository;
+import yeoun.user.service.UserService;
 
 @Service
 @Slf4j
@@ -36,8 +39,10 @@ public class NotificationService {
     private final NotificationRepository notificationRepository;
     private final QuestionRepository questionRepository;
     private final EntityManager entityManager;
+    private final QuestionService questionService;
 
     private static HashMap<Long, SseEmitter> emitterMap = new HashMap<>();
+    private final UserRepository userRepository;
 
     public SseEmitter getConnect(Long userId) {
         SseEmitter oldEmitter = emitterMap.get(userId);
@@ -55,7 +60,7 @@ public class NotificationService {
         return emitter;
     }
 
-    @Transactional(readOnly = true)
+    // @Transactional
     public NotificationListResponse getAllNotifications(Long userId, Pageable pageable) {
         Slice<Notification> notifications = notificationRepository.findAllNotifications(userId, pageable);
         List<NotificationDetailResponse> notificationDetailResponses = notifications.stream()
@@ -69,22 +74,15 @@ public class NotificationService {
         return notificationListResponse;
     }
 
-    @Transactional
+    // @Transactional
     public QuestionDetailResponse getQuestionFromNotification(Long userId, Long questionId) {
-        Question question = notificationRepository.getQuestion(userId, questionId).orElseThrow(
-            () -> new CustomException(ErrorCode.NOT_FOUND, "no notification with question id")
-        );
-
-        notificationRepository.removeByQuestion(userId, questionId);
-
-        boolean isAuthor = false;
-        if (question.getUser() != null) isAuthor = question.getUser().getId().equals(userId);
-
-        return QuestionDetailResponse.of(question, isAuthor);
+        return questionService.getQuestionDetail(userId, questionId);
     }
 
-    @Transactional
+    // @Transactional
     public void addNotification(Long senderId, Long receiverId, NotificationType type, Long questionId) {
+        if(receiverId == null) return;
+
         Question question = questionRepository.findById(questionId).orElseThrow(
             () -> {throw new CustomException(ErrorCode.NOT_FOUND, "question not found");}
         );
@@ -114,9 +112,15 @@ public class NotificationService {
 
     // Sse 관련 함수들
     public void sendUnReadNotificationCount(Long userId) {
-        Integer count = notificationRepository.getUnReadNotificationsCount(userId);
+        //Integer count = notificationRepository.getUnReadNotificationsCount(userId); // 개수를 반환암함 (유무만 반환)
+        Optional<User> optionalUser = userRepository.findById(userId);
 
-        sendSSEData(emitterMap.get(userId), count);
+        if(optionalUser.isEmpty()) return; // 받을 사람이 없는 경우 : delete 된경우 아무 notification을 발생 시키지 않음
+
+        User user = optionalUser.get();
+
+        if(user.getIsNotification())
+            sendSSEData(emitterMap.get(userId), 1);
     }
 
     private void sendSSEData(SseEmitter sseEmitter, Object data) {

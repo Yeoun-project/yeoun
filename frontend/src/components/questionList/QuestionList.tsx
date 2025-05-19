@@ -4,7 +4,7 @@ import QuestionListItem from './QuestionListItem';
 
 interface QuestionListProps {
   questions: Question[];
-  path: 'today' | 'question'; // 질문 path 경로
+  path: 'today-question' | 'question'; // 질문 path 경로
 }
 
 const QuestionList = ({ questions, path }: QuestionListProps) => {
@@ -12,6 +12,7 @@ const QuestionList = ({ questions, path }: QuestionListProps) => {
     <ul className="flex w-full flex-col">
       {questions.map((question) => (
         <QuestionListItem
+          key={question.id}
           content={question.content}
           category={question.categoryName}
           createTime={question.createTime}

@@ -1,5 +1,5 @@
-import { useState } from 'react';
-// import { useParams } from 'react-router-dom';
+/* eslint-disable react-refresh/only-export-components */
+import { useEffect, useRef, useState } from 'react';
 
 import useModalStore from '../../store/useModalStore';
 
@@ -9,14 +9,52 @@ import BasicButton from '../../components/button/BasicButton';
 import BackArrowButton from '../../components/button/BackArrowButton';
 
 import Modal from '../../components/modal/Modal';
+import { LoaderFunctionArgs, useLoaderData } from 'react-router-dom';
+import { TodayQuestionComment } from '../../type/comment';
+import { queryClient } from '../../utils/queryClient';
+import { getTodayQuestionComment } from '../../services/api/question/todayQuestion';
+import formatDate from '../../utils/formatDate';
+import useUpdateCommentMutation from '../../hooks/mutation/useUpdateCommentMutation';
+import useToastStore from '../../store/useToastStore';
 
 const MyTodayAnswerPage = () => {
-  const [edit, setEdit] = useState(false);
-  const [comment, setComment] = useState(
-    `다시 태어나면 여행 다니면서 살고 싶어✈️! 지금의 삶도 만족스럽지만 다음 생엔 더 많은 곳을 돌아다니면서 새로운 경험도 많이 해보고 싶어ㅋㅋ 이것저것 고민하느라 미루기보다는 그냥 하고 싶은 대로 도전하면서 신나게 살거야. 한 번 사는 인생이니까~😆`
-  );
+  const { addToast } = useToastStore();
+  const [error, setError] = useState<boolean>(false);
+  const todayQuestionComment = useLoaderData<TodayQuestionComment>();
+  const { mutate } = useUpdateCommentMutation(todayQuestionComment.id);
+  const formRef = useRef<HTMLTextAreaElement>(null);
   const { openModal, modal } = useModalStore();
-  //   const { questionId } = useParams();
+
+  const [edit, setEdit] = useState(false);
+  const [comment, setComment] = useState(todayQuestionComment.comment.content);
+
+  useEffect(() => {
+    // edit 상태로 변했을 때 폼 focus
+    if (edit) {
+      if (!formRef.current) return;
+      const textLength = formRef.current.value.length;
+      formRef.current.focus();
+      formRef.current.setSelectionRange(textLength, textLength);
+    }
+  }, [edit]);
+
+  const handleUpdateComment = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (comment.trim().length === 0) {
+      setError(true);
+      setTimeout(() => setError(false), 2300);
+      addToast.error({ title: '여운 등록 실패', message: '답변을 작성해주세요!' });
+      return;
+    }
+
+    try {
+      mutate(comment);
+      setEdit(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <>
       {modal && (
@@ -44,7 +82,7 @@ const MyTodayAnswerPage = () => {
           {/* Header */}
           <header className="relative flex items-center justify-between">
             <BackArrowButton />
-            <h3 className="text-center">2025년 3월 26일</h3>
+            <h3 className="text-center">{formatDate(todayQuestionComment.createTime)}</h3>
             <button className="cursor-pointer text-sm text-[#aaaaaa]" onClick={() => openModal()}>
               삭제
             </button>
@@ -54,34 +92,45 @@ const MyTodayAnswerPage = () => {
           <section className="z-1 pt-18">
             <h4
               className="text-blur-sm mb-6 text-center text-3xl/relaxed break-keep"
-              aria-label="다시 태어난다면, 당신은 어떻게 살고싶나요?"
+              aria-label={todayQuestionComment.content}
             >
-              다시 태어난다면, 당신은 어떻게 살고싶나요?
+              {todayQuestionComment.content}
             </h4>
 
             {!edit && (
               <p className="font-desc h-[250px] rounded-sm border border-white/50 bg-white/5 px-5 py-4 text-base/relaxed backdrop-blur-2xl">
-                다시 태어나면 여행 다니면서 살고 싶어✈️! 지금의 삶도 만족스럽지만 다음 생엔 더 많은
-                곳을 돌아다니면서 새로운 경험도 많이 해보고 싶어ㅋㅋ 이것저것 고민하느라
-                미루기보다는 그냥 하고 싶은 대로 도전하면서 신나게 살거야. 한 번 사는 인생이니까~😆
+                {todayQuestionComment.comment.content}
               </p>
             )}
             {edit && (
               <CommentForm
+                error={error}
+                formId="today-question-comment"
+                ref={formRef}
                 commentValue={comment}
                 onChange={(e) => setComment(e.target.value)}
-                onSubmit={(e) => console.log(e.currentTarget)}
+                onSubmit={handleUpdateComment}
               />
             )}
           </section>
         </div>
 
-        <BasicButton onClick={() => setEdit((prev) => !prev)}>
-          {edit ? '답변 등록하기' : '수정하기'}
-        </BasicButton>
+        {!edit && <BasicButton onClick={() => setEdit((prev) => !prev)}>수정하기</BasicButton>}
+        {edit && <BasicButton form="today-question-comment">답변 등록하기</BasicButton>}
       </main>
     </>
   );
 };
 
 export default MyTodayAnswerPage;
+
+export const loader = async ({
+  params,
+}: LoaderFunctionArgs<{ params: string }>): Promise<TodayQuestionComment | null> => {
+  const { questionId } = params;
+  const todayQuestionComment = await queryClient.fetchQuery({
+    queryKey: ['today-question', 'comment', questionId],
+    queryFn: async ({ queryKey }) => getTodayQuestionComment(queryKey[2] as string),
+  });
+  return todayQuestionComment;
+};

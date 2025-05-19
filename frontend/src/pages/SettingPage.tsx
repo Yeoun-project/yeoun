@@ -1,15 +1,26 @@
 import { useState } from 'react';
 
-import BottomTabBar from '../components/nav/BottomTabBar';
 import BackArrowButton from '../components/button/BackArrowButton';
 import useAuthStore from '../store/useAuthStore';
 import { useNavigate } from 'react-router-dom';
-
+import { logout } from '../services/api/auth/logout';
 
 const SettingPage = () => {
   const [activate, setActivate] = useState(true);
-  const { userType } = useAuthStore();
+  const { userType, setUserType } = useAuthStore();
   const navigate = useNavigate();
+
+  const onClickLogout = async () => {
+    try {
+      const response = await logout();
+      if (response.status === 200) {
+        setUserType(null);
+        navigate('/login');
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <>
@@ -19,22 +30,9 @@ const SettingPage = () => {
           <div className="absolute top-6 left-6">
             <BackArrowButton />
           </div>
-          <h3 className="w-full text-center">답변목록</h3>
+          <h3 className="w-full text-center">설정</h3>
         </header>
         <ul className="font-desc w-full">
-          <li
-            onClick={() => {
-              if(userType === 'Guest') {
-                navigate('/login');
-              }
-            }}
-            className="cursor-pointer overflow-hidden border-b border-[#AAAAAA]"
-          >
-            <div className="px-6 py-4.5 transition-transform duration-150 active:shadow-inner">
-              {userType === 'User' ? '로그아웃' : '로그인'}
-            </div>
-          </li>
-
           {userType === 'User' && (
             <li className="flex flex-row items-center justify-between border-b border-[#AAAAAA]">
               <div className="px-6 py-4.5">알림</div>
@@ -52,6 +50,20 @@ const SettingPage = () => {
               </div>
             </li>
           )}
+          {userType === 'Guest' && (
+            <li
+              onClick={() => {
+                if (userType === 'Guest') {
+                  navigate('/login');
+                }
+              }}
+              className="cursor-pointer overflow-hidden border-b border-[#AAAAAA]"
+            >
+              <div className="px-6 py-4.5 transition-transform duration-150 active:shadow-inner">
+                로그인
+              </div>
+            </li>
+          )}
           <li className="flex flex-row justify-between border-b border-[#AAAAAA] px-6 py-4.5">
             <div>버전정보</div>
             <div>1.0.0</div>
@@ -61,9 +73,29 @@ const SettingPage = () => {
               문의하기
             </div>
           </li>
+          {userType === 'User' && (
+            <>
+              <li onClick={onClickLogout} className="cursor-pointer border-b border-[#AAAAAA]">
+                <div className="px-6 py-4.5 transition-transform duration-150 active:shadow-inner">
+                  로그아웃
+                </div>
+              </li>
+              <li
+                onClick={() => {
+                  if (userType === 'User') {
+                    navigate('/user-delete');
+                  }
+                }}
+                className="cursor-pointer border-b border-[#AAAAAA]"
+              >
+                <div className="px-6 py-4.5 text-[#777777] transition-transform duration-150 active:shadow-inner">
+                  탈퇴하기
+                </div>
+              </li>
+            </>
+          )}
         </ul>
       </main>
-      {userType === 'User' && <BottomTabBar />}
     </>
   );
 };

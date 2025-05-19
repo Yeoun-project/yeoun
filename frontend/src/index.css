@@ -5,6 +5,7 @@
   src: url('/fonts/ONE-Mobile-Light.woff') format('woff');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -12,6 +13,7 @@
   src: url('/fonts/ONE-Mobile-Title.woff') format('woff');
   font-weight: lighter, normal, bold;
   font-style: normal;
+  font-display: swap;
 }
 
 @theme {

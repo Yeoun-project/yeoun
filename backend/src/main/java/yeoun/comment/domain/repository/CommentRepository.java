@@ -27,9 +27,23 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     @Query("""
             SELECT c FROM Comment c
             WHERE c.question.id = :questionId
-            AND c.user.id <> :userId
+            AND ( c.user.id <> :userId or c.user.id is null)
             """)
     Slice<Comment> getAllCommentByQuestionExcludeMyself(
+            @Param("questionId") Long questionId,
+            @Param("userId") Long userId,
+            Pageable pageable
+    );
+
+    @Query("""
+            SELECT c
+            FROM Comment c
+            LEFT JOIN c.likes l
+            WHERE c.question.id = :questionId AND c.user.id <> :userId
+            GROUP BY c
+            ORDER BY COUNT(l.id) DESC
+            """)
+    Slice<Comment> findAllByQuestionIdExcludeMineOrderByLikeCountDesc(
             @Param("questionId") Long questionId,
             @Param("userId") Long userId,
             Pageable pageable
