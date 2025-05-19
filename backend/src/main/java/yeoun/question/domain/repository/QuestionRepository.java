@@ -30,12 +30,12 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     Boolean existsByUserIdAndToday(@Param("userId") Long userId);
 
     @Query("""
-            SELECT q FROM Question q
-            LEFT JOIN q.comments c
-              ON c.createTime BETWEEN :start AND :end
-            WHERE q.isFixed = false
-            GROUP BY q
-            ORDER BY COUNT(c) DESC, q.createTime ASC
+            SELECT question FROM Question question
+            LEFT JOIN question.comments comment
+              ON comment.createTime BETWEEN :start AND :end
+            WHERE question.isFixed = false
+            GROUP BY question
+            ORDER BY COUNT(comment) DESC, question.createTime DESC
         """)
     Slice<Question> findAllOrderByCommentsCount(
             @Param("start") LocalDateTime start,

@@ -60,7 +60,7 @@ public class QuestionController {
     @GetMapping("/api/question/all")
     public ResponseEntity<?> getAllQuestion(
             @RequestParam(name= "category", required = false) String category,
-            @PageableDefault() final Pageable pageable
+            @PageableDefault(sort = "createTime", direction = Sort.Direction.DESC) final Pageable pageable
     ) {
         QuestionListResponse questionListResponse = questionService.getAllQuestions(category, pageable);
         return ResponseEntity.ok().body(new SuccessResponse("질문 목록 조회를 성공했습니다.", questionListResponse));
