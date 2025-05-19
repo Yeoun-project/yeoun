@@ -58,7 +58,7 @@ public class CommentController {
 
         commentService.updateComment(commentRequestDto);
 
-        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("답변 수정을 성공했습니다.", null));
+        return ResponseEntity.ok().body(new SuccessResponse("답변 수정을 성공했습니다.", null));
     }
 
     @DeleteMapping("/{commentId}")
@@ -68,14 +68,14 @@ public class CommentController {
 
         commentService.deleteComment(commentId, userId);
 
-        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("답변 삭제를 성공했습니다.", null));
+        return ResponseEntity.ok().body(new SuccessResponse("답변 삭제를 성공했습니다.", null));
     }
 
     // 신고하기
     @PostMapping("/report/{commentId}")
     public ResponseEntity<?> reportComment(@PathVariable("commentId") Long commentId) {
         // reportService.reportCommnet(commentId);
-        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("not service", null));
+        return ResponseEntity.ok().body(new SuccessResponse("not service", null));
     }
 
 }
