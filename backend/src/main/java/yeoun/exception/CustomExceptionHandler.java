@@ -1,6 +1,7 @@
 package yeoun.exception;
 
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import yeoun.common.ErrorResponse;
 import org.springframework.http.HttpStatus;
@@ -69,9 +70,15 @@ public class CustomExceptionHandler {
                 .body(new ErrorResponse(ErrorCode.NOT_FOUND.getCode(), "요청 URL을 찾을 수 없습니다"));
     }
 
+    @ExceptionHandler(AsyncRequestTimeoutException.class)
+    public ResponseEntity<ErrorResponse> handleAsyncRequestTimeoutException(AsyncRequestTimeoutException e) {
+        throw e;
+    }
+
     @ExceptionHandler(Exception.class) // 정의해두지 않은 Exception 은 일단 500으로 처리
     public ResponseEntity<?> handleAllException(Exception e) {
         e.printStackTrace();
+        System.out.println(e.getMessage() + e.getCause());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponse(ErrorCode.INTERNAL_SERVER_ERROR.getCode(), e.getLocalizedMessage()));
     }
 

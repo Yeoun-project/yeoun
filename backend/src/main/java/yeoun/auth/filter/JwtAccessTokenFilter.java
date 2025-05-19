@@ -1,5 +1,8 @@
 package yeoun.auth.filter;
 
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import org.springframework.web.filter.GenericFilterBean;
 import yeoun.auth.service.JwtService;
 import yeoun.user.domain.Role;
 import yeoun.auth.infrastructure.CookieUtil;
@@ -23,13 +26,16 @@ import java.io.IOException;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class JwtAccessTokenFilter extends OncePerRequestFilter {
+public class JwtAccessTokenFilter extends GenericFilterBean {
 
     private final JwtService jwtService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-            throws ServletException, IOException {
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse,
+        FilterChain chain) throws IOException, ServletException {
+        HttpServletRequest request = (HttpServletRequest) servletRequest;
+        HttpServletResponse response = (HttpServletResponse) servletResponse;
+
         String accessToken = CookieUtil.getTokenFromCookies("accessToken", request);
 
         // 모든 uri에 대하여 실행함 (request uri 확인 절차 없음)
