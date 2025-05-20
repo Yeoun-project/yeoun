@@ -84,7 +84,7 @@ public class UserService {
 
     @Transactional
     public void withdraw(final UserWithdrawRequest userWithdrawRequest, final Boolean isHard, final Long userId) {
-//        userWithdrawer.withdraw(isHard, userId);
+        userWithdrawer.withdraw(isHard, userId);
         withdrawHistoryService.save(userWithdrawRequest);
     }
 
