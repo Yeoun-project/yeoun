@@ -64,14 +64,14 @@ const SettingPage = () => {
               </div>
             </li>
           )}
-          <li className="flex flex-row justify-between border-b border-[#AAAAAA] px-6 py-4.5">
-            <div>버전정보</div>
-            <div>1.0.0</div>
-          </li>
           <li className="cursor-pointer border-b border-[#AAAAAA]">
             <div className="px-6 py-4.5 transition-transform duration-150 active:shadow-inner">
               문의하기
             </div>
+          </li>
+          <li className="flex flex-row justify-between border-b border-[#AAAAAA] px-6 py-4.5">
+            <div>버전정보</div>
+            <div>1.0.0</div>
           </li>
           {userType === 'User' && (
             <>
