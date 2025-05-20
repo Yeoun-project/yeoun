@@ -16,7 +16,6 @@ public interface QuestionHistoryRepository extends JpaRepository<QuestionHistory
             SELECT h FROM QuestionHistory h
             WHERE h.question.id = :questionId
                 AND h.user.id = :userId
-                AND DATE(h.createTime) = CURRENT_DATE
             """)
     Optional<QuestionHistory> findTodayHistoryByQuestionIdAndUser(
             @Param("userId") final Long userId,
