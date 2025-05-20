@@ -7,7 +7,7 @@ import { logout } from '../services/api/auth/logout';
 import { getNotification, postNotification } from '../services/api/alarm/getNotification';
 
 const SettingPage = () => {
-  const [activate, setActivate] = useState(Boolean);
+  const [activate, setActivate] = useState(false);
   const { userType, setUserType } = useAuthStore();
   const navigate = useNavigate();
 
