@@ -146,8 +146,8 @@ const QuestionCommentPage = () => {
           {report && <ReportModal value="질문" onSubmit={onSubmitModal} onCancel={onClickCancel} />}
         </div>
       </header>
-      <main className="no-scrollbar flex h-[calc(100%-125px)] flex-col overflow-scroll px-6 pb-8">
-        <div className="flex h-[380px] items-center justify-center">
+      <main className="no-scrollbar flex h-[calc(100%-130px)] flex-col overflow-scroll px-6 pb-8">
+        <div className="flex items-center justify-center py-4">
           <button onClick={onClickComment} className="cursor-pointer">
             <Circle size={280} animate={true} category={questionDetail?.categoryName}>
               <p className="text-blur text-black-primary px-8 text-xl break-keep">{content}</p>
