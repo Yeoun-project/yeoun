@@ -1,6 +1,5 @@
 package yeoun.user.service;
 
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,11 +13,16 @@ import yeoun.user.domain.repository.UserRepository;
 import yeoun.user.domain.Role;
 import yeoun.user.dto.request.IsNotificationRequest;
 import yeoun.user.dto.request.UserRegisterInfoVo;
+
 import java.util.Optional;
 import java.util.UUID;
+
 import org.springframework.stereotype.Service;
 import org.springframework.scheduling.annotation.Scheduled;
 import lombok.RequiredArgsConstructor;
+import yeoun.user.dto.request.UserWithdrawRequest;
+import yeoun.withdrawHistory.domain.WithdrawHistoryService;
+import yeoun.withdrawHistory.domain.WithdrawHistoryWriter;
 
 @Service
 @RequiredArgsConstructor
@@ -28,16 +32,16 @@ public class UserService {
     @Value("${user.default-question-count}")
     private int DEFAULT_QUESTION_COUNT;
 
+    private final UserWithdrawer userWithdrawer;
+    private final WithdrawHistoryService withdrawHistoryService;
     private final UserRepository userRepository;
-    private final UserDeleteRepository deleteRepository;
-    private final QuestionRepository questionRepository;
 
     @Transactional
     public User registerByUserInfo(UserRegisterInfoVo vo) {
         Long userId = null;
         Optional<Long> tokenId = JwtService.getAnonymousTokenAuthentication();
 
-        if(tokenId.isPresent()) {
+        if (tokenId.isPresent()) {
             log.info(tokenId.get().toString());
             userId = tokenId.get();
         }
@@ -60,16 +64,16 @@ public class UserService {
     @Transactional
     public User registerAnonymousUser() {
         return userRepository.save(
-            User.builder()
-                .role(Role.ANONYMOUS.name())
-                .name("비회원")
-                .build()
-            );
+                User.builder()
+                        .role(Role.ANONYMOUS.name())
+                        .name("비회원")
+                        .build()
+        );
     }
 
     public User getUserInfo(Long userId) {
         return userRepository.findById(userId).orElseThrow(
-            () -> {throw new CustomException(ErrorCode.NOT_FOUND);}
+                () -> new CustomException(ErrorCode.NOT_FOUND)
         );
     }
 
@@ -78,32 +82,21 @@ public class UserService {
         userRepository.setIsNotification(dto.getIsNotification(), userId);
     }
 
+    @Transactional
+    public void withdraw(final UserWithdrawRequest userWithdrawRequest, final Boolean isHard, final Long userId) {
+//        userWithdrawer.withdraw(isHard, userId);
+        withdrawHistoryService.save(userWithdrawRequest);
+    }
+
     public void validateUser(Long userId) {
         userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_PARAMETER, "유저 정보가 잘못 되었습니다"));
     }
 
-    public void softDeleteUser(Long userId) {
-        userRepository.deleteById(userId);
-    }
 
+    // scheduler set user question count = 1, every day
     @Transactional
-    public void hardDeleteAll(Long userId){
-        // like(userId) -> notification(receiverId, questionId) -> userHistory(userId, questionId) -> comment(question_id) -> question_history(user_id, question_id) -> question(user_id) -> user
-        List<Long> questionIdList = questionRepository.findAllIdsByUserId(userId);
-        deleteRepository.deleteLike(userId);
-        deleteRepository.deleteNotification(userId, questionIdList);
-        deleteRepository.deleteUserHistory(userId);
-        deleteRepository.deleteComment(userId, questionIdList);
-        deleteRepository.deleteQuestionHistory(userId, questionIdList);
-        deleteRepository.deleteQuestion(userId);
-        deleteRepository.updateComment(userId);
-        deleteRepository.hardDeleteUser(userId);
-    }
-
-     // scheduler set user question count = 1, every day
-    @Transactional
-    @Scheduled(cron="${scheduler.every-day}")
+    @Scheduled(cron = "${scheduler.every-day}")
     public void deleteOldUserHistory() {
         userRepository.setAllUserQuestionCount(DEFAULT_QUESTION_COUNT);
     }
