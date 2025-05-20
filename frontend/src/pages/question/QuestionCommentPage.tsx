@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';
@@ -40,10 +40,20 @@ const SORTORDER_CHECKBOXS = [
 ];
 
 const QuestionCommentPage = () => {
+  const { state } = useLocation();
   const navigate = useNavigate();
 
   const modal = useModalStore();
   const toast = useToastStore();
+
+  useEffect(() => {
+    if (state?.showToast) {
+      toast.addToast.notification({
+        title: '여운 등록 완료',
+        message: '당신의 답변이 누군가의 마음에 여운을 남길 거예요',
+      });
+    }
+  }, []);
 
   const [ref, inView] = useInView();
 
@@ -128,7 +138,7 @@ const QuestionCommentPage = () => {
             onClick={onClickReportBtn}
             className="block min-h-6 min-w-6 cursor-pointer bg-[url(/icons/report.svg)] bg-no-repeat"
           />
-          {report && <ReportModal onSubmit={onSubmitModal} />}
+          {report && <ReportModal onSubmit={onSubmitModal} value="질문" />}
         </div>
       </header>
       <main className="no-scrollbar flex h-[calc(100%-125px)] flex-col overflow-scroll px-6 pb-8">
