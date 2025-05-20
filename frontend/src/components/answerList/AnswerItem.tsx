@@ -13,6 +13,7 @@ const AnswerItem = ({
   content,
   reportBtnClick,
   onSubmit,
+  onCancel,
   questionId,
   sortOrder,
 }: {
@@ -24,6 +25,7 @@ const AnswerItem = ({
   content: string;
   reportBtnClick: () => void;
   onSubmit: () => void;
+  onCancel: () => void;
   questionId: number;
   sortOrder: 'old' | 'latest' | 'like';
 }) => {
@@ -76,7 +78,7 @@ const AnswerItem = ({
               className="min-h-6 min-w-6 cursor-pointer bg-[url(/icons/report.svg)] bg-contain bg-center bg-no-repeat"
               onClick={reportBtnClick}
             />
-            {report && <ReportModal onSubmit={onSubmit} value="답변" />}
+            {report && <ReportModal value="답변" onSubmit={onSubmit} onCancel={onCancel} />}
             <p className="font-desc text-[14px]">신고</p>
           </div>
         )}

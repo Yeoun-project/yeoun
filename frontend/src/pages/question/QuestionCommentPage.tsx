@@ -87,6 +87,11 @@ const QuestionCommentPage = () => {
   const [report, setReport] = useState(false);
   const [register, setRegister] = useState(false);
 
+  const onClickCancel = () => {
+    setReport(false);
+    setRegister(false);
+  };
+
   const onClickReportBtn = () => {
     setReport(true);
     setRegister(false);
@@ -138,7 +143,7 @@ const QuestionCommentPage = () => {
             onClick={onClickReportBtn}
             className="block min-h-6 min-w-6 cursor-pointer bg-[url(/icons/report.svg)] bg-no-repeat"
           />
-          {report && <ReportModal onSubmit={onSubmitModal} value="질문" />}
+          {report && <ReportModal value="질문" onSubmit={onSubmitModal} onCancel={onClickCancel} />}
         </div>
       </header>
       <main className="no-scrollbar flex h-[calc(100%-125px)] flex-col overflow-scroll px-6 pb-8">
@@ -189,6 +194,7 @@ const QuestionCommentPage = () => {
               content={mycomment.content}
               reportBtnClick={onClickReportBtn}
               onSubmit={() => console.log('삭제')}
+              onCancel={onClickCancel}
               questionId={questionId}
               sortOrder={sortOrder}
             />
@@ -206,6 +212,7 @@ const QuestionCommentPage = () => {
                 content={comment.content}
                 reportBtnClick={onClickReportBtn}
                 onSubmit={onSubmitModal}
+                onCancel={onClickCancel}
                 questionId={questionId}
                 sortOrder={sortOrder}
               />
@@ -228,7 +235,7 @@ const QuestionCommentPage = () => {
           답변 작성하기
         </button>
       </div>
-      {!!mycomment && (
+      {!!mycomment && !report && (
         <Modal>
           <Modal.Header>
             <Modal.Title>질문당 답변은 1번만 가능합니다.</Modal.Title>
