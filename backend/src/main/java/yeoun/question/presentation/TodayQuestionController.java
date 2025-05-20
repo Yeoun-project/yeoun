@@ -56,6 +56,16 @@ public class TodayQuestionController {
                 new SuccessResponse("오늘의 질문 답변 수정을 성공했습니다.", null));
     }
 
+    @DeleteMapping("/public/today-question/{questionId}")
+    public ResponseEntity<?> deleteTodayQuestionComment(
+            @PathVariable("questionId") Long questionId
+    ) {
+        Long userId = getUserIdFromAuthentication();
+        todayQuestionService.deleteTodayQuestion(userId, questionId);
+        return ResponseEntity.status(HttpStatus.OK).body(
+            new SuccessResponse("오늘의 질문 답변 삭제를 성공했습니다.", null));
+    }
+
     @GetMapping("/public/today-question/commented-by-me")
     public ResponseEntity<?> getAllCommentedMyTodayQuestions() {
         Long userId = getUserIdFromAuthentication();
