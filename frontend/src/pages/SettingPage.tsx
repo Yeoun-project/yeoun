@@ -1,22 +1,46 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import BackArrowButton from '../components/button/BackArrowButton';
 import useAuthStore from '../store/useAuthStore';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../services/api/auth/logout';
+import { getNotification, postNotification } from '../services/api/alarm/getNotification';
 
 const SettingPage = () => {
-  const [activate, setActivate] = useState(true);
+  const [activate, setActivate] = useState(Boolean);
   const { userType, setUserType } = useAuthStore();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    getAlarmState();
+  }, []);
 
   const onClickLogout = async () => {
     try {
       const response = await logout();
+      console.log(response);
       if (response.status === 200) {
         setUserType(null);
         navigate('/login');
       }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const getAlarmState = async () => {
+    try {
+      const response = await getNotification();
+      setActivate(response.isNotification);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const postAlarmState = async () => {
+    try {
+      await postNotification(activate);
+      setActivate(!activate);
     } catch (err) {
       console.log(err);
     }
@@ -39,9 +63,7 @@ const SettingPage = () => {
               <div className="px-6 py-4">
                 <button
                   className={`flex h-[24px] w-[40px] items-center rounded-full p-[4px] transition-colors duration-300 ${activate ? 'bg-[#FC90D1]' : 'border border-[#D4D4D4] bg-[#F5F5F5]'}`}
-                  onClick={() => {
-                    setActivate(!activate);
-                  }}
+                  onClick={postAlarmState}
                 >
                   <div
                     className={`flex h-[16px] w-[16px] transform items-center rounded-full bg-white shadow-md transition-transform duration-300 ${activate ? 'translate-x-[16px] bg-[url(/icons/check.svg)] bg-center bg-no-repeat' : 'translate-x-0 bg-[url(/icons/Union.svg)] bg-center bg-no-repeat'}`}
