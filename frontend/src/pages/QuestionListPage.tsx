@@ -30,7 +30,6 @@ const QuestionListPage = () => {
   });
 
   const { questions, questionsYear } = useQuestionGroupByYear(data ? data : [], 'latest');
-  console.log(data);
 
   const handleSelect = (categoryId: number) => {
     setSearchParams({ q: categoryId.toString() });
