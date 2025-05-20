@@ -75,6 +75,7 @@ const CommentPage = () => {
     queryClient.invalidateQueries({ queryKey: ['comment', questionId, 'old'] });
     modal.closeModal();
     navigate(`/question/${questionId}`, {
+      replace: true,
       state: {
         showToast: true,
       },
