@@ -48,7 +48,13 @@ const AnswerItem = ({
       <div className="flex gap-4">
         <div className="justify-between">
           <button
-            className={`min-h-6 min-w-6 cursor-pointer bg-contain bg-center bg-no-repeat ${isLike ? 'bg-[url(/icons/filledHeart.svg)]' : 'bg-[url(/icons/heart.svg)]'} `}
+            className={`min-h-6 min-w-6 cursor-pointer bg-contain bg-center bg-no-repeat ${
+              isLike
+                ? 'bg-[url(/icons/filledHeart.svg)]'
+                : my
+                  ? 'bg-[url(/icons/myHeart.svg)]'
+                  : 'bg-[url(/icons/heart.svg)]'
+            }`}
             onClick={() => {
               if (!my) {
                 mutation.mutate({ id, isLike });
@@ -70,7 +76,7 @@ const AnswerItem = ({
               className="min-h-6 min-w-6 cursor-pointer bg-[url(/icons/report.svg)] bg-contain bg-center bg-no-repeat"
               onClick={reportBtnClick}
             />
-            {report && <ReportModal onSubmit={onSubmit} />}
+            {report && <ReportModal onSubmit={onSubmit} value="답변" />}
             <p className="font-desc text-[14px]">신고</p>
           </div>
         )}
