@@ -5,18 +5,13 @@ import static yeoun.auth.service.JwtService.getUserIdFromAuthentication;
 
 import jakarta.validation.Valid;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import yeoun.user.dto.request.IsNotificationRequest;
 import yeoun.common.SuccessResponse;
+import yeoun.user.dto.request.UserWithdrawRequest;
 import yeoun.user.service.UserService;
 import yeoun.user.domain.User;
 import yeoun.user.dto.response.UserAuthResponse;
@@ -29,18 +24,16 @@ public class UserController {
 
     private final UserService userService;
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteUser(@PathParam("hard") Boolean hard, HttpServletResponse response) {
+    @PostMapping("/delete")
+    public ResponseEntity<?> deleteUser(
+            @RequestParam("isHard") Boolean isHard,
+            @RequestBody @Valid UserWithdrawRequest userWithDrawRequest,
+            HttpServletResponse response
+    ) {
         Long userId = getUserIdFromAuthentication();
-        if(hard) {
-            userService.hardDeleteAll(userId);
-        }else{
-            userService.softDeleteUser(userId);
-        }
-        // logout
+        userService.withdraw(userWithDrawRequest, isHard, userId);
         logout(response);
-
-        return ResponseEntity.ok().body(new SuccessResponse("success", null));
+        return ResponseEntity.ok().body(new SuccessResponse("탈퇴를 성공했습니다.", null));
     }
 
     @GetMapping("/logout")
@@ -55,14 +48,14 @@ public class UserController {
     public ResponseEntity<?> getUserAuthPlatform() {
         User user = userService.getUserInfo(getUserIdFromAuthentication());
 
-        return ResponseEntity.ok().body(new SuccessResponse("success get Auth",UserAuthResponse.of(user)));
+        return ResponseEntity.ok().body(new SuccessResponse("success get Auth", UserAuthResponse.of(user)));
     }
 
     @GetMapping("/notification")
     public ResponseEntity<?> getUserAlarm() {
         User user = userService.getUserInfo(getUserIdFromAuthentication());
 
-        return ResponseEntity.ok().body(new SuccessResponse("success",UserNotificationResponse.of(user)));
+        return ResponseEntity.ok().body(new SuccessResponse("success", UserNotificationResponse.of(user)));
     }
 
     @PostMapping("/notification")

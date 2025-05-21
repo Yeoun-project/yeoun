@@ -114,6 +114,15 @@ public class TodayQuestionService {
         questionHistory.setComment(request.getComment());
     }
 
+    @Transactional
+    public void deleteTodayQuestion(Long userId, Long questionId) {
+        userService.validateUser(userId);
+        QuestionHistory questionHistory = questionHistoryRepository.findTodayHistoryByQuestionIdAndUser(
+                        userId, questionId)
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_PARAMETER, "질문을 찾을 수 없습니다."));
+        questionHistory.setComment(null);
+    }
+
     @Transactional(readOnly = true)
     public TodayQuestionListResponse getAllCommentedMyTodayQuestions(final Long userId) {
         List<QuestionHistory> questionHistories = questionHistoryRepository.findAllCommentedWithQuestionByUserId(userId);
