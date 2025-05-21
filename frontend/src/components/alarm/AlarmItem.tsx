@@ -43,7 +43,7 @@ const AlarmItem = ({
   return (
     <div
       onClick={() => {
-        nav(`/question/${id}`);
+        nav(`/question/${id}`, { replace: true });
       }}
       className="flex items-center border-b-1 border-[#AAAAAA] px-3 py-3"
     >
