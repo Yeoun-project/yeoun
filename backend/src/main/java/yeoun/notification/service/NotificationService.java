@@ -62,6 +62,7 @@ public class NotificationService {
 
     @Transactional
     public QuestionDetailResponse getQuestionFromNotification(Long userId, Long questionId) {
+        notificationRepository.removeByQuestion(userId, questionId);
         return questionService.getQuestionDetail(userId, questionId);
     }
 
