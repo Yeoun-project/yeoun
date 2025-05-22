@@ -84,29 +84,39 @@ const QuestionCommentPage = () => {
 
   const { comments } = useCommentGroup(comment, sortOrder);
 
-  const [report, setReport] = useState(false);
+  const [questionReport, setQuestionReport] = useState(false);
+  const [commentReport, setCommentReport] = useState(false);
   const [register, setRegister] = useState(false);
 
   const onClickCancel = () => {
-    setReport(false);
+    setQuestionReport(false);
+    setCommentReport(false);
     setRegister(false);
   };
 
-  const onClickReportBtn = () => {
-    setReport(true);
-    setRegister(false);
+  const onClickQuestionReportBtn = () => {
+    setQuestionReport(true);
+    setCommentReport(false);
+    modal.openModal();
+  };
+
+  const onClickCommentReportBtn = () => {
+    setQuestionReport(false);
+    setCommentReport(true);
     modal.openModal();
   };
 
   const onSubmitModal = () => {
-    setReport(false);
+    setQuestionReport(false);
+    setCommentReport(false);
     setRegister(false);
     modal.closeModal();
     console.log('신고!');
   };
 
   const handleConfirm = () => {
-    setReport(false);
+    setQuestionReport(false);
+    setCommentReport(false);
     setRegister(false);
     modal.closeModal();
     navigate(`/question/comment/${questionId}`);
@@ -123,7 +133,8 @@ const QuestionCommentPage = () => {
         message: '본인 답변에는 여운을 남길 수 없어요!',
       });
     } else if (mycomment === null) {
-      setReport(false);
+      setQuestionReport(false);
+      setCommentReport(false);
       setRegister(true);
       modal.openModal();
     } else {
@@ -140,10 +151,12 @@ const QuestionCommentPage = () => {
         <h3 className="w-full text-center">{`${createTime.getFullYear()}년 ${createTime.getMonth() + 1}월 ${createTime.getDate()}일`}</h3>
         <div className="absolute right-6">
           <button
-            onClick={onClickReportBtn}
+            onClick={onClickQuestionReportBtn}
             className="block min-h-6 min-w-6 cursor-pointer bg-[url(/icons/report.svg)] bg-no-repeat"
           />
-          {report && <ReportModal value="질문" onSubmit={onSubmitModal} onCancel={onClickCancel} />}
+          {questionReport && (
+            <ReportModal value="질문" onSubmit={onSubmitModal} onCancel={onClickCancel} />
+          )}
         </div>
       </header>
       <main className="no-scrollbar flex h-[calc(100%-130px)] flex-col overflow-scroll px-6 pb-8">
@@ -187,12 +200,12 @@ const QuestionCommentPage = () => {
           <div className="border-b border-[#FFFFFF80] py-4">
             <AnswerItem
               my={true}
-              report={report}
+              report={commentReport}
               id={mycomment.id}
               isLike={mycomment.isLike}
               likeCount={mycomment.likeCount}
               content={mycomment.content}
-              reportBtnClick={onClickReportBtn}
+              reportBtnClick={onClickCommentReportBtn}
               onSubmit={() => console.log('삭제')}
               onCancel={onClickCancel}
               questionId={questionId}
@@ -205,12 +218,12 @@ const QuestionCommentPage = () => {
             <div className="border-b border-[#FFFFFF80] py-4">
               <AnswerItem
                 my={false}
-                report={report}
+                report={commentReport}
                 id={comment.id}
                 isLike={comment.isLike}
                 likeCount={comment.likeCount}
                 content={comment.content}
-                reportBtnClick={onClickReportBtn}
+                reportBtnClick={onClickCommentReportBtn}
                 onSubmit={onSubmitModal}
                 onCancel={onClickCancel}
                 questionId={questionId}
@@ -235,7 +248,7 @@ const QuestionCommentPage = () => {
           답변 작성하기
         </button>
       </div>
-      {!!mycomment && !report && (
+      {!!mycomment && !commentReport && !questionReport && (
         <Modal>
           <Modal.Header>
             <Modal.Title>질문당 답변은 1번만 가능합니다.</Modal.Title>
