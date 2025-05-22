@@ -61,7 +61,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
 
     @Query("""
             SELECT question FROM Question question
-            WHERE (question.category.name = :category OR :category = null)
+            WHERE (question.category.name = :category OR :category IS NULL)
                 AND question.user.id = :userId
             """)
     Slice<Question> findByUserId(@Param("userId")Long userId, @Param("category") String category, Pageable pageable);
