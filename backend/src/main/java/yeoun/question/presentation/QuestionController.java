@@ -77,7 +77,7 @@ public class QuestionController {
     @GetMapping("/api/question/my")
     public ResponseEntity<?> getMyQuestion(
             @RequestParam(value = "category", required = false) String category,
-            @PageableDefault() final Pageable pageable
+            @PageableDefault(sort = "createTime", direction = Sort.Direction.DESC) final Pageable pageable
     ) {
         Long userId = JwtService.getUserIdFromAuthentication();
         QuestionListResponse questionListResponse = questionService.getMyQuestions(userId, category, pageable);
