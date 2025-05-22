@@ -187,7 +187,12 @@ const AddQuestionPage = () => {
     setSecond(false);
     setContent('');
     modal.closeModal();
-    nav('/question');
+    nav('/question', {
+      replace: true,
+      state: {
+        showToast: true,
+      },
+    });
   };
 
   // 커서 복구
