@@ -1,10 +1,6 @@
+import { useNavigate } from 'react-router-dom';
+import { AlarmQuestion } from '../../type/auth/notification';
 import Circle from '../circle/Circle';
-
-interface AlarmItemProps {
-  id: number;
-  content: string;
-  createTime: string;
-}
 
 const getElapsedTimeText = (createTime: string) => {
   const now = new Date();
@@ -33,21 +29,48 @@ const getElapsedTimeText = (createTime: string) => {
   return `${created.getMonth() + 1}월 ${created.getDate()}일`;
 };
 
-const AlarmItem = ({ id, content, createTime }: AlarmItemProps) => {
+const AlarmItem = ({
+  id,
+  content,
+  commentCount,
+  categoryName,
+  createTime,
+  isAuthor,
+}: AlarmQuestion) => {
+  const nav = useNavigate();
   const elapsedTimeText = getElapsedTimeText(createTime);
 
   return (
     <div
       onClick={() => {
-        console.log(id);
+        nav(`/question/${id}`, { replace: true });
       }}
       className="flex items-center border-b-1 border-[#AAAAAA] px-3 py-3"
     >
       <div className="px-2">
-        <Circle size={30}></Circle>
+        <Circle size={30} category={categoryName}></Circle>
       </div>
       <div className="flex w-full flex-col px-3">
-        <p className="text-[14px]">{content}</p>
+        {commentCount > 1 && !isAuthor && (
+          <p className="text-sm">
+            {`[${content}]에 당신의 답변이 `}
+            <span className="text-[#FC90D1]">{`${commentCount}명`}</span>
+            에게 여운을 남겼어요! ❤️
+          </p>
+        )}
+        {commentCount === 1 && !isAuthor && (
+          <p className="text-sm">{`[${content}]에 당신의 답변이 누군가에게 여운을 남겼어요! ❤️`}</p>
+        )}
+        {commentCount > 1 && isAuthor && (
+          <p className="text-sm">
+            {`[${content}]에 당신의 답변이 `}
+            <span className="text-[#FC90D1]">{`${commentCount}명`}</span>이 새로운 답변을 남겼어요!
+            ❤️
+          </p>
+        )}
+        {commentCount === 1 && isAuthor && (
+          <p className="text-sm">{`[${content}]에 당신의 답변에 새로운 답변이 달렸어요! ❤️`}</p>
+        )}
         <span className="text-right text-xs text-[#AAAAAA]">{elapsedTimeText}</span>
       </div>
     </div>

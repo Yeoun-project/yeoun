@@ -155,9 +155,9 @@ const UserDeletePage = () => {
       {modal && (
         <Modal>
           <Modal.Header>
-            <Modal.Title>등록하신 답변을 삭제하시겠습니까?</Modal.Title>
+            <Modal.Title>정말로 여운을 떠나시겠습니까?</Modal.Title>
             <Modal.SubTitle>
-              삭제 후 답변 <span className="text-[#FF2020]">복구는 불가능합니다.</span>
+              탈퇴 후에는 <span className="text-[#FF2020]">복구가 불가능합니다.</span>
             </Modal.SubTitle>
           </Modal.Header>
           <Modal.Footer>
@@ -167,7 +167,7 @@ const UserDeletePage = () => {
                 onClickDelete(checked);
               }}
             >
-              삭제
+              탈퇴
             </Modal.ConfirmButton>
           </Modal.Footer>
         </Modal>

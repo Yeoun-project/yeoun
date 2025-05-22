@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';
@@ -40,10 +40,20 @@ const SORTORDER_CHECKBOXS = [
 ];
 
 const QuestionCommentPage = () => {
+  const { state } = useLocation();
   const navigate = useNavigate();
 
   const modal = useModalStore();
   const toast = useToastStore();
+
+  useEffect(() => {
+    if (state?.showToast) {
+      toast.addToast.notification({
+        title: '여운 등록 완료',
+        message: '당신의 답변이 누군가의 마음에 여운을 남길 거예요',
+      });
+    }
+  }, []);
 
   const [ref, inView] = useInView();
 
@@ -76,6 +86,11 @@ const QuestionCommentPage = () => {
 
   const [report, setReport] = useState(false);
   const [register, setRegister] = useState(false);
+
+  const onClickCancel = () => {
+    setReport(false);
+    setRegister(false);
+  };
 
   const onClickReportBtn = () => {
     setReport(true);
@@ -128,11 +143,11 @@ const QuestionCommentPage = () => {
             onClick={onClickReportBtn}
             className="block min-h-6 min-w-6 cursor-pointer bg-[url(/icons/report.svg)] bg-no-repeat"
           />
-          {report && <ReportModal onSubmit={onSubmitModal} />}
+          {report && <ReportModal value="질문" onSubmit={onSubmitModal} onCancel={onClickCancel} />}
         </div>
       </header>
-      <main className="no-scrollbar flex h-[calc(100%-125px)] flex-col overflow-scroll px-6 pb-8">
-        <div className="flex h-[380px] items-center justify-center">
+      <main className="no-scrollbar flex h-[calc(100%-130px)] flex-col overflow-scroll px-6 pb-8">
+        <div className="flex items-center justify-center py-4">
           <button onClick={onClickComment} className="cursor-pointer">
             <Circle size={280} animate={true} category={questionDetail?.categoryName}>
               <p className="text-blur text-black-primary px-8 text-xl break-keep">{content}</p>
@@ -153,7 +168,7 @@ const QuestionCommentPage = () => {
         {comments.length === 0 && !mycomment && (
           <FallBack desc="아직 남겨진 여운이 없어요" subDesc="당신의 답변이 첫 여운이 되어주세요" />
         )}
-        {comments.length > 0 && !!mycomment && (
+        {(comments.length > 0 || !!mycomment) && (
           <div className="mb-3 flex items-center justify-start gap-2 py-3">
             {SORTORDER_CHECKBOXS.map((option) => (
               <CheckBox
@@ -179,6 +194,7 @@ const QuestionCommentPage = () => {
               content={mycomment.content}
               reportBtnClick={onClickReportBtn}
               onSubmit={() => console.log('삭제')}
+              onCancel={onClickCancel}
               questionId={questionId}
               sortOrder={sortOrder}
             />
@@ -196,6 +212,7 @@ const QuestionCommentPage = () => {
                 content={comment.content}
                 reportBtnClick={onClickReportBtn}
                 onSubmit={onSubmitModal}
+                onCancel={onClickCancel}
                 questionId={questionId}
                 sortOrder={sortOrder}
               />
@@ -218,7 +235,7 @@ const QuestionCommentPage = () => {
           답변 작성하기
         </button>
       </div>
-      {!!mycomment && (
+      {!!mycomment && !report && (
         <Modal>
           <Modal.Header>
             <Modal.Title>질문당 답변은 1번만 가능합니다.</Modal.Title>

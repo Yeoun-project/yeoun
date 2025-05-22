@@ -1,5 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import useAuthStore from '../../store/useAuthStore';
+import Alarm from '../alarm/Alarm';
 
 const TopNavBar = ({ navTitle }: { navTitle?: string }) => {
   const { userType } = useAuthStore();
@@ -26,11 +27,7 @@ const TopNavBar = ({ navTitle }: { navTitle?: string }) => {
 
       {userType === 'User' && (
         <div className="relative size-6">
-          <Link
-            aria-label="알림"
-            to="/notification"
-            className="block size-6 bg-[url(/icons/notification.svg)] bg-no-repeat"
-          />
+          <Alarm />
         </div>
       )}
     </nav>
