@@ -12,7 +12,7 @@ const SettingPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    getAlarmState();
+    if (userType === 'User') getAlarmState();
   }, []);
 
   const onClickLogout = async () => {
