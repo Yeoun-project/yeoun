@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import yeoun.user.domain.repository.UserRepository;
 import yeoun.user.service.UserService;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -99,22 +100,46 @@ public class QuestionService {
 
     @Transactional(readOnly = true)
     public QuestionListResponse getAllQuestions(String category, Pageable pageable) {
-        LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
-        LocalDateTime endOfDay = startOfDay.plusDays(1);
+        LocalDate today = LocalDate.now();
 
         Slice<Question> questionSlice;
         if (category == null || category.isBlank()) {
-            questionSlice = questionRepository.findAllOrderByCommentsCount(startOfDay, endOfDay, pageable);
+            questionSlice = questionRepository.findAllOrderByCreateTimeDesc(pageable);
         } else {
-            questionSlice = questionRepository.findAllByCategoryAndTodayComments(category, startOfDay, endOfDay, pageable);
+            questionSlice = questionRepository.findAllByCategoryOrderByCreateTimeDesc(category, pageable);
         }
 
-        List<QuestionResponse> questionResponseList = questionSlice.stream()
+        List<Question> questions = sortQuestionsWithCommentsCountByDate(questionSlice.stream().toList(), today);
+
+        List<QuestionResponse> questionResponseList = questions.stream()
                 .map(QuestionResponse::of)
                 .toList();
 
         return new QuestionListResponse(questionResponseList, questionSlice.hasNext());
     }
+
+    private List<Question> sortQuestionsWithCommentsCountByDate(List<Question> questions, LocalDate date) {
+        // 질문 생성일자 기준 내림차순 정렬 후,
+        // 생성일자가 같으면 오늘 달린 댓글 수 기준 내림차순 정렬
+
+        return questions.stream()
+                .sorted(Comparator.comparing(
+                        Question::getCreateTime,
+                        Comparator.comparing(LocalDateTime::toLocalDate, Comparator.reverseOrder())
+                ).thenComparing(
+                        q -> countCommentsOnDate(q, date),
+                        Comparator.reverseOrder()
+                )).toList();
+    }
+
+    // 해당 날짜에 달린 댓글 수 세기
+    private long countCommentsOnDate(Question question, LocalDate date) {
+        return question.getComments().stream()
+                .filter(comment -> comment.getCreateTime().toLocalDate().equals(date))
+                .count();
+    }
+
+
 
     @Transactional(readOnly = true) // 질문 상세 정보 조회는 사용자가 작성한 질문들 중에서만, 고정 질문 X
     public QuestionDetailResponse getQuestionDetail(Long userId, Long questionId) {
