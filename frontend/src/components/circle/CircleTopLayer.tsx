@@ -6,32 +6,65 @@ const CircleTopLayer = ({ size = 150, animate = false, colors }: CircleLayerProp
 
   return (
     <svg
+      xmlns="http://www.w3.org/2000/svg"
       width={size}
       height={size}
-      viewBox="1 -2 150 162"
       fill="none"
-      xmlns="http://www.w3.org/2000/svg"
       className={`absolute z-4 ${animate && 'animate-spin-circle-layer'}`}
+      viewBox="1 -2 150 162"
     >
-      <g id="Vector 15" opacity="0.6" filter="url(#filter0_dddddd_98_1052)">
+      <g filter="url(#filter0_dddddd_98_1052)" opacity=".6">
         <path
-          d="M143.798 57.5668C158.613 96.7687 137.103 118.995 119.078 126.542C100.23 146.434 39.1879 156.138 29.5581 129.211C-8.87868 64.1166 35.6487 31.2866 50.546 20.1277C65.4434 8.96871 125.28 8.5644 143.798 57.5668Z"
-          fill="white"
+          fill="#fff"
+          d="M144 58c15 39-7 61-25 69-19 19-80 29-89 2-39-65 6-98 21-109 14-11 74-11 93 38Z"
         />
         <path
-          d="M143.798 57.5668C158.613 96.7687 137.103 118.995 119.078 126.542C100.23 146.434 39.1879 156.138 29.5581 129.211C-8.87868 64.1166 35.6487 31.2866 50.546 20.1277C65.4434 8.96871 125.28 8.5644 143.798 57.5668Z"
-          fill={`url(#paint0_radial_98_1052_${uniqueId})`}
+          fill={`url(#b_${uniqueId})`}
+          d="M144 58c15 39-7 61-25 69-19 19-80 29-89 2-39-65 6-98 21-109 14-11 74-11 93 38Z"
         />
         <path
-          d="M143.798 57.5668C158.613 96.7687 137.103 118.995 119.078 126.542C100.23 146.434 39.1879 156.138 29.5581 129.211C-8.87868 64.1166 35.6487 31.2866 50.546 20.1277C65.4434 8.96871 125.28 8.5644 143.798 57.5668Z"
-          fill={`url(#paint1_radial_98_1052_${uniqueId})`}
+          fill={`url(#c_${uniqueId})`}
+          d="M144 58c15 39-7 61-25 69-19 19-80 29-89 2-39-65 6-98 21-109 14-11 74-11 93 38Z"
         />
         <path
-          d="M143.798 57.5668C158.613 96.7687 137.103 118.995 119.078 126.542C100.23 146.434 39.1879 156.138 29.5581 129.211C-8.87868 64.1166 35.6487 31.2866 50.546 20.1277C65.4434 8.96871 125.28 8.5644 143.798 57.5668Z"
-          fill={`url(#paint2_radial_98_1052_${uniqueId})`}
+          fill={`url(#d_${uniqueId})`}
+          d="M144 58c15 39-7 61-25 69-19 19-80 29-89 2-39-65 6-98 21-109 14-11 74-11 93 38Z"
         />
       </g>
       <defs>
+        <radialGradient
+          id={`b_${uniqueId}`}
+          cx="0"
+          cy="0"
+          r="1"
+          gradientTransform="rotate(153 64 58) scale(120 233)"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor={colors.right} />
+          <stop offset="0.7" stopColor="#F0F0F0" stopOpacity="0" />
+        </radialGradient>
+        <radialGradient
+          id={`c_${uniqueId}`}
+          cx="0"
+          cy="0"
+          r="1"
+          gradientTransform="matrix(148 75 -96 190 30 61)"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor={colors.topLeft} />
+          <stop offset="0.7" stopColor="#F0F0F0" stopOpacity="0" />
+        </radialGradient>
+        <radialGradient
+          id={`d_${uniqueId}`}
+          cx="0"
+          cy="0"
+          r="1"
+          gradientTransform="matrix(160 -56 77 220 32 144)"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor={colors.bottomLeft} />
+          <stop offset="0.7" stopColor="#F0F0F0" stopOpacity="0" />
+        </radialGradient>
         <filter
           id="filter0_dddddd_98_1052"
           x="0.863223"
@@ -41,7 +74,6 @@ const CircleTopLayer = ({ size = 150, animate = false, colors }: CircleLayerProp
           filterUnits="userSpaceOnUse"
           colorInterpolationFilters="sRGB"
         >
-          <feGaussianBlur stdDeviation="2" />
           <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0" />
           <feBlend
             mode="normal"
@@ -55,7 +87,7 @@ const CircleTopLayer = ({ size = 150, animate = false, colors }: CircleLayerProp
             result="hardAlpha"
           />
           <feOffset />
-          <feGaussianBlur stdDeviation="3" />
+          <feGaussianBlur stdDeviation="2" />
           <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0" />
           <feBlend
             mode="normal"
@@ -69,7 +101,7 @@ const CircleTopLayer = ({ size = 150, animate = false, colors }: CircleLayerProp
             result="hardAlpha"
           />
           <feOffset />
-          <feGaussianBlur stdDeviation="4" />
+          <feGaussianBlur stdDeviation="2" />
           <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0" />
           <feBlend
             mode="normal"
@@ -83,39 +115,6 @@ const CircleTopLayer = ({ size = 150, animate = false, colors }: CircleLayerProp
             result="shape"
           />
         </filter>
-        <radialGradient
-          id={`paint0_radial_98_1052_${uniqueId}`}
-          cx="0"
-          cy="0"
-          r="1"
-          gradientUnits="userSpaceOnUse"
-          gradientTransform="translate(147.781 79.5975) rotate(152.748) scale(120.287 232.319)"
-        >
-          <stop stopColor={colors.right} />
-          <stop offset="0.796674" stopColor="#F0F0F0" stopOpacity="0" />
-        </radialGradient>
-        <radialGradient
-          id={`paint1_radial_98_1052_${uniqueId}`}
-          cx="0"
-          cy="0"
-          r="1"
-          gradientUnits="userSpaceOnUse"
-          gradientTransform="translate(30.1098 60.7196) rotate(26.9131) scale(165.447 212.959)"
-        >
-          <stop stopColor={colors.topLeft} />
-          <stop offset="0.796674" stopColor="#F0F0F0" stopOpacity="0" />
-        </radialGradient>
-        <radialGradient
-          id={`paint2_radial_98_1052_${uniqueId}`}
-          cx="0"
-          cy="0"
-          r="1"
-          gradientUnits="userSpaceOnUse"
-          gradientTransform="translate(31.8661 143.997) rotate(-19.2714) scale(169.31 233.495)"
-        >
-          <stop stopColor={colors.bottomLeft} />
-          <stop offset="0.796674" stopColor="#F0F0F0" stopOpacity="0" />
-        </radialGradient>
       </defs>
     </svg>
   );
