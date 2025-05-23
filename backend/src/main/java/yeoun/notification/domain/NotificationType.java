@@ -6,8 +6,8 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public enum NotificationType {
 
-    COMMENT_LIKE("LIKE", "[%s]에 당신의 답변이 누군가에게 여운을 남겼어요! ❤", "[%s]에 당신의 답변이 %d명 에게 여운을 남겼어요! ❤"),
-    NEW_COMMENT("COMMENT", "[%s]에 새로운 답변이 달렸어요!", "[%s]에 새로운 답변이 %d개 달렸어요!");
+    COMMENT_LIKE("LIKE", "[%s]에 당신의 답변이 누군가에게 여운을 남겼어요! ❤", "[%s]에 당신의 답변이 ${<span className=\"text-[#FC90D1]\">n명</span>} 에게 여운을 남겼어요! ❤"),
+    NEW_COMMENT("COMMENT", "[%s]에 새로운 답변이 달렸어요!", "[%s]에 새로운 답변이 ${<span className=\"text-[#FC90D1]\">n개</span>} 달렸어요!");
 
     public final String type;
     public final String[] content;
