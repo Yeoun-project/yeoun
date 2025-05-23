@@ -17,6 +17,8 @@ public class NotificationDetailResponse {
 
     private final LocalDateTime createTime;
 
+    private final String category;
+
     public static NotificationDetailResponse of(
             Notification notification
     ) {
@@ -31,6 +33,7 @@ public class NotificationDetailResponse {
                     )
             )
             .createTime(notification.getCreateTime())
+            .category(notification.getQuestion().getCategory().getName())
             .build();
     }
 

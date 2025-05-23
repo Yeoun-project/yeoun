@@ -15,7 +15,7 @@ import yeoun.question.domain.Question;
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
 
-    @Query("select n from Notification n where n.receiver.id = :userId order by n.createTime")
+    @Query("select n from Notification n where n.receiver.id = :userId")
     Slice<Notification> findAllNotifications(@Param("userId") Long userId, Pageable pageable);
 
     @Query("select n.question from Notification n where n.receiver.id=:userId and n.question.id=:questionId")
