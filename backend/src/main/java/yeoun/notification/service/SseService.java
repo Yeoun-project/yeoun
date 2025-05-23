@@ -38,7 +38,7 @@ public class SseService implements SseServiceInterface<Long, Integer> {
         emitter.onCompletion(()->removeSseEmitter(pk));
         emitter.onError((e)->removeSseEmitter(pk));
 
-        emitterMap.put(pk, new CustomEmitter(emitter));
+        emitterMap.put(pk, new CustomEmitter(emitter, SEE_RECONNECTION_SECOND));
 
         sendData(pk, "connect", firstData);
 
@@ -78,13 +78,15 @@ public class SseService implements SseServiceInterface<Long, Integer> {
     class CustomEmitter {
         private LocalDateTime createdAt;
         private SseEmitter emitter;
+        private Long reconnectSeconds;
 
         public boolean wasRecentlyConnected() {
-            return createdAt.plusSeconds(SEE_RECONNECTION_SECOND).isAfter(LocalDateTime.now());
+            return createdAt.plusSeconds(reconnectSeconds).isAfter(LocalDateTime.now());
         }
 
-        public CustomEmitter(SseEmitter emitter) {
+        public CustomEmitter(SseEmitter emitter, Long reconnectSeconds) {
             this.emitter = emitter;
+            this.reconnectSeconds = reconnectSeconds;
             this.createdAt = LocalDateTime.now();
         }
     }
