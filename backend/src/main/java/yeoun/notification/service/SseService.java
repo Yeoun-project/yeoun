@@ -24,7 +24,7 @@ public class SseService implements SseServiceInterface<Long, Integer> {
     @Override
     public SseEmitter getSseEmitter(Long pk, Integer firstData) {
         CustomEmitter oldEmitter = emitterMap.get(pk);
-        if(oldEmitter != null && oldEmitter.wasRecentlyConnected()) {
+        if(oldEmitter != null && oldEmitter.wasRecentlyConnected(SSE_CONNECTION_TIME)) {
             log.info("recently returned emitter");
             return null;
         }
@@ -55,7 +55,7 @@ public class SseService implements SseServiceInterface<Long, Integer> {
             return;
 
         try {
-            customEmitter.getEmitter().send(SseEmitter.event().name("notification").data(data.toString()).reconnectTime(
+            customEmitter.getEmitter().send(SseEmitter.event().name(title).data(data.toString()).reconnectTime(
                 SEE_RECONNECTION_SECOND * 1000).build());
         } catch (IOException e) {
             log.info("sse send fail");
@@ -79,8 +79,8 @@ public class SseService implements SseServiceInterface<Long, Integer> {
         private LocalDateTime createdAt;
         private SseEmitter emitter;
 
-        public boolean wasRecentlyConnected() {
-            return createdAt.plusSeconds(SEE_RECONNECTION_SECOND).isAfter(LocalDateTime.now());
+        public boolean wasRecentlyConnected(Long recentTime) {
+            return createdAt.plusSeconds(recentTime).isAfter(LocalDateTime.now());
         }
 
         public CustomEmitter(SseEmitter emitter) {
