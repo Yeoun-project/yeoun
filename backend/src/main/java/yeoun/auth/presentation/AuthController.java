@@ -68,6 +68,7 @@ public class AuthController {
 
             return ResponseEntity.ok(new SuccessResponse("Login successful by Google", null));
         } catch (RuntimeException e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("", "Access denied"));
         }
     }
