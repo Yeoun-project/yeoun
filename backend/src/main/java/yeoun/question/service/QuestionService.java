@@ -2,6 +2,7 @@ package yeoun.question.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+
 import jakarta.persistence.EntityManager;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -41,7 +42,7 @@ public class QuestionService {
     public void addNewQuestion(AddQuestionRequest dto) throws CustomException {
         // user의 question count 가 남앖는지 확인
         User user = userService.getUserInfo(dto.getUserId());
-        if(user.getQuestionCount() == 0)
+        if (user.getQuestionCount() == 0)
             throw new CustomException(ErrorCode.BAD_REQUEST, "오늘의 질문 기회를 모두 소진하였습니다");
 
         Category category = categoryRepository.findById(dto.getCategoryId())
@@ -100,8 +101,6 @@ public class QuestionService {
 
     @Transactional(readOnly = true)
     public QuestionListResponse getAllQuestions(String category, Pageable pageable) {
-        LocalDate today = LocalDate.now();
-
         Slice<Question> questionSlice;
         if (category == null || category.isBlank()) {
             questionSlice = questionRepository.findAllOrderByCreateTimeDesc(pageable);
@@ -109,7 +108,7 @@ public class QuestionService {
             questionSlice = questionRepository.findAllByCategoryOrderByCreateTimeDesc(category, pageable);
         }
 
-        List<Question> questions = sortQuestionsWithCommentsCountByDate(questionSlice.stream().toList(), today);
+        List<Question> questions = sortQuestionsWithCommentsCountByDate(questionSlice.stream().toList());
 
         List<QuestionResponse> questionResponseList = questions.stream()
                 .map(QuestionResponse::of)
@@ -118,38 +117,28 @@ public class QuestionService {
         return new QuestionListResponse(questionResponseList, questionSlice.hasNext());
     }
 
-    private List<Question> sortQuestionsWithCommentsCountByDate(List<Question> questions, LocalDate date) {
-        // 질문 생성일자 기준 내림차순 정렬 후,
-        // 생성일자가 같으면 오늘 달린 댓글 수 기준 내림차순 정렬
+    private List<Question> sortQuestionsWithCommentsCountByDate(List<Question> questions) {
+        /**
+         * 우선순위 1, 질문 생성일자 기준 내림차순 정렬
+         * 우선순위 2. 생성일자가 같으면 댓글 수 기준 내림차순 정렬
+         * 우선순위 3. 댓글 수가 같으면 질문 생성일자 기준 오름차순 정렬
+         */
 
         return questions.stream()
-                .sorted(Comparator.comparing(
-                        Question::getCreateTime,
-                        Comparator.comparing(LocalDateTime::toLocalDate, Comparator.reverseOrder())
-                ).thenComparing(
-                        q -> countCommentsOnDate(q, date),
-                        Comparator.reverseOrder()
-                )).toList();
+                .sorted(Comparator.comparingLong(
+                        (Question question) -> question.getComments().size()
+                ).reversed().thenComparing(Question::getCreateTime)).toList();
     }
-
-    // 해당 날짜에 달린 댓글 수 세기
-    private long countCommentsOnDate(Question question, LocalDate date) {
-        return question.getComments().stream()
-                .filter(comment -> comment.getCreateTime().toLocalDate().equals(date))
-                .count();
-    }
-
-
 
     @Transactional(readOnly = true) // 질문 상세 정보 조회는 사용자가 작성한 질문들 중에서만, 고정 질문 X
     public QuestionDetailResponse getQuestionDetail(Long userId, Long questionId) {
         Question question = questionRepository.findByIdAndIsFixedIsFalse(questionId)
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_PARAMETER, "질문 ID가 잘못 되었습니다."));
-      
+
         boolean isAuthor = false;
         if (question.getUser() != null) isAuthor = question.getUser().getId().equals(userId);
 
-        boolean isDeleted = question.getDeleteTime()!=null;
+        boolean isDeleted = question.getDeleteTime() != null;
 
         return QuestionDetailResponse.of(question, isAuthor, isDeleted);
     }
@@ -190,8 +179,8 @@ public class QuestionService {
     public List<CategoryResponse> getAllCategories() {
         List<CategoryResponseDao> categoryResponseDaos = questionRepository.findCategoriesWithCount();
         return categoryResponseDaos.stream()
-            .map(dao-> CategoryResponse.of(dao.getCategory(), dao.getCount()))
-            .toList();
+                .map(dao -> CategoryResponse.of(dao.getCategory(), dao.getCount()))
+                .toList();
     }
 
 }
