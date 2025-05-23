@@ -8,7 +8,7 @@ const Item = ({
   idx: number;
 }) => {
   const getScaleAndTranslate = () => {
-    if (Math.abs(currentItem - idx) > 2) return '';
+    if (Math.abs(currentItem - idx) > 2) return;
     if (idx === currentItem - 1) {
       return `translate(8.5rem) scale(0.8)`;
     }
@@ -21,7 +21,7 @@ const Item = ({
 
   return (
     <div
-      className="flex w-full shrink-0 touch-none justify-center select-none"
+      className="flex w-full shrink-0 touch-none justify-center will-change-transform select-none"
       style={{
         transform: getScaleAndTranslate(),
         transition: 'transform 250ms ease-in-out',
