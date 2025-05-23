@@ -125,9 +125,11 @@ public class QuestionService {
          */
 
         return questions.stream()
-                .sorted(Comparator.comparingLong(
-                        (Question question) -> question.getComments().size()
-                ).reversed().thenComparing(Question::getCreateTime)).toList();
+                .sorted(Comparator
+                        .comparing((Question q) -> q.getCreateTime().toLocalDate(), Comparator.reverseOrder())
+                        .thenComparing((Question q) -> q.getComments().size(), Comparator.reverseOrder())
+                        .thenComparing(Question::getCreateTime)
+                ).toList();
     }
 
     @Transactional(readOnly = true) // 질문 상세 정보 조회는 사용자가 작성한 질문들 중에서만, 고정 질문 X
