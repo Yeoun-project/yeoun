@@ -40,19 +40,17 @@ const MyQuestionsPage = () => {
     <div className="h-[100svh] overflow-hidden">
       <SubPageHeader pageTitle="내가 작성한 질문" backButtonPath="/my" />
 
-      <main className="flex h-[calc(100%-140px)] flex-col">
-        {questionsYear.length > 0 && (
-          <Dropdown
-            isOpen={dropdown}
-            onClick={() => setDropdown((prev) => !prev)}
-            all
-            categories={CATEGORY}
-            handleSelect={handleSelectCategory}
-            selected={CATEGORY[Number(categoryId) - 1]}
-            id={Number(categoryId) || 0}
-            location="font-desc"
-          />
-        )}
+      <main className="flex h-[calc(100%-70px)] flex-col">
+        <Dropdown
+          isOpen={dropdown}
+          onClick={() => setDropdown((prev) => !prev)}
+          all
+          categories={CATEGORY}
+          handleSelect={handleSelectCategory}
+          selected={CATEGORY[Number(categoryId) - 1]}
+          id={Number(categoryId) || 0}
+          location="font-desc"
+        />
 
         {questionsYear.length === 0 && (
           <FallBack
@@ -62,7 +60,7 @@ const MyQuestionsPage = () => {
         )}
 
         {questionsYear.length > 0 && (
-          <div className="no-scrollbar overflow-scroll pb-6">
+          <div className="no-scrollbar overflow-scroll pb-2">
             {questionsYear.map((year) => (
               <QuestionListYearSection key={year} year={year}>
                 <QuestionList questions={questions[year]} path="question" />
