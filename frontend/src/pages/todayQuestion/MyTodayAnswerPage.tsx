@@ -1,32 +1,40 @@
 /* eslint-disable react-refresh/only-export-components */
 import { useEffect, useRef, useState } from 'react';
+import { LoaderFunctionArgs, useLoaderData } from 'react-router-dom';
 
 import useModalStore from '../../store/useModalStore';
+import useToastStore from '../../store/useToastStore';
 
+import useUpdateCommentMutation from '../../hooks/mutation/useUpdateCommentMutation';
+import useDeleteCommentMutation from '../../hooks/mutation/useDeleteCommentMutation';
+
+import { TodayQuestionComment } from '../../type/comment';
+
+import formatDate from '../../utils/formatDate';
+import { queryClient } from '../../utils/queryClient';
+
+import { getTodayQuestionComment } from '../../services/api/question/todayQuestion';
+
+import Modal from '../../components/modal/Modal';
 import Circle from '../../components/circle/Circle';
 import CommentForm from '../../components/form/CommentForm';
 import BasicButton from '../../components/button/BasicButton';
 import BackArrowButton from '../../components/button/BackArrowButton';
 
-import Modal from '../../components/modal/Modal';
-import { LoaderFunctionArgs, useLoaderData } from 'react-router-dom';
-import { TodayQuestionComment } from '../../type/comment';
-import { queryClient } from '../../utils/queryClient';
-import { getTodayQuestionComment } from '../../services/api/question/todayQuestion';
-import formatDate from '../../utils/formatDate';
-import useUpdateCommentMutation from '../../hooks/mutation/useUpdateCommentMutation';
-import useToastStore from '../../store/useToastStore';
-
 const MyTodayAnswerPage = () => {
-  const { addToast } = useToastStore();
-  const [error, setError] = useState<boolean>(false);
   const todayQuestionComment = useLoaderData<TodayQuestionComment>();
-  const { mutate } = useUpdateCommentMutation(todayQuestionComment.id);
+
   const formRef = useRef<HTMLTextAreaElement>(null);
-  const { openModal, modal } = useModalStore();
+
+  const { addToast } = useToastStore();
+  const { openModal, modal, closeModal } = useModalStore();
 
   const [edit, setEdit] = useState(false);
+  const [error, setError] = useState<boolean>(false);
   const [comment, setComment] = useState(todayQuestionComment.comment.content);
+
+  const { mutate: updateComment } = useUpdateCommentMutation(todayQuestionComment.id);
+  const { mutate: deleteComment } = useDeleteCommentMutation();
 
   useEffect(() => {
     // edit 상태로 변했을 때 폼 focus
@@ -38,6 +46,7 @@ const MyTodayAnswerPage = () => {
     }
   }, [edit]);
 
+  // 오늘의 질문 답변 수정
   const handleUpdateComment = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (comment.trim().length === 0) {
@@ -48,8 +57,18 @@ const MyTodayAnswerPage = () => {
     }
 
     try {
-      mutate(comment);
+      updateComment(comment);
       setEdit(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // 오늘의 질문 답변 삭제
+  const handleDeleteComment = async () => {
+    try {
+      deleteComment(todayQuestionComment.id);
+      closeModal();
     } catch (error) {
       console.log(error);
     }
@@ -68,7 +87,7 @@ const MyTodayAnswerPage = () => {
 
           <Modal.Footer>
             <Modal.CancleButton>취소</Modal.CancleButton>
-            <Modal.ConfirmButton onConfirm={() => {}}>삭제</Modal.ConfirmButton>
+            <Modal.ConfirmButton onConfirm={handleDeleteComment}>삭제</Modal.ConfirmButton>
           </Modal.Footer>
         </Modal>
       )}
