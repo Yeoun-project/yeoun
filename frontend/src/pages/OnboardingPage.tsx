@@ -32,7 +32,7 @@ const OnboardingPage = () => {
       case 2:
         return <OnBoardingStepThree />;
       case 3:
-        return <OnBoardingStepFour />;
+        return <OnBoardingStepFour onClick={() => setOnBoardingStep(4)} />;
     }
   };
 
