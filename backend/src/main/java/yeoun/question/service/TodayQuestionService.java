@@ -133,7 +133,7 @@ public class TodayQuestionService {
                         questionHistory,
                         questionHistory.getComment() != null
                 )).toList();
-        return new TodayQuestionListResponse(todayQuestionResponses);
+        return new TodayQuestionListResponse(todayQuestionResponses, questionHistories.hasNext());
     }
 
     @Transactional(readOnly = true)
