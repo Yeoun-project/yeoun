@@ -96,7 +96,14 @@ const SettingPage = () => {
             </li>
           )}
           <li className="cursor-pointer border-b border-[#AAAAAA]">
-            <div className="px-6 py-4.5 transition-transform duration-150 active:shadow-inner">
+            <div
+              onClick={() =>
+                window.open(
+                  'https://docs.google.com/forms/d/e/1FAIpQLSfVJyI_TuJHHbXotFaNuUnDhqEQF5Yt_lXL8tRxXl03IAFfOw/viewform?usp=sharing&ouid=110681974483144339268'
+                )
+              }
+              className="px-6 py-4.5 transition-transform duration-150 active:shadow-inner"
+            >
               문의하기
             </div>
           </li>
