@@ -24,7 +24,7 @@ const Modal = ({ children }: ModalProps) => {
 
   return createPortal(
     <dialog
-      className="mx-auto flex min-h-[100svh] w-full max-w-[430px] items-center justify-center bg-transparent px-6 backdrop:bg-black/40"
+      className="mx-auto flex min-h-[100svh] w-full max-w-[430px] items-center justify-center bg-transparent px-6 backdrop:bg-black/40 xl:ml-[55%]"
       ref={modalRef}
       onClose={() => closeModal()}
     >
@@ -42,7 +42,7 @@ const ModalContent = ({ children }: ModalProps) => {
   return <main className="mb-3">{children}</main>;
 };
 const ModalFooter = ({ children }: ModalProps) => {
-  return <div className="flex px-4 gap-3">{children}</div>;
+  return <div className="flex gap-3 px-4">{children}</div>;
 };
 export default Modal;
 

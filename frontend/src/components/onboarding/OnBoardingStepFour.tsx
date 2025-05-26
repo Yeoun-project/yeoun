@@ -5,7 +5,7 @@ import ClickIcon from './assets/ClickIcon';
 import AddQuestionFormPage from './assets/step-four/AddQuestionFormPage';
 import AddQuestionAlertModal from './assets/step-four/AddQuestionAlertModal';
 
-const OnBoardingStepFour = () => {
+const OnBoardingStepFour = ({ onClick }: { onClick: () => void }) => {
   const AddQuestionFormPageRef = useRef<SVGSVGElement>(null);
   const initialTextRef = useRef<SVGPathElement>(null);
   const generateTextRef = useRef<SVGPathElement>(null);
@@ -107,11 +107,13 @@ const OnBoardingStepFour = () => {
       </div>
       <div className="mb-4">
         <p className="font-desc w-full text-center">
-          '의미 있는 질문'만 작성할 수 있어요 <br />
-          질문과 답변은 등록 후엔 <span className="text-error">수정·삭제할 수 없어요</span>
+          '의미 있는 질문'만 작성할 수 있어요. <br />
+          질문과 답변은 등록 후엔 <span className="text-error">수정·삭제할 수 없어요.</span>
         </p>
       </div>
-      <p className="font-desc text-[#ffe867] underline">💡 이런 질문 작성은 피해주세요</p>
+      <p className="font-desc cursor-pointer text-[#ffe867] underline" onClick={onClick}>
+        💡 이런 질문 작성은 피해주세요
+      </p>
     </>
   );
 };

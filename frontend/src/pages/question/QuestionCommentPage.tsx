@@ -131,6 +131,8 @@ const QuestionCommentPage = () => {
     }
   };
 
+  if (!questionDetail) return null;
+
   return (
     <div className="h-[100svh]">
       <header className="relative flex justify-center p-6">
@@ -150,7 +152,9 @@ const QuestionCommentPage = () => {
         <div className="flex items-center justify-center py-4">
           <button onClick={onClickComment} className="cursor-pointer">
             <Circle size={280} animate={true} category={questionDetail?.categoryName}>
-              <p className="text-blur text-black-primary px-8 text-xl break-keep">{content}</p>
+              <p className="text-blur text-black-primary max-w-[280px] px-8 text-xl text-wrap">
+                {content}
+              </p>
             </Circle>
           </button>
         </div>
@@ -204,6 +208,7 @@ const QuestionCommentPage = () => {
           comment.map((comment) => (
             <div className="border-b border-[#FFFFFF80] py-4">
               <AnswerItem
+                key={comment.id}
                 my={false}
                 report={report}
                 id={comment.id}

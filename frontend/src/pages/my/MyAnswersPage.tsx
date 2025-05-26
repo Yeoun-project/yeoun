@@ -16,8 +16,11 @@ import Dropdown from '../../components/dropdown/Dropdown';
 import QuestionListYearSection from '../../components/questionList/QuestionListYearSection';
 import ListMoreButton from '../../components/questionList/ListMoreButton';
 import QuestionList from '../../components/questionList/QuestionList';
+import { useScrollRestore } from '../../hooks/useScrolLRestore';
 
 const MyAnswersPage = () => {
+  const { scrollRef, handleScroll } = useScrollRestore();
+
   const [searchParams, setSearchParams] = useSearchParams();
   const categoryId = searchParams.get('q');
 
@@ -60,7 +63,11 @@ const MyAnswersPage = () => {
         )}
 
         {questionsYear.length > 0 && (
-          <div className="no-scrollbar overflow-scroll pb-2">
+          <div
+            className="no-scrollbar overflow-scroll pb-2"
+            ref={scrollRef}
+            onScroll={(e) => handleScroll(e)}
+          >
             {questionsYear.map((year) => (
               <QuestionListYearSection key={year} year={year}>
                 <QuestionList questions={questions[year]} path="question" />
