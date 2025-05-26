@@ -8,11 +8,16 @@ import { getNotification, postNotification } from '../services/api/alarm/getNoti
 
 const SettingPage = () => {
   const [activate, setActivate] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
   const { userType, setUserType } = useAuthStore();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (userType === 'User') getAlarmState();
+    if (userType === 'User') {
+      getAlarmState();
+    } else {
+      setIsLoaded(true);
+    }
   }, []);
 
   const onClickLogout = async () => {
@@ -34,6 +39,8 @@ const SettingPage = () => {
       setActivate(response.isNotification);
     } catch (err) {
       console.log(err);
+    } finally {
+      setIsLoaded(true);
     }
   };
 
@@ -45,6 +52,8 @@ const SettingPage = () => {
       console.log(err);
     }
   };
+
+  if (!isLoaded) return null; // 로딩 중일 땐 렌더링 차단
 
   return (
     <>
