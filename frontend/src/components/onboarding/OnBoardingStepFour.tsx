@@ -111,7 +111,7 @@ const OnBoardingStepFour = ({ onClick }: { onClick: () => void }) => {
           질문과 답변은 등록 후엔 <span className="text-error">수정·삭제할 수 없어요.</span>
         </p>
       </div>
-      <p className="font-desc text-[#ffe867] underline" onClick={onClick}>
+      <p className="font-desc cursor-pointer text-[#ffe867] underline" onClick={onClick}>
         💡 이런 질문 작성은 피해주세요
       </p>
     </>
