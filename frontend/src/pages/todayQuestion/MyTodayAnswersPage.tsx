@@ -14,6 +14,7 @@ import QuestionListYearSection from '../../components/questionList/QuestionListY
 import ListMoreButton from '../../components/questionList/ListMoreButton';
 import QuestionList from '../../components/questionList/QuestionList';
 import useAuthStore from '../../store/useAuthStore';
+import { useScrollRestore } from '../../hooks/useScrolLRestore';
 
 type sortOrder = 'latest' | 'old';
 
@@ -29,6 +30,7 @@ const SORTORDER_CHECKBOXS = [
 ];
 
 const MyTodayAnswersPage = () => {
+  const { scrollRef, handleScroll } = useScrollRestore();
   const { userType } = useAuthStore();
   const [sortOrder, setSortOrder] = useState<sortOrder>('latest');
 
@@ -80,7 +82,11 @@ const MyTodayAnswersPage = () => {
         )}
 
         {questionsYear.length > 0 && (
-          <div className="no-scrollbar overflow-scroll pb-2">
+          <div
+            className="no-scrollbar overflow-scroll pb-2"
+            ref={scrollRef}
+            onScroll={(e) => handleScroll(e)}
+          >
             {questionsYear.map((year) => (
               <QuestionListYearSection key={year} year={year}>
                 <QuestionList questions={questions[year]} path="today-question" />
