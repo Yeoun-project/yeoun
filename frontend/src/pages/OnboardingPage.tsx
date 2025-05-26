@@ -50,17 +50,21 @@ const OnboardingPage = () => {
     window.location.reload();
   };
   return (
-    <div className="flex h-[100svh] flex-col items-center justify-between px-6 py-6">
+    <div className="flex h-[100svh] flex-col items-center justify-between overflow-hidden px-6 py-6">
       {onBoardingStep === 4 ? (
         <OnboardingStepFive />
       ) : (
         <>
           <header className="w-full">
-            <div className="mb-4 flex justify-between">
-              <button className="flex cursor-pointer gap-1" onClick={handlePrev}>
-                <img src={'/icons/left.svg'} />
-                <span>이전으로</span>
-              </button>
+            <div
+              className={`mb-4 flex ${onBoardingStep !== 0 ? 'justify-between' : 'justify-end'}`}
+            >
+              {onBoardingStep !== 0 && (
+                <button className="flex cursor-pointer gap-1" onClick={handlePrev}>
+                  <img src={'/icons/left.svg'} />
+                  <span>이전으로</span>
+                </button>
+              )}
               <button onClick={handleOnboardingSkip} className="cursor-pointer text-[#aaaaaa]">
                 건너뛰기
               </button>
