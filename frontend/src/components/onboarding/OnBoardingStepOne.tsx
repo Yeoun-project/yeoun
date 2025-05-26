@@ -15,8 +15,8 @@ const OnBoardingStepOne = () => {
         </Circle>
       </div>
       <p className="font-desc w-full text-center">
-        매일 당신에게 질문이 도착해요 <br />
-        의미 있는 질문을 남기고 답변을 들어보세요
+        매일 당신에게 질문이 도착해요. <br />
+        의미 있는 질문을 남기고 답변을 들어보세요.
       </p>
     </>
   );

@@ -140,8 +140,8 @@ const OnBoardingStepThree = () => {
 
       <div>
         <p className="font-desc w-full text-center">
-          하루에 하나, 질문을 남길 수 있어요 <br />
-          하나의 질문엔 단 한 번만 답할 수 있어요 <br />
+          하루에 하나, 질문을 남길 수 있어요. <br />
+          하나의 질문엔 단 한 번만 답할 수 있어요. <br />
         </p>
       </div>
     </>
