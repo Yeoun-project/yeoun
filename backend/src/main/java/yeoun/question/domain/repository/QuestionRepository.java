@@ -30,16 +30,20 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
 
     @Query(value = """
             SELECT question FROM Question question
+            left join question.comments c
             WHERE question.isFixed = false
-            ORDER BY question.createTime DESC
+            group by question
+            ORDER BY FUNCTION('date', question.createTime) desc , count(c) desc
             """)
     Slice<Question> findAllOrderByCreateTimeDesc(Pageable pageable);
 
     @Query("""
             SELECT question FROM Question question
+            left join question.comments c
             WHERE question.isFixed = false
             AND question.category.name = :category
-            ORDER BY question.createTime DESC
+            group by question
+            ORDER BY FUNCTION('date', question.createTime) DESC, count(c) desc
             """)
     Slice<Question> findAllByCategoryOrderByCreateTimeDesc(@Param("category") String category, Pageable pageable);
 

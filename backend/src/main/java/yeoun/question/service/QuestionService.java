@@ -108,28 +108,11 @@ public class QuestionService {
             questionSlice = questionRepository.findAllByCategoryOrderByCreateTimeDesc(category, pageable);
         }
 
-        List<Question> questions = sortQuestionsWithCommentsCountByDate(questionSlice.stream().toList());
-
-        List<QuestionResponse> questionResponseList = questions.stream()
+        List<QuestionResponse> questionResponseList = questionSlice.stream()
                 .map(QuestionResponse::of)
                 .toList();
 
         return new QuestionListResponse(questionResponseList, questionSlice.hasNext());
-    }
-
-    private List<Question> sortQuestionsWithCommentsCountByDate(List<Question> questions) {
-        /**
-         * 우선순위 1, 질문 생성일자 기준 내림차순 정렬
-         * 우선순위 2. 생성일자가 같으면 댓글 수 기준 내림차순 정렬
-         * 우선순위 3. 댓글 수가 같으면 질문 생성일자 기준 오름차순 정렬
-         */
-
-        return questions.stream()
-                .sorted(Comparator
-                        .comparing((Question q) -> q.getCreateTime().toLocalDate(), Comparator.reverseOrder())
-                        .thenComparing((Question q) -> q.getComments().size(), Comparator.reverseOrder())
-                        .thenComparing(Question::getCreateTime)
-                ).toList();
     }
 
     @Transactional(readOnly = true) // 질문 상세 정보 조회는 사용자가 작성한 질문들 중에서만, 고정 질문 X
