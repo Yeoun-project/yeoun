@@ -64,3 +64,10 @@ export const updateTodayQuestionComment = async ({
 
   return response;
 };
+
+// 오늘의 질문 답변 삭제
+export const deleteTodayQuestionComment = async (questionId: number) => {
+  const response = await client.delete(`${getTodayQuestionUrl(null)}/${questionId}`);
+
+  return response;
+};

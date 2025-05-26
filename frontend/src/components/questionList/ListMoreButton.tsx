@@ -11,7 +11,7 @@ const ListMoreButton = ({ fetchNextPage }: ListMoreButtonProps) => {
   return (
     <div>
       <button
-        className="font-desc flex w-full cursor-pointer items-center justify-center gap-1"
+        className="font-desc flex w-full cursor-pointer items-center justify-center gap-1 pt-1 pb-4"
         onClick={async () => await fetchNextPage()}
       >
         <span className="text-sm">더보기</span>

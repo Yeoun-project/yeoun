@@ -63,7 +63,7 @@ const Circle = ({ size = 150, category = 'valuesAndBeliefs', children, animate }
       <MainCircle size={size} colors={gradientColors} />
       <CircleTopLayer size={size + size / 18} colors={gradientColors} animate={animate} />
       <CircleMiddleLayer size={size + size / 13} colors={gradientColors} animate={animate} />
-      <CircleBottomLayer size={size + size / 18} colors={gradientColors} animate={animate} />
+      <CircleBottomLayer size={size + size / 25} colors={gradientColors} animate={animate} />
     </div>
   );
 };

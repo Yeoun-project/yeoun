@@ -6,32 +6,65 @@ const CircleMiddleLayer = ({ size = 150, animate = false, colors }: CircleLayerP
 
   return (
     <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="3 2 170 160"
       width={size}
       height={size}
-      viewBox="3 2 170 160"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
       className={`absolute z-3 ${animate && 'animate-spin-circle-layer'}`}
     >
-      <g id="Vector 16" opacity="0.4" filter="url(#filter0_dddddd_98_1051)">
+      <g filter="url(#filter0_dddddd_98_1051)" opacity=".4">
         <path
-          d="M46.4178 129.868C-12.5789 72.3586 21.8358 41.5393 46.4178 33.3184C107.489 2.67166 134.238 4.77407 150.37 60.1646C166.502 115.555 150.37 134.315 129.464 143.776C108.559 153.237 82.3854 160.514 46.4178 129.868Z"
-          fill="white"
+          fill="#fff"
+          d="M46 130c-59-58-24-88 0-97 61-30 88-28 104 27 17 56 0 74-21 84-20 9-47 17-83-14Z"
         />
         <path
-          d="M46.4178 129.868C-12.5789 72.3586 21.8358 41.5393 46.4178 33.3184C107.489 2.67166 134.238 4.77407 150.37 60.1646C166.502 115.555 150.37 134.315 129.464 143.776C108.559 153.237 82.3854 160.514 46.4178 129.868Z"
-          fill={`url(#paint0_radial_98_1051_${uniqueId})`}
+          fill={`url(#b_${uniqueId})`}
+          d="M46 130c-59-58-24-88 0-97 61-30 88-28 104 27 17 56 0 74-21 84-20 9-47 17-83-14Z"
         />
         <path
-          d="M46.4178 129.868C-12.5789 72.3586 21.8358 41.5393 46.4178 33.3184C107.489 2.67166 134.238 4.77407 150.37 60.1646C166.502 115.555 150.37 134.315 129.464 143.776C108.559 153.237 82.3854 160.514 46.4178 129.868Z"
-          fill={`url(#paint1_radial_98_1051_${uniqueId})`}
+          fill={`url(#c_${uniqueId})`}
+          d="M46 130c-59-58-24-88 0-97 61-30 88-28 104 27 17 56 0 74-21 84-20 9-47 17-83-14Z"
         />
         <path
-          d="M46.4178 129.868C-12.5789 72.3586 21.8358 41.5393 46.4178 33.3184C107.489 2.67166 134.238 4.77407 150.37 60.1646C166.502 115.555 150.37 134.315 129.464 143.776C108.559 153.237 82.3854 160.514 46.4178 129.868Z"
-          fill={`url(#paint2_radial_98_1051_${uniqueId})`}
+          fill={`url(#d_${uniqueId})`}
+          d="M46 130c-59-58-24-88 0-97 61-30 88-28 104 27 17 56 0 74-21 84-20 9-47 17-83-14Z"
         />
       </g>
       <defs>
+        <radialGradient
+          id={`b_${uniqueId}`}
+          cx="0"
+          cy="0"
+          r="1"
+          gradientTransform="rotate(153 68 60) scale(128 244)"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor={colors.right} />
+          <stop offset=".7" stopColor="#F0F0F0" stopOpacity="0" />
+        </radialGradient>
+        <radialGradient
+          id={`c_${uniqueId}`}
+          cx="0"
+          cy="0"
+          r="1"
+          gradientTransform="matrix(157 79 -100 201 31 63)"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor={colors.topLeft} />
+          <stop offset=".7" stopColor="#F0F0F0" stopOpacity="0" />
+        </radialGradient>
+        <radialGradient
+          id={`d_${uniqueId}`}
+          cx="0"
+          cy="0"
+          r="1"
+          gradientTransform="matrix(170 -59 80 232 33 150)"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor={colors.bottomLeft} />
+          <stop offset=".7" stopColor="#F0F0F0" stopOpacity="0" />
+        </radialGradient>
         <filter
           id="filter0_dddddd_98_1051"
           x="0.402652"
@@ -99,39 +132,6 @@ const CircleMiddleLayer = ({ size = 150, animate = false, colors }: CircleLayerP
             result="shape"
           />
         </filter>
-        <radialGradient
-          id={`paint0_radial_98_1051_${uniqueId}`}
-          cx="0"
-          cy="0"
-          r="1"
-          gradientUnits="userSpaceOnUse"
-          gradientTransform="translate(155.915 82.4865) rotate(153.052) scale(127.686 244.733)"
-        >
-          <stop stopColor={colors.right} />
-          <stop offset="0.796674" stopColor="#F0F0F0" stopOpacity="0" />
-        </radialGradient>
-        <radialGradient
-          id={`paint1_radial_98_1051_${uniqueId}`}
-          cx="0"
-          cy="0"
-          r="1"
-          gradientUnits="userSpaceOnUse"
-          gradientTransform="translate(30.667 62.6536) rotate(26.6125) scale(175.635 224.325)"
-        >
-          <stop stopColor={colors.topLeft} />
-          <stop offset="0.796674" stopColor="#F0F0F0" stopOpacity="0" />
-        </radialGradient>
-        <radialGradient
-          id={`paint2_radial_98_1051_${uniqueId}`}
-          cx="0"
-          cy="0"
-          r="1"
-          gradientUnits="userSpaceOnUse"
-          gradientTransform="translate(32.5364 150.143) rotate(-19.0397) scale(179.958 245.652)"
-        >
-          <stop stopColor={colors.bottomLeft} />
-          <stop offset="0.796674" stopColor="#F0F0F0" stopOpacity="0" />
-        </radialGradient>
       </defs>
     </svg>
   );

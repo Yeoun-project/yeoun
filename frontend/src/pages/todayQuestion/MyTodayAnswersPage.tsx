@@ -5,8 +5,6 @@ import { getTodayAnswersQuestions } from '../../services/api/question/getQuestio
 
 import useQuestionGroupByYear from '../../hooks/useQuestionGroupByYear';
 
-import BottomTabBar from '../../components/nav/BottomTabBar';
-
 import CheckBox from '../../components/common/CheckBox';
 
 import FallBack from '../../components/ui/FallBack';
@@ -56,11 +54,11 @@ const MyTodayAnswersPage = () => {
   return (
     <div className="h-[100svh] overflow-hidden">
       <SubPageHeader
-        pageTitle="답변목록"
+        pageTitle="오늘의 질문 답변"
         backButtonPath={userType === 'Guest' ? '/today-question' : '/my'}
       />
 
-      <main className="flex h-[calc(100%-140px)] flex-col">
+      <main className="flex h-[calc(100%-70px)] flex-col">
         {questionsYear.length > 0 && (
           <div className="mb-3 flex items-center justify-end gap-2 px-6">
             {SORTORDER_CHECKBOXS.map((option) => (
@@ -82,7 +80,7 @@ const MyTodayAnswersPage = () => {
         )}
 
         {questionsYear.length > 0 && (
-          <div className="no-scrollbar overflow-scroll pb-6">
+          <div className="no-scrollbar overflow-scroll pb-2">
             {questionsYear.map((year) => (
               <QuestionListYearSection key={year} year={year}>
                 <QuestionList questions={questions[year]} path="today-question" />
@@ -94,7 +92,6 @@ const MyTodayAnswersPage = () => {
           </div>
         )}
       </main>
-      {userType !== 'Guest' && <BottomTabBar />}
     </div>
   );
 };

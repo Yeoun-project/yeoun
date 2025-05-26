@@ -34,6 +34,7 @@ import QuestionListPage from '../pages/QuestionListPage.tsx';
 import MyAnswersPage from '../pages/my/MyAnswersPage.tsx';
 import QuestionCommentPage from '../pages/question/QuestionCommentPage.tsx';
 import CommentPage from '../pages/question/CommentPage.tsx';
+import QuestionPageFallback from '../components/ui/QuestionPageFallback.tsx';
 
 const router = createBrowserRouter([
   {
@@ -44,6 +45,7 @@ const router = createBrowserRouter([
       { path: '/setting', element: <SettingPage /> },
       { path: '/notification', element: <AlarmPage /> },
       { path: '/user-delete', element: <UserDeletePage /> },
+
       {
         path: '/login',
         element: <LoginPage />,
@@ -87,7 +89,7 @@ const router = createBrowserRouter([
               {
                 index: true,
                 element: (
-                  <Suspense fallback={<p>Loading ......</p>}>
+                  <Suspense fallback={<QuestionPageFallback />}>
                     <QuestionPage />
                   </Suspense>
                 ),

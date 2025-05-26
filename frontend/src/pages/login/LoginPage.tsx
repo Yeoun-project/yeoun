@@ -76,7 +76,7 @@ const LoginPage = () => {
           </button>
         </li>
         {AUTH_PATH_LIST.map((el) => (
-          <li>
+          <li key={el.identifier}>
             <Link
               to={el.path}
               className={`flex w-full items-center justify-center gap-2 rounded-xl py-4.5 ${getAuthLinkStyle(el.identifier)}`}
