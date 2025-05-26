@@ -92,20 +92,18 @@
 
 body {
   width: 100%;
-  max-width: 430px;
   margin: 0 auto;
-}
-
-#root {
-  color: #ffffff;
-  background-color: #1a1a1a;
-  min-height: 100svh;
-  position: relative;
 }
 
 dialog::backdrop {
   max-width: 430px;
   margin: 0 auto;
+}
+
+@media (width >= 1280px) {
+  dialog::backdrop {
+    margin-left: 55%;
+  }
 }
 
 @keyframes onboarding-image-position {
