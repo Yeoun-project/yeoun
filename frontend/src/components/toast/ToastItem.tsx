@@ -31,7 +31,7 @@ const ToastItem = ({ type, title, message }: ToastItemProps) => {
       return `bg-gradient-to-b from-white/40 to-[#FC90D1]/40 backdrop-blur-2xl justify-between`;
     }
     if (type === 'error') {
-      return `bg-error/30 border border-white/50`;
+      return `bg-error/30 border border-white/50 backdrop-blur-md`;
     }
   };
 

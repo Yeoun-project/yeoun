@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { userDelete } from '../services/api/auth/userDelete';
 import Modal from '../components/modal/Modal';
 import useModalStore from '../store/useModalStore';
+import useToastStore from '../store/useToastStore';
 
 const reasons = [
   {
@@ -47,8 +48,10 @@ const UserDeletePage = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [reasonNum, setReasonNum] = useState(0);
   const [checked, setChecked] = useState(true);
+  const [hasError, setHasError] = useState(false);
 
   const { modal, openModal, closeModal } = useModalStore();
+  const toast = useToastStore();
 
   useEffect(() => {
     const clickOutside = (e: MouseEvent) => {
@@ -66,10 +69,17 @@ const UserDeletePage = () => {
   const handleSelect = (id: number) => {
     setReasonNum(id);
     setIsOpen(false);
+    setHasError(false);
   };
 
   const onClickLeave = () => {
-    openModal();
+    if (reasonNum === 0) {
+      toast.addToast.error({
+        title: '여운 탈퇴 실패',
+        message: '떠나시는 이유를 선택해주세요!',
+      });
+      setHasError(true);
+    } else openModal();
   };
 
   const onClickDelete = async (checked: boolean) => {
@@ -100,8 +110,11 @@ const UserDeletePage = () => {
         <p className="font-desc pb-3">혹시 떠나시는 이유를 알려주실 수 있을까요?</p>
         <div ref={dropdownRef} className={'font-desc relative mb-4 w-full text-white'}>
           <div
-            onClick={() => setIsOpen(!isOpen)}
-            className={`flex cursor-pointer items-center justify-between border border-white/20 bg-[#ffffff0D] px-4 py-2 backdrop-blur-md transition ${isOpen ? 'rounded-t-md rounded-b-none' : 'rounded-md'}`}
+            onClick={() => {
+              setHasError(false);
+              setIsOpen(!isOpen);
+            }}
+            className={`flex cursor-pointer items-center justify-between border border-white/20 bg-[#ffffff0D] px-4 py-2 backdrop-blur-md transition ${isOpen ? 'rounded-t-md rounded-b-none' : 'rounded-md'} ${hasError ? 'bg-error/30' : 'bg-[#ffffff0D]'}`}
           >
             <div className="flex items-center gap-2">
               {reasonNum === 0
@@ -133,7 +146,7 @@ const UserDeletePage = () => {
         <div className="flex flex-col items-center p-6">
           <label className="flex cursor-pointer items-center gap-2">
             <input onClick={() => setChecked(!checked)} type="checkbox" className="peer hidden" />
-            <div className="peer-checked: h-6 w-6 border border-white/40 peer-checked:bg-white"></div>
+            <div className="min-h-6 min-w-6 cursor-pointer bg-[url(/icons/unchecked.svg)] bg-contain bg-center bg-no-repeat peer-checked:bg-[url(/icons/checked.svg)]"></div>
             <span className="font-desc">작성한 질문과 답변까지 모두 삭제할게요.</span>
           </label>
         </div>
