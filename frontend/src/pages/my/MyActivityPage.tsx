@@ -11,7 +11,7 @@ import getAuthInfo from '../../services/api/auth/getAuthInfo';
 const MY_PAGE_NAV_PATHS = [
   {
     label: '오늘의 질문 답변',
-    path: '/today-question/answers',
+    path: '/today-question/answers?sort=latest',
   },
   {
     label: '내가 작성한 질문',
