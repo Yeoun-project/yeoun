@@ -94,7 +94,6 @@ body {
   width: 100%;
   max-width: 430px;
   margin: 0 auto;
-  overflow-x: hidden;
 }
 
 #root {
@@ -102,7 +101,6 @@ body {
   background-color: #1a1a1a;
   min-height: 100svh;
   position: relative;
-  overflow-x: hidden;
 }
 
 dialog::backdrop {
