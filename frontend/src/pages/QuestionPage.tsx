@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import useModalStore from '../store/useModalStore';
 import useIndexCarousel from '../hooks/queries/useIndexCarousel';
@@ -24,6 +24,7 @@ import BottomTabBar from '../components/nav/BottomTabBar';
 import TopNavBar from '../components/nav/TopNavBar';
 import Modal from '../components/modal/Modal';
 import checkQuestionToday from '../services/api/question/checkQuestionToday';
+import useToastStore from '../store/useToastStore';
 
 const extnedsCategoryIconAndColor = {
   valuesAndBeliefs: {
@@ -71,12 +72,23 @@ const extnedsCategoryIconAndColor = {
 };
 
 const QuestionPage = () => {
+  const { state } = useLocation();
   const navigate = useNavigate();
 
   const [checkQuestion, setCheckQuestion] = useState<boolean>();
   const [currentCategory, setCurrentCategory] = useState<number | null>(null);
 
   const { modal, openModal, closeModal } = useModalStore();
+  const toast = useToastStore();
+
+  useEffect(() => {
+    if (state?.showToast) {
+      toast.addToast.notification({
+        title: '여운 등록 완료',
+        message: '당신의 질문이 누군가의 마음에 여운을 남길 거예요.',
+      });
+    }
+  }, []);
 
   const QuestionCategoryList = useMemo(() => extendsCategoryData(extnedsCategoryIconAndColor), []);
 

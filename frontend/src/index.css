@@ -100,6 +100,21 @@ dialog::backdrop {
   margin: 0 auto;
 }
 
+@media (max-height: 670px) {
+  #deleteReason textArea {
+    height: 80px !important;
+  }
+  #dropdown {
+    max-height: 200px;
+  }
+}
+
+@media (min-height: 670px) {
+  #deleteReason textArea {
+    height: 250px !important;
+  }
+}
+
 @media (width >= 1280px) {
   dialog::backdrop {
     margin-left: 55%;
