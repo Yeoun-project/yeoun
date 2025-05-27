@@ -5,6 +5,7 @@ import { userDelete } from '../services/api/auth/userDelete';
 import Modal from '../components/modal/Modal';
 import useModalStore from '../store/useModalStore';
 import useToastStore from '../store/useToastStore';
+import CommentForm from '../components/form/CommentForm';
 
 const reasons = [
   {
@@ -49,6 +50,7 @@ const UserDeletePage = () => {
   const [reasonNum, setReasonNum] = useState(0);
   const [checked, setChecked] = useState(true);
   const [hasError, setHasError] = useState(false);
+  const [reason, setReason] = useState('');
 
   const { modal, openModal, closeModal } = useModalStore();
   const toast = useToastStore();
@@ -72,8 +74,14 @@ const UserDeletePage = () => {
     setHasError(false);
   };
 
+  const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setReason(e.target.value);
+
+    if (hasError) setHasError(false);
+  };
+
   const onClickLeave = () => {
-    if (reasonNum === 0) {
+    if (reasonNum === 0 || (reasonNum === 8 && reason === '')) {
       toast.addToast.error({
         title: '여운 탈퇴 실패',
         message: '떠나시는 이유를 선택해주세요!',
@@ -95,7 +103,7 @@ const UserDeletePage = () => {
   };
 
   return (
-    <div className="flex h-[100svh] flex-col">
+    <div className="flex h-[90svh] flex-col">
       <SubPageHeader pageTitle={'탈퇴하기'} />
       <div className="p-6">
         <p className="pb-4 text-[20px]">여운을 남긴 채, 떠나시겠어요?</p>
@@ -114,7 +122,7 @@ const UserDeletePage = () => {
               setHasError(false);
               setIsOpen(!isOpen);
             }}
-            className={`flex cursor-pointer items-center justify-between border border-white/20 bg-[#ffffff0D] px-4 py-2 backdrop-blur-md transition ${isOpen ? 'rounded-t-md rounded-b-none' : 'rounded-md'} ${hasError ? 'bg-error/30' : 'bg-[#ffffff0D]'}`}
+            className={`flex cursor-pointer items-center justify-between border border-white/20 bg-[#ffffff0D] px-4 py-2 backdrop-blur-md transition ${isOpen ? 'rounded-t-md rounded-b-none' : 'rounded-md'} ${hasError ? 'border-error/30 bg-error/30' : 'bg-[#ffffff0D]'}`}
           >
             <div className="flex items-center gap-2">
               {reasonNum === 0
@@ -128,7 +136,10 @@ const UserDeletePage = () => {
             />
           </div>
           {isOpen && (
-            <ul className="absolute z-10 w-full overflow-y-auto border-r border-l border-white/20 bg-white/10 shadow-lg backdrop-blur-md">
+            <ul
+              id="dropdown"
+              className="absolute z-100 w-full overflow-y-auto border-r border-l border-white/20 bg-white/10 shadow-lg backdrop-blur-md"
+            >
               {reasons.map((reason) => (
                 <li
                   key={reason.id}
@@ -139,6 +150,18 @@ const UserDeletePage = () => {
                 </li>
               ))}
             </ul>
+          )}
+          {reasonNum === 8 && (
+            <div className="mt-5">
+              <CommentForm
+                commentValue={reason}
+                onChange={onChange}
+                onSubmit={onClickLeave}
+                maxValue={500}
+                placeholder="떠나기로 한 당신의 이유가 궁금해요"
+                error={hasError}
+              />
+            </div>
           )}
         </div>
       </div>
