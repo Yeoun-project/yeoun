@@ -104,3 +104,18 @@ dialog::backdrop {
   max-width: 430px;
   margin: 0 auto;
 }
+
+@media (max-height: 670px) {
+  #comment {
+    height: 80px !important;
+  }
+  #dropdown {
+    max-height: 200px;
+  }
+}
+
+@media (min-height: 670px) {
+  #comment {
+    height: 250px !important;
+  }
+}
