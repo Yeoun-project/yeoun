@@ -176,7 +176,7 @@ const QuestionCommentPage = () => {
             {questionDetail?.commentCount != null && questionDetail.commentCount > 0
               ? questionDetail.commentCount > 99
                 ? '99+'
-                : questionDetail.commentCount.toString().padStart(2, '0')
+                : questionDetail.commentCount.toString()
               : ''}
           </span>
         </p>
