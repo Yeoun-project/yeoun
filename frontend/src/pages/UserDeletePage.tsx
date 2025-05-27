@@ -72,6 +72,7 @@ const UserDeletePage = () => {
     setReasonNum(id);
     setIsOpen(false);
     setHasError(false);
+    setReason('');
   };
 
   const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -91,8 +92,12 @@ const UserDeletePage = () => {
   };
 
   const onClickDelete = async (checked: boolean) => {
+    const reasonCategory = reasons.find((item) => item.id === reasonNum)?.name;
+
+    if (!reasonCategory) return;
+
     try {
-      const response = await userDelete(checked);
+      const response = await userDelete({ checked, reasonCategory, reason });
       if (response.status === 200) {
         closeModal();
         navigate('/');
