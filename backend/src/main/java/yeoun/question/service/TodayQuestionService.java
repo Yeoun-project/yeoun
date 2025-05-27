@@ -3,6 +3,8 @@ package yeoun.question.service;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import yeoun.exception.CustomException;
@@ -124,14 +126,14 @@ public class TodayQuestionService {
     }
 
     @Transactional(readOnly = true)
-    public TodayQuestionListResponse getAllCommentedMyTodayQuestions(final Long userId) {
-        List<QuestionHistory> questionHistories = questionHistoryRepository.findAllCommentedWithQuestionByUserId(userId);
+    public TodayQuestionListResponse getAllCommentedMyTodayQuestions(final Long userId, Pageable pageable) {
+        Slice<QuestionHistory> questionHistories = questionHistoryRepository.findAllCommentedWithQuestionByUserId(userId, pageable);
         List<TodayQuestionResponse> todayQuestionResponses = questionHistories.stream()
                 .map(questionHistory -> TodayQuestionResponse.of(
                         questionHistory,
                         questionHistory.getComment() != null
                 )).toList();
-        return new TodayQuestionListResponse(todayQuestionResponses);
+        return new TodayQuestionListResponse(todayQuestionResponses, questionHistories.hasNext());
     }
 
     @Transactional(readOnly = true)

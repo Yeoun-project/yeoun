@@ -2,6 +2,7 @@ package yeoun.question.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+
 import jakarta.persistence.EntityManager;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 import yeoun.user.domain.repository.UserRepository;
 import yeoun.user.service.UserService;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -40,7 +42,7 @@ public class QuestionService {
     public void addNewQuestion(AddQuestionRequest dto) throws CustomException {
         // user의 question count 가 남앖는지 확인
         User user = userService.getUserInfo(dto.getUserId());
-        if(user.getQuestionCount() == 0)
+        if (user.getQuestionCount() == 0)
             throw new CustomException(ErrorCode.BAD_REQUEST, "오늘의 질문 기회를 모두 소진하였습니다");
 
         Category category = categoryRepository.findById(dto.getCategoryId())
@@ -99,14 +101,11 @@ public class QuestionService {
 
     @Transactional(readOnly = true)
     public QuestionListResponse getAllQuestions(String category, Pageable pageable) {
-        LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
-        LocalDateTime endOfDay = startOfDay.plusDays(1);
-
         Slice<Question> questionSlice;
         if (category == null || category.isBlank()) {
-            questionSlice = questionRepository.findAllOrderByCommentsCount(startOfDay, endOfDay, pageable);
+            questionSlice = questionRepository.findAllOrderByCreateTimeDesc(pageable);
         } else {
-            questionSlice = questionRepository.findAllByCategoryAndTodayComments(category, startOfDay, endOfDay, pageable);
+            questionSlice = questionRepository.findAllByCategoryOrderByCreateTimeDesc(category, pageable);
         }
 
         List<QuestionResponse> questionResponseList = questionSlice.stream()
@@ -120,11 +119,11 @@ public class QuestionService {
     public QuestionDetailResponse getQuestionDetail(Long userId, Long questionId) {
         Question question = questionRepository.findByIdAndIsFixedIsFalse(questionId)
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_PARAMETER, "질문 ID가 잘못 되었습니다."));
-      
+
         boolean isAuthor = false;
         if (question.getUser() != null) isAuthor = question.getUser().getId().equals(userId);
 
-        boolean isDeleted = question.getDeleteTime()!=null;
+        boolean isDeleted = question.getDeleteTime() != null;
 
         return QuestionDetailResponse.of(question, isAuthor, isDeleted);
     }
@@ -165,8 +164,8 @@ public class QuestionService {
     public List<CategoryResponse> getAllCategories() {
         List<CategoryResponseDao> categoryResponseDaos = questionRepository.findCategoriesWithCount();
         return categoryResponseDaos.stream()
-            .map(dao-> CategoryResponse.of(dao.getCategory(), dao.getCount()))
-            .toList();
+                .map(dao -> CategoryResponse.of(dao.getCategory(), dao.getCount()))
+                .toList();
     }
 
 }

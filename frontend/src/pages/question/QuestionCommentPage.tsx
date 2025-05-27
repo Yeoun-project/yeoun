@@ -144,6 +144,8 @@ const QuestionCommentPage = () => {
     }
   };
 
+  if (!questionDetail) return null;
+
   return (
     <div className="h-[100svh]">
       <header className="relative flex justify-center p-6">
@@ -221,6 +223,7 @@ const QuestionCommentPage = () => {
           comment.map((comment) => (
             <div className="border-b border-[#FFFFFF80] py-4">
               <AnswerItem
+                key={comment.id}
                 my={false}
                 report={commentReport}
                 id={comment.id}

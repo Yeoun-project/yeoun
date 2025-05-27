@@ -1,6 +1,8 @@
 package yeoun.question.domain.repository;
 
 import java.util.List;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -47,8 +49,7 @@ public interface QuestionHistoryRepository extends JpaRepository<QuestionHistory
         LEFT JOIN FETCH questionHistory.question question
         WHERE questionHistory.user.id = :userId
             AND questionHistory.comment IS NOT NULL
-        ORDER BY questionHistory.createTime DESC
         """)
-    List<QuestionHistory> findAllCommentedWithQuestionByUserId(@Param("userId") Long userId);
+    Slice<QuestionHistory> findAllCommentedWithQuestionByUserId(@Param("userId") Long userId, Pageable pageable);
 
 }

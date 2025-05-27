@@ -21,7 +21,7 @@ const QuestionListItem = ({ content, category, createTime, path }: QuestionListI
           </Circle>
         </div>
 
-        <div className="block w-full rounded-sm border border-white/50 bg-white/10 p-3">
+        <div className="flex min-h-[66px] w-full items-center rounded-sm border border-white/50 bg-white/10 px-3">
           <p className="font-desc text-sm text-white">{content}</p>
         </div>
       </Link>

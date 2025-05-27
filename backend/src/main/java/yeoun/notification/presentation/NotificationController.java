@@ -34,6 +34,8 @@ public class NotificationController {
     public ResponseEntity<SseEmitter> connect() {
         Long userId = JwtService.getUserIdFromAuthentication();
         SseEmitter emitter = notificationService.getConnect(userId);
+        if(emitter == null)
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
         return ResponseEntity.ok().body(emitter);
     }
 

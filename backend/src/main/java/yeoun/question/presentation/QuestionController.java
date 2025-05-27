@@ -2,6 +2,7 @@ package yeoun.question.presentation;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import yeoun.common.SuccessResponse;
 import yeoun.question.dto.request.AddQuestionRequest;
@@ -60,7 +61,7 @@ public class QuestionController {
     @GetMapping("/api/question/all")
     public ResponseEntity<?> getAllQuestion(
             @RequestParam(name= "category", required = false) String category,
-            @PageableDefault(sort = "createTime", direction = Sort.Direction.DESC) final Pageable pageable
+            @PageableDefault(sort = "createTime", direction = Direction.ASC) final Pageable pageable
     ) {
         QuestionListResponse questionListResponse = questionService.getAllQuestions(category, pageable);
         return ResponseEntity.ok().body(new SuccessResponse("질문 목록 조회를 성공했습니다.", questionListResponse));
@@ -77,7 +78,7 @@ public class QuestionController {
     @GetMapping("/api/question/my")
     public ResponseEntity<?> getMyQuestion(
             @RequestParam(value = "category", required = false) String category,
-            @PageableDefault() final Pageable pageable
+            @PageableDefault(sort = "createTime", direction = Sort.Direction.DESC) final Pageable pageable
     ) {
         Long userId = JwtService.getUserIdFromAuthentication();
         QuestionListResponse questionListResponse = questionService.getMyQuestions(userId, category, pageable);

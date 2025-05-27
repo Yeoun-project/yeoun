@@ -2,6 +2,9 @@ package yeoun.question.presentation;
 
 import static yeoun.auth.service.JwtService.getUserIdFromAuthentication;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import yeoun.common.SuccessResponse;
 import yeoun.question.dto.request.AddTodayQuestionCommentRequest;
 import yeoun.question.dto.response.TodayQuestionDetailResponse;
@@ -67,9 +70,11 @@ public class TodayQuestionController {
     }
 
     @GetMapping("/public/today-question/commented-by-me")
-    public ResponseEntity<?> getAllCommentedMyTodayQuestions() {
+    public ResponseEntity<?> getAllCommentedMyTodayQuestions(
+        @PageableDefault(sort = "createTime", direction = Direction.DESC) final Pageable pageable
+    ) {
         Long userId = getUserIdFromAuthentication();
-        TodayQuestionListResponse todayQuestionListResponse = todayQuestionService.getAllCommentedMyTodayQuestions(userId);
+        TodayQuestionListResponse todayQuestionListResponse = todayQuestionService.getAllCommentedMyTodayQuestions(userId, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(
                 new SuccessResponse("내가 답변한 오늘의 질문 리스트 조회를 성공했습니다.", todayQuestionListResponse)
         );

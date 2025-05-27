@@ -64,11 +64,14 @@ const getAnsweredQuestions = async ({
 };
 
 // [오늘의 질문] 답변 리스트
-const getTodayAnswersQuestions = async ({ page = 1 }: QuestionListReq): Promise<QuestionList> => {
+const getTodayAnswersQuestions = async ({
+  page = 1,
+  sort = 'latest',
+}: QuestionListReq): Promise<QuestionList> => {
   const response = await client.get<Response<QuestionList>>(
-    getQuestionListApiUrl('/public/today-question/commented-by-me', {
+    `${getQuestionListApiUrl('/public/today-question/commented-by-me', {
       page,
-    })
+    })}${sort === 'old' ? '&sort=createTime,asc' : '&sort=createTime,desc'}`
   );
 
   return response.data.data;

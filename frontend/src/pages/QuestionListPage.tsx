@@ -16,8 +16,10 @@ import useQuestionGroupByYear from '../hooks/useQuestionGroupByYear';
 import QuestionListYearSection from '../components/questionList/QuestionListYearSection';
 import QuestionList from '../components/questionList/QuestionList';
 import ListMoreButton from '../components/questionList/ListMoreButton';
+import { useScrollRestore } from '../hooks/useScrolLRestore';
 
 const QuestionListPage = () => {
+  const { scrollRef, handleScroll } = useScrollRestore();
   const [searchParams, setSearchParams] = useSearchParams();
   const categoryId = searchParams.get('q');
 
@@ -35,6 +37,7 @@ const QuestionListPage = () => {
     setSearchParams({ q: categoryId.toString() });
     setIsOpen(false);
   };
+
   return (
     <div className="h-[calc(100svh-140px)]">
       <SubPageHeader pageTitle="질문 모음" backButtonPath="/today-question" />
@@ -54,7 +57,11 @@ const QuestionListPage = () => {
             <div className="font-desc gap-2.5 px-6 text-[14px]">
               <p>💬 같은 날 올라온 질문 중, 답변이 많이 달린 질문부터 보여드려요 :)</p>
             </div>
-            <div className="no-scrollbar overflow-scroll pb-6">
+            <div
+              className="no-scrollbar overflow-scroll pb-6"
+              ref={scrollRef}
+              onScroll={(e) => handleScroll(e)}
+            >
               {questionsYear.map((year) => (
                 <QuestionListYearSection key={year} year={year}>
                   <QuestionList questions={questions[year]} path="question" />

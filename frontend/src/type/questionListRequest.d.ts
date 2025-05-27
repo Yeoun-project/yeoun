@@ -4,4 +4,5 @@ interface QuestionListReq {
   page?: number;
   categoryId?: string | undefined;
   category?: QuestionCategory;
+  sort?: 'old' | 'latest';
 }

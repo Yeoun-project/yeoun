@@ -29,6 +29,10 @@
   --animate-spin-cube: spin 17s linear infinite;
   --animate-spin-cube-reverse: spin 20s linear infinite reverse;
   --animate-spin-circle-layer: spin 15s linear infinite;
+
+  --animate-onboarding-position: onboarding-image-position 1.5s ease-in-out;
+
+  --animate-click-icon-poisition: clickIcon 2s ease-in-out;
 }
 
 :root {
@@ -88,16 +92,7 @@
 
 body {
   width: 100%;
-  max-width: 430px;
   margin: 0 auto;
-  overflow-x: hidden;
-}
-
-#root {
-  color: #ffffff;
-  background-color: #1a1a1a;
-  min-height: 100svh;
-  position: relative;
 }
 
 dialog::backdrop {
@@ -117,5 +112,41 @@ dialog::backdrop {
 @media (min-height: 670px) {
   #comment {
     height: 250px !important;
+  }
+}
+
+@media (width >= 1280px) {
+  dialog::backdrop {
+    margin-left: 55%;
+  }
+}
+
+@keyframes onboarding-image-position {
+  0% {
+    transform: translateY(140%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes clickIcon {
+  0% {
+    transform: translate(200%, 200%);
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  60% {
+    transform: translate(0, 0);
+    visibility: visible;
+    opacity: 100;
+  }
+
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
   }
 }

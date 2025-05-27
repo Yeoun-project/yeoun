@@ -9,5 +9,6 @@ import lombok.*;
 public class TodayQuestionListResponse {
 
     private final List<TodayQuestionResponse> questions;
+    private final Boolean hasNext;
 
 }

@@ -4,7 +4,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import yeoun.question.domain.Question;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -29,39 +28,28 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
             """)
     Boolean existsByUserIdAndToday(@Param("userId") Long userId);
 
-    @Query("""
+    @Query(value = """
             SELECT question FROM Question question
-            LEFT JOIN question.comments comment
-              ON comment.createTime BETWEEN :start AND :end
+            left join question.comments c
             WHERE question.isFixed = false
-            GROUP BY question
-            ORDER BY COUNT(comment) DESC, question.createTime DESC
-        """)
-    Slice<Question> findAllOrderByCommentsCount(
-            @Param("start") LocalDateTime start,
-            @Param("end") LocalDateTime end,
-            Pageable pageable
-    );
-
-    @Query("""
-            SELECT q FROM Question q
-            LEFT JOIN q.comments c
-              ON c.createTime BETWEEN :start AND :end
-            WHERE q.isFixed = false
-            AND q.category.name = :category
-            GROUP BY q
-            ORDER BY COUNT(c) DESC, q.createTime ASC
+            group by question
+            ORDER BY FUNCTION('date', question.createTime) desc , count(c) desc
             """)
-    Slice<Question> findAllByCategoryAndTodayComments(
-            @Param("category") String category,
-            @Param("start") LocalDateTime start,
-            @Param("end") LocalDateTime end,
-            Pageable pageable
-    );
+    Slice<Question> findAllOrderByCreateTimeDesc(Pageable pageable);
 
     @Query("""
             SELECT question FROM Question question
-            WHERE (question.category.name = :category OR :category = null)
+            left join question.comments c
+            WHERE question.isFixed = false
+            AND question.category.name = :category
+            group by question
+            ORDER BY FUNCTION('date', question.createTime) DESC, count(c) desc
+            """)
+    Slice<Question> findAllByCategoryOrderByCreateTimeDesc(@Param("category") String category, Pageable pageable);
+
+    @Query("""
+            SELECT question FROM Question question
+            WHERE (question.category.name = :category OR :category IS NULL)
                 AND question.user.id = :userId
             """)
     Slice<Question> findByUserId(@Param("userId")Long userId, @Param("category") String category, Pageable pageable);

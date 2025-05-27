@@ -1,11 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 
 import { getTodayAnswersQuestions } from '../../services/api/question/getQuestions';
 
 import useQuestionGroupByYear from '../../hooks/useQuestionGroupByYear';
-
-import BottomTabBar from '../../components/nav/BottomTabBar';
 
 import CheckBox from '../../components/common/CheckBox';
 
@@ -16,6 +14,8 @@ import QuestionListYearSection from '../../components/questionList/QuestionListY
 import ListMoreButton from '../../components/questionList/ListMoreButton';
 import QuestionList from '../../components/questionList/QuestionList';
 import useAuthStore from '../../store/useAuthStore';
+import { useScrollRestore } from '../../hooks/useScrolLRestore';
+import { useSearchParams } from 'react-router-dom';
 
 type sortOrder = 'latest' | 'old';
 
@@ -31,17 +31,24 @@ const SORTORDER_CHECKBOXS = [
 ];
 
 const MyTodayAnswersPage = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const { scrollRef, handleScroll } = useScrollRestore();
   const { userType } = useAuthStore();
-  const [sortOrder, setSortOrder] = useState<sortOrder>('latest');
+
+  const [sortOrder, setSortOrder] = useState<sortOrder>(
+    (searchParams.get('sort') as sortOrder) || 'latest'
+  );
 
   const { data, fetchNextPage, hasNextPage } = useInfiniteQuery({
-    queryKey: ['my', 'today-question', 'answers'],
+    queryKey: ['my', 'today-question', 'answers', sortOrder],
     queryFn: async ({ pageParam }) =>
       await getTodayAnswersQuestions({
         page: pageParam as number,
+        sort: sortOrder,
       }),
-    initialPageParam: 1,
-    getNextPageParam: (lastPage, allPages) => (lastPage.hasNext ? allPages.length + 1 : undefined),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, allPages) => (lastPage.hasNext ? allPages.length : undefined),
     select: (data) => {
       // 새로 불러온 데이터들이 있다면 기존 데이터들과 매핑 후 반환
       return data.pages.flatMap((page) => page.questions || []);
@@ -53,14 +60,19 @@ const MyTodayAnswersPage = () => {
   const handleSelectSortOrder = (sortOrder: sortOrder) => {
     setSortOrder(sortOrder);
   };
+
+  useEffect(() => {
+    setSearchParams({ sort: sortOrder });
+  }, [setSearchParams, sortOrder]);
+
   return (
     <div className="h-[100svh] overflow-hidden">
       <SubPageHeader
-        pageTitle="답변목록"
+        pageTitle="오늘의 질문 답변"
         backButtonPath={userType === 'Guest' ? '/today-question' : '/my'}
       />
 
-      <main className="flex h-[calc(100%-140px)] flex-col">
+      <main className="flex h-[calc(100%-70px)] flex-col">
         {questionsYear.length > 0 && (
           <div className="mb-3 flex items-center justify-end gap-2 px-6">
             {SORTORDER_CHECKBOXS.map((option) => (
@@ -82,7 +94,11 @@ const MyTodayAnswersPage = () => {
         )}
 
         {questionsYear.length > 0 && (
-          <div className="no-scrollbar overflow-scroll pb-6">
+          <div
+            className="no-scrollbar overflow-scroll pb-2"
+            ref={scrollRef}
+            onScroll={(e) => handleScroll(e)}
+          >
             {questionsYear.map((year) => (
               <QuestionListYearSection key={year} year={year}>
                 <QuestionList questions={questions[year]} path="today-question" />
@@ -94,7 +110,6 @@ const MyTodayAnswersPage = () => {
           </div>
         )}
       </main>
-      {userType !== 'Guest' && <BottomTabBar />}
     </div>
   );
 };

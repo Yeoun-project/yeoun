@@ -16,8 +16,10 @@ import Dropdown from '../../components/dropdown/Dropdown';
 import QuestionListYearSection from '../../components/questionList/QuestionListYearSection';
 import ListMoreButton from '../../components/questionList/ListMoreButton';
 import QuestionList from '../../components/questionList/QuestionList';
+import { useScrollRestore } from '../../hooks/useScrolLRestore';
 
 const MyQuestionsPage = () => {
+  const { scrollRef, handleScroll } = useScrollRestore();
   const [searchParams, setSearchParams] = useSearchParams();
   const categoryId = searchParams.get('q');
 
@@ -40,19 +42,17 @@ const MyQuestionsPage = () => {
     <div className="h-[100svh] overflow-hidden">
       <SubPageHeader pageTitle="내가 작성한 질문" backButtonPath="/my" />
 
-      <main className="flex h-[calc(100%-140px)] flex-col">
-        {questionsYear.length > 0 && (
-          <Dropdown
-            isOpen={dropdown}
-            onClick={() => setDropdown((prev) => !prev)}
-            all
-            categories={CATEGORY}
-            handleSelect={handleSelectCategory}
-            selected={CATEGORY[Number(categoryId) - 1]}
-            id={Number(categoryId) || 0}
-            location="font-desc"
-          />
-        )}
+      <main className="flex h-[calc(100%-70px)] flex-col">
+        <Dropdown
+          isOpen={dropdown}
+          onClick={() => setDropdown((prev) => !prev)}
+          all
+          categories={CATEGORY}
+          handleSelect={handleSelectCategory}
+          selected={CATEGORY[Number(categoryId) - 1]}
+          id={Number(categoryId) || 0}
+          location="font-desc pb-4"
+        />
 
         {questionsYear.length === 0 && (
           <FallBack
@@ -62,7 +62,11 @@ const MyQuestionsPage = () => {
         )}
 
         {questionsYear.length > 0 && (
-          <div className="no-scrollbar overflow-scroll pb-6">
+          <div
+            className="no-scrollbar overflow-scroll pb-2"
+            ref={scrollRef}
+            onScroll={(e) => handleScroll(e)}
+          >
             {questionsYear.map((year) => (
               <QuestionListYearSection key={year} year={year}>
                 <QuestionList questions={questions[year]} path="question" />

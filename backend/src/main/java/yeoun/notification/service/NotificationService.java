@@ -39,11 +39,11 @@ public class NotificationService {
     private final QuestionRepository questionRepository;
     private final EntityManager entityManager;
     private final QuestionService questionService;
-    private final SseService sseService;
+    private final SseServiceInterface sseService;
     private final UserRepository userRepository;
 
     public SseEmitter getConnect(Long userId) {
-        return sseService.createSseEmitter(userId, notificationRepository.getUnReadNotificationsCount(userId));
+        return sseService.getSseEmitter(userId, notificationRepository.getUnReadNotificationsCount(userId));
     }
 
     @Transactional
