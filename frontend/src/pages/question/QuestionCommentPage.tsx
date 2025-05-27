@@ -161,11 +161,11 @@ const QuestionCommentPage = () => {
           )}
         </div>
       </header>
-      <main className="no-scrollbar flex h-[calc(100%-130px)] flex-col overflow-scroll px-6 pb-8">
+      <main className="no-scrollbar flex h-[calc(100%-125px)] flex-col overflow-scroll px-6 pb-8">
         <div className="flex items-center justify-center py-4">
           <button onClick={onClickComment} className="cursor-pointer">
             <Circle size={280} animate={true} category={questionDetail?.categoryName}>
-              <p className="text-blur text-black-primary px-8 text-xl break-keep">{content}</p>
+              <p className="text-blur text-black-primary px-8 text-xl break-words">{content}</p>
             </Circle>
           </button>
         </div>
@@ -233,6 +233,7 @@ const QuestionCommentPage = () => {
               />
             </div>
           ))}
+        <div className="p-4"></div>
         {/* 무한 스크롤 */}
         <div ref={ref} style={{ display: 'none' }}>
           로딩
