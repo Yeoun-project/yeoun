@@ -159,6 +159,7 @@ const UserDeletePage = () => {
           {reasonNum === 8 && (
             <div className="mt-5">
               <CommentForm
+                formId="deleteReason"
                 commentValue={reason}
                 onChange={onChange}
                 onSubmit={onClickLeave}
