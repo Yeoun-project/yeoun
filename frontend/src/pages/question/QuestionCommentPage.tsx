@@ -165,7 +165,9 @@ const QuestionCommentPage = () => {
         <div className="flex items-center justify-center py-4">
           <button onClick={onClickComment} className="cursor-pointer">
             <Circle size={280} animate={true} category={questionDetail?.categoryName}>
-              <p className="text-blur text-black-primary px-8 text-xl break-words">{content}</p>
+              <p className="text-blur text-black-primary px-8 text-xl break-words break-all">
+                {content}
+              </p>
             </Circle>
           </button>
         </div>
