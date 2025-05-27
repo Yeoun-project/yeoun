@@ -42,7 +42,7 @@ const CommentPage = () => {
     if (content === '') {
       setHasError(true);
       toast.addToast.error({
-        title: '여운 등록 실패!',
+        title: '여운 등록 실패',
         message: '답변을 작성해주세요!',
       });
     } else {

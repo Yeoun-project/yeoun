@@ -84,29 +84,41 @@ const QuestionCommentPage = () => {
 
   const { comments } = useCommentGroup(comment, sortOrder);
 
-  const [report, setReport] = useState(false);
+  const [questionReport, setQuestionReport] = useState(false);
+  const [commentReport, setCommentReport] = useState(false);
   const [register, setRegister] = useState(false);
 
   const onClickCancel = () => {
-    setReport(false);
+    setQuestionReport(false);
+    setCommentReport(false);
     setRegister(false);
   };
 
-  const onClickReportBtn = () => {
-    setReport(true);
-    setRegister(false);
+  const onClickQuestionReportBtn = () => {
+    setQuestionReport(true);
+    setCommentReport(false);
+    modal.openModal();
+  };
+
+  const onClickCommentReportBtn = () => {
+    setQuestionReport(false);
+    setCommentReport(true);
     modal.openModal();
   };
 
   const onSubmitModal = () => {
-    setReport(false);
+    setQuestionReport(false);
+    setCommentReport(false);
     setRegister(false);
     modal.closeModal();
-    console.log('신고!');
+    window.open(
+      'https://docs.google.com/forms/d/e/1FAIpQLScP20nRH81EhVu4RsfNM2CUtfSPwnoZFUIBSfSHu6fv6yCNLw/viewform?usp=dialog'
+    );
   };
 
   const handleConfirm = () => {
-    setReport(false);
+    setQuestionReport(false);
+    setCommentReport(false);
     setRegister(false);
     modal.closeModal();
     navigate(`/question/comment/${questionId}`);
@@ -123,7 +135,8 @@ const QuestionCommentPage = () => {
         message: '본인 답변에는 여운을 남길 수 없어요!',
       });
     } else if (mycomment === null) {
-      setReport(false);
+      setQuestionReport(false);
+      setCommentReport(false);
       setRegister(true);
       modal.openModal();
     } else {
@@ -142,17 +155,19 @@ const QuestionCommentPage = () => {
         <h3 className="w-full text-center">{`${createTime.getFullYear()}년 ${createTime.getMonth() + 1}월 ${createTime.getDate()}일`}</h3>
         <div className="absolute right-6">
           <button
-            onClick={onClickReportBtn}
+            onClick={onClickQuestionReportBtn}
             className="block min-h-6 min-w-6 cursor-pointer bg-[url(/icons/report.svg)] bg-no-repeat"
           />
-          {report && <ReportModal value="질문" onSubmit={onSubmitModal} onCancel={onClickCancel} />}
+          {questionReport && (
+            <ReportModal value="질문" onSubmit={onSubmitModal} onCancel={onClickCancel} />
+          )}
         </div>
       </header>
-      <main className="no-scrollbar flex h-[calc(100%-130px)] flex-col overflow-scroll px-6 pb-8">
+      <main className="no-scrollbar flex h-[calc(100%-125px)] flex-col overflow-scroll px-6 pb-8">
         <div className="flex items-center justify-center py-4">
           <button onClick={onClickComment} className="cursor-pointer">
             <Circle size={280} animate={true} category={questionDetail?.categoryName}>
-              <p className="text-blur text-black-primary max-w-[280px] px-8 text-xl text-wrap">
+              <p className="text-blur text-black-primary px-8 text-xl break-words break-all">
                 {content}
               </p>
             </Circle>
@@ -165,7 +180,7 @@ const QuestionCommentPage = () => {
             {questionDetail?.commentCount != null && questionDetail.commentCount > 0
               ? questionDetail.commentCount > 99
                 ? '99+'
-                : questionDetail.commentCount.toString().padStart(2, '0')
+                : questionDetail.commentCount.toString()
               : ''}
           </span>
         </p>
@@ -191,12 +206,12 @@ const QuestionCommentPage = () => {
           <div className="border-b border-[#FFFFFF80] py-4">
             <AnswerItem
               my={true}
-              report={report}
+              report={commentReport}
               id={mycomment.id}
               isLike={mycomment.isLike}
               likeCount={mycomment.likeCount}
               content={mycomment.content}
-              reportBtnClick={onClickReportBtn}
+              reportBtnClick={onClickCommentReportBtn}
               onSubmit={() => console.log('삭제')}
               onCancel={onClickCancel}
               questionId={questionId}
@@ -210,12 +225,12 @@ const QuestionCommentPage = () => {
               <AnswerItem
                 key={comment.id}
                 my={false}
-                report={report}
+                report={commentReport}
                 id={comment.id}
                 isLike={comment.isLike}
                 likeCount={comment.likeCount}
                 content={comment.content}
-                reportBtnClick={onClickReportBtn}
+                reportBtnClick={onClickCommentReportBtn}
                 onSubmit={onSubmitModal}
                 onCancel={onClickCancel}
                 questionId={questionId}
@@ -223,6 +238,7 @@ const QuestionCommentPage = () => {
               />
             </div>
           ))}
+        <div className="p-4"></div>
         {/* 무한 스크롤 */}
         <div ref={ref} style={{ display: 'none' }}>
           로딩
@@ -240,7 +256,7 @@ const QuestionCommentPage = () => {
           답변 작성하기
         </button>
       </div>
-      {!!mycomment && !report && (
+      {!!mycomment && !commentReport && !questionReport && (
         <Modal>
           <Modal.Header>
             <Modal.Title>질문당 답변은 1번만 가능합니다.</Modal.Title>

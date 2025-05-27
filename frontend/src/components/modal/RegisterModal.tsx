@@ -21,7 +21,7 @@ const RegisterModal = ({
         </Modal.SubTitle>
       </Modal.Header>
       <Modal.Content>
-        <div className="font-desc h-[200px] rounded-[8px] border border-[#919191] px-5 py-3 text-[#1A1A1A]">
+        <div className="font-desc h-[200px] rounded-[8px] border border-[#919191] px-5 py-3 break-words break-all text-[#1A1A1A]">
           {content}
         </div>
         <div className="font-desc mt-2 text-right text-sm text-[#6D6D6D]">

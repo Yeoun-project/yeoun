@@ -8,11 +8,16 @@ import { getNotification, postNotification } from '../services/api/alarm/getNoti
 
 const SettingPage = () => {
   const [activate, setActivate] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
   const { userType, setUserType } = useAuthStore();
   const navigate = useNavigate();
 
   useEffect(() => {
-    getAlarmState();
+    if (userType === 'User') {
+      getAlarmState();
+    } else {
+      setIsLoaded(true);
+    }
   }, []);
 
   const onClickLogout = async () => {
@@ -34,6 +39,8 @@ const SettingPage = () => {
       setActivate(response.isNotification);
     } catch (err) {
       console.log(err);
+    } finally {
+      setIsLoaded(true);
     }
   };
 
@@ -45,6 +52,8 @@ const SettingPage = () => {
       console.log(err);
     }
   };
+
+  if (!isLoaded) return null; // 로딩 중일 땐 렌더링 차단
 
   return (
     <>
@@ -87,7 +96,14 @@ const SettingPage = () => {
             </li>
           )}
           <li className="cursor-pointer border-b border-[#AAAAAA]">
-            <div className="px-6 py-4.5 transition-transform duration-150 active:shadow-inner">
+            <div
+              onClick={() =>
+                window.open(
+                  'https://docs.google.com/forms/d/e/1FAIpQLSfVJyI_TuJHHbXotFaNuUnDhqEQF5Yt_lXL8tRxXl03IAFfOw/viewform?usp=sharing&ouid=110681974483144339268'
+                )
+              }
+              className="px-6 py-4.5 transition-transform duration-150 active:shadow-inner"
+            >
               문의하기
             </div>
           </li>
