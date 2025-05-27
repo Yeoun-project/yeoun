@@ -263,7 +263,7 @@ const AddQuestionPage = () => {
             onChange={handleChange}
             hasError={hasError}
             maxLength={MAX_LENGTH}
-            placeholder="사용자들의 생각을 듣고 싶은 의미있는 질문을 작성해주세요."
+            placeholder="사용자들의 생각을 듣고 싶은 의미있는 질문을 작성해주세요"
             forbidden={forbidden}
           />
         </div>
