@@ -34,7 +34,7 @@ const QuestionListItemByDate = ({
       </Link>
       <div className="font-desc gap-1 px-6 pb-3 text-right text-[12px]">
         <span className="text-[#AAAAAA]">이 질문에 대한 답변 갯수 </span>
-        {`${commentCount > 99 ? '99+' : commentCount}`}
+        {`${commentCount > 99 ? '+99' : commentCount}`}
       </div>
     </li>
   );
