@@ -240,7 +240,7 @@ const QuestionCommentPage = () => {
           ))}
         <div className="p-4"></div>
         {/* 무한 스크롤 */}
-        <div ref={ref} style={{ display: 'none' }}>
+        <div ref={ref} style={{ visibility: 'hidden' }}>
           로딩
         </div>
       </main>
