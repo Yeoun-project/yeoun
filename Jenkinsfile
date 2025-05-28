@@ -53,6 +53,7 @@ pipeline {
 									--name yeoun-front \
 									--network yeoun-network \
 									-p 80:80 -p 443:443 \
+									-e TZ=Asia/Seoul \
 									-v /etc/letsencrypt:/etc/letsencrypt \
                                     -v /home/ubuntu/certbot:/var/www/certbot \
 									yeoun-front:latest
@@ -92,6 +93,7 @@ pipeline {
 									--name yeoun-back \
 									--network yeoun-network \
 									-p 8080:8080 \
+									-e TZ=Asia/Seoul \
 									-e DB_HOST=$DB_HOST \
 									-e DB_PORT=$DB_PORT \
 									-e DB_PASSWORD=$DB_PASSWORD \
