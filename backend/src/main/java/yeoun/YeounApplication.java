@@ -15,10 +15,4 @@ public class YeounApplication {
 		SpringApplication.run(YeounApplication.class, args);
 	}
 
-	@PostConstruct
-	public void init() {
-		// timezone 설정
-		TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
-	}
-
 }
