@@ -119,6 +119,16 @@ dialog::backdrop {
   dialog::backdrop {
     margin-left: 55%;
   }
+
+  .toast-list {
+    left: 55%;
+  }
+}
+
+@media (width < 1280px) {
+  .toast-list {
+    margin: 0 auto;
+  }
 }
 
 @keyframes onboarding-image-position {

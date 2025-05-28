@@ -5,13 +5,30 @@ interface ToastItem {
   type: ToastType;
   title: string;
   message: string;
+  hasBottomTab?: boolean;
 }
 
 interface useToastStore {
   toastItem: ToastItem | null;
   addToast: {
-    notification: ({ title, message }: { title: string; message: string }) => void;
-    error: ({ title, message }: { title: string; message: string }) => void;
+    notification: ({
+      title,
+      message,
+      hasBottomTab,
+    }: {
+      title: string;
+      message: string;
+      hasBottomTab?: boolean;
+    }) => void;
+    error: ({
+      title,
+      message,
+      hasBottomTab,
+    }: {
+      title: string;
+      message: string;
+      hasBottomTab?: boolean;
+    }) => void;
   };
   removeToast: () => void;
 }
@@ -20,13 +37,18 @@ const useToastStore = create<useToastStore>((set) => ({
   toastItem: null,
   addToast: {
     // notification Toast
-    notification: ({ title, message }) => {
-      const newToastItem: ToastItem = { type: 'notification' as const, title, message };
+    notification: ({ title, message, hasBottomTab = true }) => {
+      const newToastItem: ToastItem = {
+        type: 'notification' as const,
+        title,
+        message,
+        hasBottomTab,
+      };
       set(() => ({ toastItem: newToastItem }));
     },
     // error Toast
-    error: ({ title, message }) => {
-      const newToastItem: ToastItem = { type: 'error' as const, title, message };
+    error: ({ title, message, hasBottomTab = true }) => {
+      const newToastItem: ToastItem = { type: 'error' as const, title, message, hasBottomTab };
       set(() => ({ toastItem: newToastItem }));
     },
   },

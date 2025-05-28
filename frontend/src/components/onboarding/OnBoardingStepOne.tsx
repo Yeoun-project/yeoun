@@ -10,7 +10,7 @@ const OnBoardingStepOne = () => {
       <div className="my-12 flex justify-center overflow-hidden p-2">
         <Circle size={260} animate>
           <p className="text-blur p-4 text-lg break-keep text-black">
-            다시 태어난다면, 당신은 어떻게 살고싶나요?
+            다시 태어난다면, 당신은 어떻게 살고 싶나요?
           </p>
         </Circle>
       </div>
