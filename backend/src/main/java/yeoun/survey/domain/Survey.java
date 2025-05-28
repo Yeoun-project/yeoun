@@ -21,7 +21,7 @@ public class Survey {
     @Column(nullable = false)
     private double starRate;
 
-    @Column(nullable = false)
+    @Column
     private String message;
 
     @Column

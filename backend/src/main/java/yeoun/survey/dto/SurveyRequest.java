@@ -1,11 +1,11 @@
 package yeoun.survey.dto;
 
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class SurveyRequest {
 
     @NotNull(message = "별점을 입력해주세요.")
@@ -13,7 +13,6 @@ public class SurveyRequest {
     @DecimalMin(value = "0", message = "별점은 0점보다 낮을 수 없습니다.")
     private final double starRate;
 
-    @NotBlank(message = "메세지를 입력해주세요.")
-    private final String message;
+    private String message;
 
 }
