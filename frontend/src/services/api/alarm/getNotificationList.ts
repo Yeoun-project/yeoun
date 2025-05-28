@@ -9,8 +9,8 @@ const getAlarmListUrl = (url: string, { page = 0 }: { page: number }) => {
 
 export const postTestAlarm = async () => {
   await client.post('/api/notification/test', {
-    questionId: 1,
-    receiver: 1,
+    questionId: 21,
+    receiver: 553,
     type: 'NEW_COMMENT',
   });
 };
