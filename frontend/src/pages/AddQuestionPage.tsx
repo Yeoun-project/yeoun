@@ -19,6 +19,7 @@ import RegisterModal from '../components/modal/RegisterModal';
 import ConfirmModal from '../components/modal/ConfirmModal';
 
 import { useNavigate } from 'react-router-dom';
+import { queryClient } from '../utils/queryClient';
 
 export interface Category {
   category: QuestionCategory;
@@ -182,6 +183,9 @@ const AddQuestionPage = () => {
   const onConfirm = async () => {
     const response = await addUserQuestion(content, categoryId);
     console.log(response?.data);
+
+    queryClient.invalidateQueries({ queryKey: ['all', 'questions'] });
+    queryClient.invalidateQueries({ queryKey: ['my', 'questions'] });
 
     // 등록 후 초기화
     setSecond(false);
