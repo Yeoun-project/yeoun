@@ -119,7 +119,7 @@ const UserDeletePage = () => {
           {` 그래도 괜찮다면 조심스레 보내드릴게요.`}
         </p>
       </div>
-      <div className="p-6">
+      <div id="etc" className="no-scrollbar flex h-[35svh] flex-col overflow-scroll px-6">
         <p className="font-desc pb-3">혹시 떠나시는 이유를 알려주실 수 있을까요?</p>
         <div ref={dropdownRef} className={'font-desc relative mb-4 w-full text-white'}>
           <div
