@@ -24,7 +24,7 @@ public class SurveyController {
     ) {
         String userAgent = request.getHeader("User-Agent");
         surveyService.append(surveyRequest, userAgent);
-        return ResponseEntity.ok(new SuccessResponse(null, "설문 추가를 성공했습니다."));
+        return ResponseEntity.ok(new SuccessResponse("설문 추가를 성공했습니다.",null));
     }
 
 }
