@@ -142,6 +142,10 @@ const QuestionCommentPage = () => {
     } else {
       modal.openModal();
     }
+
+    console.log(mycomment);
+    console.log(questionReport);
+    console.log(commentReport);
   };
 
   if (!questionDetail) return null;
@@ -244,7 +248,7 @@ const QuestionCommentPage = () => {
           로딩
         </div>
       </main>
-      {register && (
+      {register && !commentReport && !questionReport && (
         <AvailableModal title="질문 당 답변" subTitle="답변" handleConfirm={handleConfirm} />
       )}
       <div className="absolute bottom-0 w-full p-6">
