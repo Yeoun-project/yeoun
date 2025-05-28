@@ -14,7 +14,7 @@ const QuestionPageFallback = () => {
       }
       setCategory(CATEGORY[currentCategory].category);
       setCurrentCategory((prev) => prev + 1);
-    }, 300);
+    }, 150);
 
     return () => {
       clearTimeout(timer);

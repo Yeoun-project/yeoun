@@ -3,8 +3,8 @@ import Logo from '/logo.svg';
 
 const BackgroundBanner = () => {
   return (
-    <div className="fixed top-0 left-0 hidden h-[100vh] w-[100vw] bg-[url(/gradient-background.svg)] bg-cover bg-center bg-no-repeat xl:block">
-      <div className="absolute left-[5%] z-50 p-20">
+    <div className="fixed top-0 left-0 hidden h-full w-[100vw] overflow-y-scroll bg-[url(/gradient-background.svg)] bg-cover bg-center bg-no-repeat xl:block">
+      <div className="absolute top-0 bottom-0 left-[5%] z-50 flex h-svh flex-col items-start justify-center p-20">
         <img src={Logo} alt="여운" className="mb-4" />
         <p className="mb-2 text-[32px]">
           안녕하세요 :) <br />

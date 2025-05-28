@@ -20,6 +20,7 @@ const useUpdateCommentMutation = (questionId: number) => {
       addToast.notification({
         title: '여운 수정 완료',
         message: '오늘의 질문에 당신의 여운이 다시 머물렀어요.',
+        hasBottomTab: false,
       });
 
       navigate('/today-question/answers');

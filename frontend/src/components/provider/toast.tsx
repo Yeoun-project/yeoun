@@ -9,7 +9,9 @@ const ToastProvider = () => {
   return createPortal(
     <>
       {toastItem && (
-        <div className="fixed bottom-24 z-10 w-full max-w-[430px] space-y-2 px-6">
+        <div
+          className={`toast-list fixed right-0 left-0 z-10 w-full max-w-[430px] space-y-2 px-6 ${toastItem.hasBottomTab ? 'bottom-24' : 'bottom-6'}`}
+        >
           <ToastItem type={toastItem.type} title={toastItem.title} message={toastItem.message} />
         </div>
       )}

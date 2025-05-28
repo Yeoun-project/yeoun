@@ -91,7 +91,7 @@ const MyTodayAnswerPage = () => {
           </Modal.Footer>
         </Modal>
       )}
-      <main className="relative flex min-h-[100svh] flex-col justify-between gap-20 px-6 pt-3 pb-6">
+      <main className="relative flex h-svh flex-col justify-between gap-10 px-6 py-4">
         {/* Background-Circle */}
         <div className="absolute top-[10%] left-1/2 translate-x-[-50%] opacity-40" aria-hidden>
           <Circle size={280} animate category={'dreamsAndGoals'} />
@@ -110,7 +110,7 @@ const MyTodayAnswerPage = () => {
           {/* Content-Seiction */}
           <section className="z-1 pt-18">
             <h4
-              className="text-blur-sm mb-6 text-center text-3xl/relaxed break-keep"
+              className="text-blur-sm mb-6 text-center text-3xl/normal break-keep"
               aria-label={todayQuestionComment.content}
             >
               {todayQuestionComment.content}

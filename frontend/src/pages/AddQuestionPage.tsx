@@ -240,7 +240,7 @@ const AddQuestionPage = () => {
       <main className="flex min-h-[100svh] flex-col">
         <header className="relative flex justify-center p-8">
           <div className="absolute top-6 left-6">
-            <BackArrowButton />
+            <BackArrowButton path="/question" />
           </div>
           <h3 className="w-full text-center">질문작성</h3>
         </header>

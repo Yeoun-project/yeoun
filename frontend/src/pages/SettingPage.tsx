@@ -8,6 +8,7 @@ import { postNotification } from '../services/api/alarm/getNotification';
 import { useAlarmStore } from '../store/useAlarmStore';
 
 const SettingPage = () => {
+
   const { notification, setNotification, fetchNotificationState } = useAlarmStore();
 
   const { userType, setUserType } = useAuthStore();
@@ -40,6 +41,8 @@ const SettingPage = () => {
       console.log(err);
     }
   };
+
+  if (!isLoaded) return null; // 로딩 중일 땐 렌더링 차단
 
   return (
     <>
