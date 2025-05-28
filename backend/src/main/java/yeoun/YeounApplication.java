@@ -18,7 +18,7 @@ public class YeounApplication {
 	@PostConstruct
 	public void init() {
 		// timezone 설정
-		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+		TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
 	}
 
 }
