@@ -84,6 +84,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
 
     Optional<Question> findByIdAndIsFixedIsFalse(Long id);
 
+    @Query("select q.id from Question q where q.user.id = :userId")
     List<Long> findAllIdsByUserId(@Param("userId") final Long userId);
 
 }

@@ -105,8 +105,9 @@ public class CommentService {
 
     @Transactional(readOnly = true)
     public CommentListResponse getAllComments(Long questionId, Long userId, Pageable pageable) {
-        Boolean isExistQuestion = questionService.isExistQuestion(questionId);
-        if (!isExistQuestion) throw new CustomException(ErrorCode.INVALID_PARAMETER, "Invalid question id");
+        Question targetQuestion = questionRepository.findQuestionById(questionId).orElseThrow(
+            () -> new CustomException(ErrorCode.INVALID_PARAMETER, "Invalid question id")
+        );
 
         Optional<Comment> myCommentOpt = commentRepository.findTopByUserIdAndQuestionId(userId, questionId);
         CommentResponse myCommentResponse = myCommentOpt
@@ -135,6 +136,7 @@ public class CommentService {
 
         return new CommentListResponse(
                 myCommentResponse,
+                targetQuestion.getDeleteTime() != null,
                 commentResponses,
                 comments.hasNext()
         );

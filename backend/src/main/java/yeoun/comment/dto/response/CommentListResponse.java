@@ -10,6 +10,7 @@ import java.util.List;
 public class CommentListResponse {
 
     final CommentResponse myComment;
+    final Boolean isDeletedQuestion;
     final List<CommentResponse> comments;
     final Boolean hasNext;
 
