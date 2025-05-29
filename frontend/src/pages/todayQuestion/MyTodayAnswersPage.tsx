@@ -15,7 +15,7 @@ import ListMoreButton from '../../components/questionList/ListMoreButton';
 import QuestionList from '../../components/questionList/QuestionList';
 import useAuthStore from '../../store/useAuthStore';
 import { useScrollRestore } from '../../hooks/useScrolLRestore';
-import { useSearchParams } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 
 type sortOrder = 'latest' | 'old';
 
@@ -31,11 +31,14 @@ const SORTORDER_CHECKBOXS = [
 ];
 
 const MyTodayAnswersPage = () => {
+  const location = useLocation();
+
   const [searchParams, setSearchParams] = useSearchParams();
 
   const { scrollRef, handleScroll } = useScrollRestore();
   const { userType } = useAuthStore();
 
+  const [locationState, setLocationState] = useState<string | boolean>(false);
   const [sortOrder, setSortOrder] = useState<sortOrder>(
     (searchParams.get('sort') as sortOrder) || 'latest'
   );
@@ -62,6 +65,12 @@ const MyTodayAnswersPage = () => {
   };
 
   useEffect(() => {
+    if (location.state?.from) {
+      setLocationState(location.state.from);
+    }
+  }, [location.state]);
+
+  useEffect(() => {
     setSearchParams({ sort: sortOrder });
   }, [setSearchParams, sortOrder]);
 
@@ -69,7 +78,7 @@ const MyTodayAnswersPage = () => {
     <div className="h-[100svh] overflow-hidden">
       <SubPageHeader
         pageTitle="오늘의 질문 답변"
-        backButtonPath={userType === 'Guest' ? '/today-question' : '/my'}
+        backButtonPath={locationState || userType === 'Guest' ? '/today-question' : '/my'}
       />
 
       <main className="flex h-[calc(100%-70px)] flex-col">

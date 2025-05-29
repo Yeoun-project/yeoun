@@ -6,16 +6,22 @@ import useToastStore from '../../store/useToastStore';
 
 import { deleteTodayQuestionComment } from '../../services/api/question/todayQuestion';
 import { queryClient } from '../../utils/queryClient';
+import useAuthStore from '../../store/useAuthStore';
 
 const useDeleteCommentMutation = () => {
+  const { userType } = useAuthStore();
   const { addToast } = useToastStore();
   const navigate = useNavigate();
 
   return useMutation({
     mutationFn: async (questionId: number) => deleteTodayQuestionComment(questionId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
         queryKey: ['my', 'today-question', 'answers'],
+      });
+
+      await queryClient.invalidateQueries({
+        queryKey: [userType, 'today-question'],
       });
       addToast.notification({
         title: '여운 삭제 완료',
@@ -23,7 +29,7 @@ const useDeleteCommentMutation = () => {
         hasBottomTab: false,
       });
 
-      navigate('/today-question/answers');
+      navigate('/today-question/answers?sort=latest', { state: { from: 'today-question-delete' } });
     },
   });
 };
