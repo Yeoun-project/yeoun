@@ -4,6 +4,7 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import org.springframework.web.filter.GenericFilterBean;
 import yeoun.auth.service.JwtService;
+import yeoun.exception.CustomException;
 import yeoun.user.domain.Role;
 import yeoun.auth.infrastructure.CookieUtil;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import yeoun.user.service.UserService;
 
 @Slf4j
 @Component
@@ -29,6 +31,7 @@ import java.io.IOException;
 public class JwtAccessTokenFilter extends GenericFilterBean {
 
     private final JwtService jwtService;
+    private final UserService userService;
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse,
@@ -57,6 +60,8 @@ public class JwtAccessTokenFilter extends GenericFilterBean {
                 throw new RuntimeException("strange access token");
             }
 
+            userService.validateUser(Long.valueOf(userId));
+
             // security context에 authenticaion 저장
             SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(Long.valueOf(userId), "accessToken", authorities));
 
@@ -64,6 +69,8 @@ public class JwtAccessTokenFilter extends GenericFilterBean {
 
         } catch (ExpiredJwtException e) {
             log.error(e.getLocalizedMessage().split("\\.")[0]);
+        } catch (CustomException e){
+            log.info("user id can not found from db refresh access token"); // for 개발 환경
         } catch (Exception e) {
             log.error("Error, {}", e.getLocalizedMessage());
         }
