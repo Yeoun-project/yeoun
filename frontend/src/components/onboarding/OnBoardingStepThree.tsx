@@ -48,7 +48,7 @@ const OnBoardingStepThree = () => {
     timers.push(
       setTimeout(
         () => (addQuestionPageImageRef.current!.style.transform = 'translateY(-35%)'),
-        300
+        400
       ),
       setTimeout(() => {
         clickIconRef.current!.classList.add('animate-click-icon-poisition');
@@ -121,7 +121,7 @@ const OnBoardingStepThree = () => {
             <img
               src={AddQuestionPage}
               ref={addQuestionPageImageRef}
-              className="absolute left-1/2 block -translate-x-1/2 translate-y-[15%] transition-transform duration-1500 ease-in-out"
+              className="absolute left-1/2 block max-w-[270px] -translate-x-1/2 translate-y-[15%] transition-transform duration-1500 ease-in-out"
             />
             <ClickIcon
               ref={clickIconRef}
