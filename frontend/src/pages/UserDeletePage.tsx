@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { userDelete } from '../services/api/auth/userDelete';
 import Modal from '../components/modal/Modal';
 import useModalStore from '../store/useModalStore';
+import useToastStore from '../store/useToastStore';
+import CommentForm from '../components/form/CommentForm';
 
 const reasons = [
   {
@@ -47,8 +49,11 @@ const UserDeletePage = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [reasonNum, setReasonNum] = useState(0);
   const [checked, setChecked] = useState(true);
+  const [hasError, setHasError] = useState(false);
+  const [reason, setReason] = useState('');
 
   const { modal, openModal, closeModal } = useModalStore();
+  const toast = useToastStore();
 
   useEffect(() => {
     const clickOutside = (e: MouseEvent) => {
@@ -66,15 +71,33 @@ const UserDeletePage = () => {
   const handleSelect = (id: number) => {
     setReasonNum(id);
     setIsOpen(false);
+    setHasError(false);
+    setReason('');
+  };
+
+  const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setReason(e.target.value);
+
+    if (hasError) setHasError(false);
   };
 
   const onClickLeave = () => {
-    openModal();
+    if (reasonNum === 0 || (reasonNum === 8 && reason === '')) {
+      toast.addToast.error({
+        title: '여운 탈퇴 실패',
+        message: '떠나시는 이유를 선택해주세요!',
+      });
+      setHasError(true);
+    } else openModal();
   };
 
   const onClickDelete = async (checked: boolean) => {
+    const reasonCategory = reasons.find((item) => item.id === reasonNum)?.name;
+
+    if (!reasonCategory) return;
+
     try {
-      const response = await userDelete(checked);
+      const response = await userDelete({ checked, reasonCategory, reason });
       if (response.status === 200) {
         closeModal();
         navigate('/');
@@ -85,7 +108,7 @@ const UserDeletePage = () => {
   };
 
   return (
-    <div className="flex h-[100svh] flex-col">
+    <div className="flex h-[90svh] flex-col">
       <SubPageHeader pageTitle={'탈퇴하기'} />
       <div className="p-6">
         <p className="pb-4 text-[20px]">여운을 남긴 채, 떠나시겠어요?</p>
@@ -96,12 +119,15 @@ const UserDeletePage = () => {
           {` 그래도 괜찮다면 조심스레 보내드릴게요.`}
         </p>
       </div>
-      <div className="p-6">
+      <div id="etc" className="no-scrollbar flex h-[35svh] flex-col overflow-scroll px-6">
         <p className="font-desc pb-3">혹시 떠나시는 이유를 알려주실 수 있을까요?</p>
         <div ref={dropdownRef} className={'font-desc relative mb-4 w-full text-white'}>
           <div
-            onClick={() => setIsOpen(!isOpen)}
-            className={`flex cursor-pointer items-center justify-between border border-white/20 bg-[#ffffff0D] px-4 py-2 backdrop-blur-md transition ${isOpen ? 'rounded-t-md rounded-b-none' : 'rounded-md'}`}
+            onClick={() => {
+              setHasError(false);
+              setIsOpen(!isOpen);
+            }}
+            className={`flex cursor-pointer items-center justify-between border border-white/20 bg-[#ffffff0D] px-4 py-2 backdrop-blur-md transition ${isOpen ? 'rounded-t-md rounded-b-none' : 'rounded-md'} ${hasError ? 'border-error/30 bg-error/30' : 'bg-[#ffffff0D]'}`}
           >
             <div className="flex items-center gap-2">
               {reasonNum === 0
@@ -115,7 +141,10 @@ const UserDeletePage = () => {
             />
           </div>
           {isOpen && (
-            <ul className="absolute z-10 w-full overflow-y-auto border-r border-l border-white/20 bg-white/10 shadow-lg backdrop-blur-md">
+            <ul
+              id="dropdown"
+              className="absolute z-100 w-full overflow-y-auto border-r border-l border-white/20 bg-white/10 shadow-lg backdrop-blur-md"
+            >
               {reasons.map((reason) => (
                 <li
                   key={reason.id}
@@ -127,13 +156,26 @@ const UserDeletePage = () => {
               ))}
             </ul>
           )}
+          {reasonNum === 8 && (
+            <div className="mt-5">
+              <CommentForm
+                formId="deleteReason"
+                commentValue={reason}
+                onChange={onChange}
+                onSubmit={onClickLeave}
+                maxValue={500}
+                placeholder="떠나기로 한 당신의 이유가 궁금해요"
+                error={hasError}
+              />
+            </div>
+          )}
         </div>
       </div>
       <div className="absolute bottom-0 w-full p-6">
         <div className="flex flex-col items-center p-6">
           <label className="flex cursor-pointer items-center gap-2">
             <input onClick={() => setChecked(!checked)} type="checkbox" className="peer hidden" />
-            <div className="peer-checked: h-6 w-6 border border-white/40 peer-checked:bg-white"></div>
+            <div className="min-h-6 min-w-6 cursor-pointer bg-[url(/icons/unchecked.svg)] bg-contain bg-center bg-no-repeat peer-checked:bg-[url(/icons/checked.svg)]"></div>
             <span className="font-desc">작성한 질문과 답변까지 모두 삭제할게요.</span>
           </label>
         </div>

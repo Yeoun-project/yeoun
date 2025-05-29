@@ -94,7 +94,7 @@ const OnBoardingStepTwo = () => {
 
   return (
     <>
-      <div className="mb-4 max-w-[430px] overflow-clip">
+      <div className="mb-4 max-w-[430px]">
         <p className="mb-2 text-2xl">여운은 이렇게 사용해요!</p>
         <p className="text-[#aaaaaa]">로그인 없이도 여운을 남길 수 있어요</p>
       </div>

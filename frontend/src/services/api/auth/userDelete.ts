@@ -1,7 +1,18 @@
+import Response from '../../../type/response';
 import client from '../client';
 
-export const userDelete = async (checked: boolean) => {
-  const response = await client.delete<Promise<Response>>(`/api/user/delete?hard=${checked}`);
+interface DeleteProps {
+  checked: boolean;
+  reasonCategory: string;
+  reason: string;
+}
+
+export const userDelete = async ({ checked, reasonCategory, reason }: DeleteProps) => {
+  const response = await client.post<Response<null>>(`/api/user/delete?isHard=${!checked}`, {
+
+    reasonCategory: reasonCategory,
+    reasonDetail: reason,
+  });
 
   return response;
 };

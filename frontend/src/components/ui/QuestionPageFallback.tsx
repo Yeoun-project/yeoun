@@ -7,19 +7,23 @@ const QuestionPageFallback = () => {
   const [currentCategory, setCurrentCategory] = useState(1);
 
   useEffect(() => {
-    setTimeout(() => {
-      setCategory(CATEGORY[currentCategory].category);
-      setCurrentCategory((prev) => prev++);
-
+    const timer = setTimeout(() => {
       if (currentCategory === 7) {
-        setCurrentCategory(1);
+        setCurrentCategory(0);
+        return;
       }
-    }, 300);
+      setCategory(CATEGORY[currentCategory].category);
+      setCurrentCategory((prev) => prev + 1);
+    }, 150);
+
+    return () => {
+      clearTimeout(timer);
+    };
   }, [currentCategory]);
 
   return (
-    <div className="flex h-svh w-full flex-col items-center justify-center gap-2">
-      <Circle size={58} category={category} />
+    <div className="flex h-svh w-full flex-col items-center justify-center gap-3">
+      <Circle size={64} category={category} animate />
       <p>
         여운이 로딩중입니다 <br /> 잠시만 기다려주세요...
       </p>

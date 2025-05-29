@@ -19,6 +19,7 @@ import RegisterModal from '../components/modal/RegisterModal';
 import ConfirmModal from '../components/modal/ConfirmModal';
 
 import { useNavigate } from 'react-router-dom';
+import { queryClient } from '../utils/queryClient';
 
 export interface Category {
   category: QuestionCategory;
@@ -183,11 +184,19 @@ const AddQuestionPage = () => {
     const response = await addUserQuestion(content, categoryId);
     console.log(response?.data);
 
+    queryClient.invalidateQueries({ queryKey: ['all', 'questions'] });
+    queryClient.invalidateQueries({ queryKey: ['my', 'questions'] });
+
     // 등록 후 초기화
     setSecond(false);
     setContent('');
     modal.closeModal();
-    nav('/question');
+    nav('/question', {
+      replace: true,
+      state: {
+        showToast: true,
+      },
+    });
   };
 
   // 커서 복구
@@ -231,7 +240,7 @@ const AddQuestionPage = () => {
       <main className="flex min-h-[100svh] flex-col">
         <header className="relative flex justify-center p-8">
           <div className="absolute top-6 left-6">
-            <BackArrowButton />
+            <BackArrowButton path="/question" />
           </div>
           <h3 className="w-full text-center">질문작성</h3>
         </header>
@@ -263,7 +272,7 @@ const AddQuestionPage = () => {
             onChange={handleChange}
             hasError={hasError}
             maxLength={MAX_LENGTH}
-            placeholder="사용자들의 생각을 듣고 싶은 의미있는 질문을 작성해주세요."
+            placeholder="사용자들의 생각을 듣고 싶은 의미있는 질문을 작성해주세요"
             forbidden={forbidden}
           />
         </div>

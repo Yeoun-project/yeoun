@@ -1,6 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import { AlarmQuestion } from '../../type/auth/notification';
 import Circle from '../circle/Circle';
+import { getAlarmList } from '../../services/api/alarm/getNotificationList';
+import { queryClient } from '../../utils/queryClient';
 
 const getElapsedTimeText = (createTime: string) => {
   const now = new Date();
@@ -29,48 +31,25 @@ const getElapsedTimeText = (createTime: string) => {
   return `${created.getMonth() + 1}월 ${created.getDate()}일`;
 };
 
-const AlarmItem = ({
-  id,
-  content,
-  commentCount,
-  categoryName,
-  createTime,
-  isAuthor,
-}: AlarmQuestion) => {
+const AlarmItem = ({ id, content, createTime }: AlarmQuestion) => {
   const nav = useNavigate();
   const elapsedTimeText = getElapsedTimeText(createTime);
 
   return (
     <div
       onClick={() => {
-        nav(`/question/${id}`, { replace: true });
+        getAlarmList({});
+        queryClient.invalidateQueries({ queryKey: ['alarmList'] });
+        nav(`/question/${id}`);
       }}
       className="flex items-center border-b-1 border-[#AAAAAA] px-3 py-3"
     >
       <div className="px-2">
-        <Circle size={30} category={categoryName}></Circle>
+        {/* <Circle size={30} category={categoryName}></Circle> */}
+        <Circle size={30}></Circle>
       </div>
       <div className="flex w-full flex-col px-3">
-        {commentCount > 1 && !isAuthor && (
-          <p className="text-sm">
-            {`[${content}]에 당신의 답변이 `}
-            <span className="text-[#FC90D1]">{`${commentCount}명`}</span>
-            에게 여운을 남겼어요! ❤️
-          </p>
-        )}
-        {commentCount === 1 && !isAuthor && (
-          <p className="text-sm">{`[${content}]에 당신의 답변이 누군가에게 여운을 남겼어요! ❤️`}</p>
-        )}
-        {commentCount > 1 && isAuthor && (
-          <p className="text-sm">
-            {`[${content}]에 당신의 답변이 `}
-            <span className="text-[#FC90D1]">{`${commentCount}명`}</span>이 새로운 답변을 남겼어요!
-            ❤️
-          </p>
-        )}
-        {commentCount === 1 && isAuthor && (
-          <p className="text-sm">{`[${content}]에 당신의 답변에 새로운 답변이 달렸어요! ❤️`}</p>
-        )}
+        <p className="text-sm">{`${content}`}</p>
         <span className="text-right text-xs text-[#AAAAAA]">{elapsedTimeText}</span>
       </div>
     </div>

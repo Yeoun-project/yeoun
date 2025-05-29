@@ -41,6 +41,7 @@ const TodayQuestionCommentPage = () => {
       addToast.notification({
         title: '여운 등록 완료',
         message: '오늘의 질문에 당신의 여운이 남겨졌어요.',
+        hasBottomTab: userType === 'User',
       });
 
       return;

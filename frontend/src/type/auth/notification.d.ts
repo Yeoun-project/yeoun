@@ -3,10 +3,8 @@ import QuestionCategory from '../questionCategory';
 export interface AlarmQuestion {
   id: number;
   content: string;
-  commentCount: number;
-  categoryName: QuestionCategory;
+  categoryName?: QuestionCategory;
   createTime: string;
-  isAuthor: boolean;
 }
 
 export interface Alarm {

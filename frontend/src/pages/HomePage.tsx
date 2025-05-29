@@ -41,7 +41,7 @@ const HomePage = () => {
         <p className="text-gradient text-2xl/9">
           하루의 끝,
           <br />
-          의미있는 질문에 답하며
+          의미 있는 질문에 답하며
           <br />
           당신만의 여운을 남기세요
         </p>

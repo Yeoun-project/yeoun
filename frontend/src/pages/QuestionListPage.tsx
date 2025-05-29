@@ -11,13 +11,16 @@ import CATEGORY from '../constant/category/Category';
 import { getAllQuestions } from '../services/api/question/getQuestions';
 
 import useGetInfiniteQuestion from '../hooks/queries/useGetInfiniteQuestion';
-import useQuestionGroupByYear from '../hooks/useQuestionGroupByYear';
 
 import QuestionListYearSection from '../components/questionList/QuestionListYearSection';
-import QuestionList from '../components/questionList/QuestionList';
 import ListMoreButton from '../components/questionList/ListMoreButton';
+import QuestionListByDate from '../components/questionList/QuestionListByDate';
+
+import { useScrollRestore } from '../hooks/useScrolLRestore';
+import useQuestionGroupByDate from '../hooks/useQuestionGroupByDate';
 
 const QuestionListPage = () => {
+  const { scrollRef, handleScroll } = useScrollRestore();
   const [searchParams, setSearchParams] = useSearchParams();
   const categoryId = searchParams.get('q');
 
@@ -29,12 +32,13 @@ const QuestionListPage = () => {
     categoryId: categoryId as string,
   });
 
-  const { questions, questionsYear } = useQuestionGroupByYear(data ? data : [], 'latest');
+  const { questionsDate, questionsYear } = useQuestionGroupByDate(data ? data : [], 'latest');
 
   const handleSelect = (categoryId: number) => {
     setSearchParams({ q: categoryId.toString() });
     setIsOpen(false);
   };
+
   return (
     <div className="h-[calc(100svh-140px)]">
       <SubPageHeader pageTitle="질문 모음" backButtonPath="/today-question" />
@@ -47,17 +51,23 @@ const QuestionListPage = () => {
           handleSelect={handleSelect}
           categories={CATEGORY}
           selected={CATEGORY[Number(categoryId) - 1]}
-          location={'w-full text-white font-desc mb-4'}
+          location={'w-full text-white font-desc'}
         />
         {questionsYear.length > 0 && (
           <>
-            <div className="font-desc gap-2.5 px-6 text-[14px]">
+            <div className="font-desc gap-2.5 px-6 py-3 text-[14px]">
               <p>💬 같은 날 올라온 질문 중, 답변이 많이 달린 질문부터 보여드려요 :)</p>
             </div>
-            <div className="no-scrollbar overflow-scroll pb-6">
+            <div
+              className="no-scrollbar overflow-scroll pb-6"
+              ref={scrollRef}
+              onScroll={(e) => handleScroll(e)}
+            >
               {questionsYear.map((year) => (
                 <QuestionListYearSection key={year} year={year}>
-                  <QuestionList questions={questions[year]} path="question" />
+                  {questionsDate[year].map((date) => (
+                    <QuestionListByDate questions={date.items} />
+                  ))}
                 </QuestionListYearSection>
               ))}
 

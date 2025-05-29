@@ -92,22 +92,43 @@
 
 body {
   width: 100%;
-  max-width: 430px;
   margin: 0 auto;
-  overflow-x: hidden;
-}
-
-#root {
-  color: #ffffff;
-  background-color: #1a1a1a;
-  min-height: 100svh;
-  position: relative;
-  overflow-x: hidden;
 }
 
 dialog::backdrop {
   max-width: 430px;
   margin: 0 auto;
+}
+
+@media (max-height: 670px) {
+  #dropdown {
+    max-height: 200px;
+  }
+}
+
+@media (min-height: 670px) {
+  #deleteReason textArea {
+    height: 250px !important;
+  }
+  #etc {
+    height: 100%;
+  }
+}
+
+@media (width >= 1280px) {
+  dialog::backdrop {
+    margin-left: 55%;
+  }
+
+  .toast-list {
+    left: 55%;
+  }
+}
+
+@media (width < 1280px) {
+  .toast-list {
+    margin: 0 auto;
+  }
 }
 
 @keyframes onboarding-image-position {

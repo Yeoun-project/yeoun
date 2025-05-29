@@ -44,7 +44,7 @@ const AnswerItem = ({
   return (
     <div className="flex min-h-12 justify-between">
       <div className="gap-21px w-[calc(100%-100px)] break-all">
-        {my && <p className="text-[#FC90D1]">{content}</p>}
+        {my && <p className="font-desc text-[#FC90D1]">{content}</p>}
         {!my && <p className="font-desc text-[14px]">{content}</p>}
       </div>
       <div className="flex gap-4">
@@ -54,7 +54,7 @@ const AnswerItem = ({
               isLike
                 ? 'bg-[url(/icons/filledHeart.svg)]'
                 : my
-                  ? 'bg-[url(/icons/myHeart.svg)]'
+                  ? 'bg-[url(/icons/filledHeart.svg)]'
                   : 'bg-[url(/icons/heart.svg)]'
             }`}
             onClick={() => {
@@ -68,9 +68,7 @@ const AnswerItem = ({
               }
             }}
           />
-          <p className="font-desc text-center text-[14px]">
-            {likeCount.toString().padStart(2, '0')}
-          </p>
+          <p className="font-desc text-center text-[14px]">{likeCount.toString()}</p>
         </div>
         {!my && (
           <div className="justify-between">

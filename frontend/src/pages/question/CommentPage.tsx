@@ -42,7 +42,7 @@ const CommentPage = () => {
     if (content === '') {
       setHasError(true);
       toast.addToast.error({
-        title: '여운 등록 실패!',
+        title: '여운 등록 실패',
         message: '답변을 작성해주세요!',
       });
     } else {
@@ -101,6 +101,7 @@ const CommentPage = () => {
             onChange={onChange}
             onSubmit={handleSubmit}
             maxValue={50}
+            placeholder="이 질문에 대한 당신의 생각을 작성해주세요"
             error={hasError}
           />
 

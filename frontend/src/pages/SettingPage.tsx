@@ -1,18 +1,23 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import BackArrowButton from '../components/button/BackArrowButton';
 import useAuthStore from '../store/useAuthStore';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../services/api/auth/logout';
-import { getNotification, postNotification } from '../services/api/alarm/getNotification';
+import { postNotification } from '../services/api/alarm/getNotification';
+import { useAlarmStore } from '../store/useAlarmStore';
 
 const SettingPage = () => {
-  const [activate, setActivate] = useState(false);
+
+  const { notification, setNotification, fetchNotificationState } = useAlarmStore();
+
   const { userType, setUserType } = useAuthStore();
   const navigate = useNavigate();
 
   useEffect(() => {
-    getAlarmState();
+    if (userType === 'User') {
+      fetchNotificationState();
+    }
   }, []);
 
   const onClickLogout = async () => {
@@ -28,23 +33,16 @@ const SettingPage = () => {
     }
   };
 
-  const getAlarmState = async () => {
+  const postAlarmState = async () => {
     try {
-      const response = await getNotification();
-      setActivate(response.isNotification);
+      await postNotification(notification);
+      setNotification(!notification);
     } catch (err) {
       console.log(err);
     }
   };
 
-  const postAlarmState = async () => {
-    try {
-      await postNotification(activate);
-      setActivate(!activate);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  if (!isLoaded) return null; // 로딩 중일 땐 렌더링 차단
 
   return (
     <>
@@ -62,11 +60,11 @@ const SettingPage = () => {
               <div className="px-6 py-4.5">알림</div>
               <div className="px-6 py-4">
                 <button
-                  className={`flex h-[24px] w-[40px] items-center rounded-full p-[4px] transition-colors duration-300 ${activate ? 'bg-[#FC90D1]' : 'border border-[#D4D4D4] bg-[#F5F5F5]'}`}
+                  className={`flex h-[24px] w-[40px] items-center rounded-full p-[4px] transition-colors duration-300 ${notification ? 'bg-[#FC90D1]' : 'border border-[#D4D4D4] bg-[#F5F5F5]'}`}
                   onClick={postAlarmState}
                 >
                   <div
-                    className={`flex h-[16px] w-[16px] transform items-center rounded-full bg-white shadow-md transition-transform duration-300 ${activate ? 'translate-x-[16px] bg-[url(/icons/check.svg)] bg-center bg-no-repeat' : 'translate-x-0 bg-[url(/icons/Union.svg)] bg-center bg-no-repeat'}`}
+                    className={`flex h-[16px] w-[16px] transform items-center rounded-full bg-white shadow-md transition-transform duration-300 ${notification ? 'translate-x-[16px] bg-[url(/icons/check.svg)] bg-center bg-no-repeat' : 'translate-x-0 bg-[url(/icons/Union.svg)] bg-center bg-no-repeat'}`}
                   ></div>
                 </button>
               </div>
@@ -87,7 +85,14 @@ const SettingPage = () => {
             </li>
           )}
           <li className="cursor-pointer border-b border-[#AAAAAA]">
-            <div className="px-6 py-4.5 transition-transform duration-150 active:shadow-inner">
+            <div
+              onClick={() =>
+                window.open(
+                  'https://docs.google.com/forms/d/e/1FAIpQLSfVJyI_TuJHHbXotFaNuUnDhqEQF5Yt_lXL8tRxXl03IAFfOw/viewform?usp=sharing&ouid=110681974483144339268'
+                )
+              }
+              className="px-6 py-4.5 transition-transform duration-150 active:shadow-inner"
+            >
               문의하기
             </div>
           </li>

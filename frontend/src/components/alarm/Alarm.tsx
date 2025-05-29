@@ -1,40 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useAlarmStore } from '../../store/useAlarmStore';
 
 const Alarm = () => {
-  const [alarmData, setAlarmData] = useState(false);
-  const eventSource = useRef<null | EventSource>(null);
-
-  useEffect(() => {
-    const fetchSSE = () => {
-      eventSource.current = new EventSource('https://api.yeoun.kr/api/notification/connect', {
-        withCredentials: true,
-      });
-
-      eventSource.current.addEventListener('notification', (event) => {
-        console.log('SSE 수신됨: ', event.data);
-        if (event.data === '0') {
-          setAlarmData(false);
-        } else {
-          setAlarmData(true);
-        }
-      });
-
-      eventSource.current.onerror = async () => {
-        eventSource.current?.close();
-        setTimeout(fetchSSE, 1000);
-      };
-
-      eventSource.current.onopen = (event) => {
-        console.log('연결', event);
-      };
-    };
-
-    fetchSSE();
-    return () => {
-      eventSource.current?.close();
-    };
-  }, []);
+  const { notification } = useAlarmStore();
+  const hasAlarm = useAlarmStore((state) => state.hasAlarm);
 
   return (
     <>
@@ -43,8 +12,10 @@ const Alarm = () => {
           aria-label="알림"
           to="/notification"
           className={`block size-6 ${
-            alarmData
-              ? 'bg-[url(/icons/notificationBell.svg)]'
+            notification
+              ? hasAlarm
+                ? 'bg-[url(/icons/notificationBell.svg)]'
+                : 'bg-[url(/icons/notification.svg)]'
               : 'bg-[url(/icons/notification.svg)]'
           } bg-no-repeat`}
         />
