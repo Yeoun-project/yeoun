@@ -50,6 +50,8 @@
 
 ## <span id="3">📅 3. 개발 일정</span>
 
+<img src="https://github.com/user-attachments/assets/f95c7700-babc-49ee-8901-00199a011f6b"/>
+
 <br />
 
 ## <span id="4">⚙️ 4. 개발 환경 및 기술 스택</span>
