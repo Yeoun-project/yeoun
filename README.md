@@ -79,6 +79,13 @@
 
 ## <span id="5">🪐 5. 주요 기능 소개</span>
 
+<p align="center">
+    <img src="https://github.com/user-attachments/assets/4007f7b9-70e8-41dd-b428-899ff09f988f" align="center" width="25%">
+    <img src="이미지경로" align="center" width="25%">
+    <img src="이미지경로" align="center" width="25%">
+    <img src="https://github.com/user-attachments/assets/602b3dfa-5b0f-4a6a-be51-a4d2a8018fa3" align="center" width="25%">
+</p>
+
 <br />
 
 ## <span id="6">✏️ 6. ERD 다이어그램</span>
