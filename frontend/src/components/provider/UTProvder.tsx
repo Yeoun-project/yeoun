@@ -33,7 +33,7 @@ const UTProvder = () => {
       // 처음 접속 후 2분간 유지 시 토스트 메시지 띄우기
       const timer = setTimeout(() => {
         setShowForm(true);
-      }, 200);
+      }, UT_TIMER_DURATION_MS * 200);
 
       return () => {
         clearTimeout(timer);
