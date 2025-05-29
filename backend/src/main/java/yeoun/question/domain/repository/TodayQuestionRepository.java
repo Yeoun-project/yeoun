@@ -20,7 +20,7 @@ public interface TodayQuestionRepository extends JpaRepository<Question, Long> {
                 AND questionHistory.user.id = :userId
             WHERE question.isFixed = true
                 AND questionHistory.id IS NULL
-            ORDER BY FUNCTION('UUID') LIMIT 1
+            ORDER BY FUNCTION('RAND') LIMIT 1
             """)
     Optional<Question> findRandomFixedQuestionExcludingHistory(@Param("userId") Long userId);
 
