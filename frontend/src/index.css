@@ -101,9 +101,6 @@ dialog::backdrop {
 }
 
 @media (max-height: 670px) {
-  #deleteReason textArea {
-    height: 80px !important;
-  }
   #dropdown {
     max-height: 200px;
   }
@@ -112,6 +109,9 @@ dialog::backdrop {
 @media (min-height: 670px) {
   #deleteReason textArea {
     height: 250px !important;
+  }
+  #etc {
+    height: 100%;
   }
 }
 

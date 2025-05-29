@@ -19,6 +19,7 @@ import RegisterModal from '../components/modal/RegisterModal';
 import ConfirmModal from '../components/modal/ConfirmModal';
 
 import { useNavigate } from 'react-router-dom';
+import { queryClient } from '../utils/queryClient';
 
 export interface Category {
   category: QuestionCategory;
@@ -183,6 +184,9 @@ const AddQuestionPage = () => {
     const response = await addUserQuestion(content, categoryId);
     console.log(response?.data);
 
+    queryClient.invalidateQueries({ queryKey: ['all', 'questions'] });
+    queryClient.invalidateQueries({ queryKey: ['my', 'questions'] });
+
     // 등록 후 초기화
     setSecond(false);
     setContent('');
@@ -268,7 +272,7 @@ const AddQuestionPage = () => {
             onChange={handleChange}
             hasError={hasError}
             maxLength={MAX_LENGTH}
-            placeholder="사용자들의 생각을 듣고 싶은 의미있는 질문을 작성해주세요."
+            placeholder="사용자들의 생각을 듣고 싶은 의미있는 질문을 작성해주세요"
             forbidden={forbidden}
           />
         </div>

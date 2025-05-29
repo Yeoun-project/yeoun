@@ -1,3 +1,4 @@
+import Response from '../../../type/response';
 import client from '../client';
 
 interface DeleteProps {
@@ -7,7 +8,8 @@ interface DeleteProps {
 }
 
 export const userDelete = async ({ checked, reasonCategory, reason }: DeleteProps) => {
-  const response = await client.post<Promise<Response>>(`/api/user/delete?isHard=${!checked}`, {
+  const response = await client.post<Response<null>>(`/api/user/delete?isHard=${!checked}`, {
+
     reasonCategory: reasonCategory,
     reasonDetail: reason,
   });

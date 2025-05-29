@@ -37,3 +37,45 @@ export const sortedYearGroup = (
 
   return [];
 };
+
+export const questionGroupByYearAndDate = (questionList: Question[]) => {
+  const YEAR_DATE_GROUP = questionList.reduce<{
+    [year: string]: { [monthDay: string]: Question[] };
+  }>((acc, question) => {
+    const date = new Date(question.createTime);
+    const year = date.getFullYear().toString();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const monthDay = `${month}-${day}`;
+
+    if (!acc[year]) {
+      acc[year] = {};
+    }
+
+    if (!acc[year][monthDay]) {
+      acc[year][monthDay] = [];
+    }
+
+    acc[year][monthDay].push(question);
+
+    return acc;
+  }, {});
+
+  const result: {
+    [year: string]: { date: string; items: Question[] }[];
+  } = {};
+
+  Object.entries(YEAR_DATE_GROUP).forEach(([year, dateGroup]) => {
+    const sorted = Object.entries(dateGroup)
+      .sort((a, b) => {
+        const dateA = new Date(`${year}-${a[0]}`);
+        const dateB = new Date(`${year}-${b[0]}`);
+        return dateB.getTime() - dateA.getTime(); // 최신순
+      })
+      .map(([date, items]) => ({ date, items }));
+
+    result[year] = sorted;
+  });
+
+  return result;
+};

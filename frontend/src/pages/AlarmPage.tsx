@@ -4,25 +4,27 @@ import AlarmItem from '../components/alarm/AlarmItem';
 import FallBack from '../components/ui/FallBack';
 import SubPageHeader from '../components/ui/SubPageHeader';
 import useGetInfiniteNotification from '../hooks/queries/useGetInfiniteNotification';
-import useNotificationDetail from '../hooks/queries/useNotificationDetail';
+
 import { getAlarmList } from '../services/api/alarm/getNotificationList';
 import { useEffect } from 'react';
 
 const AlarmPage = () => {
   const [ref, inView] = useInView();
 
-  const { data, fetchNextPage, hasNextPage } = useGetInfiniteNotification({
+  const { data, fetchNextPage, hasNextPage, isLoading } = useGetInfiniteNotification({
     queryKey: ['alarmList'],
     getAlarm: getAlarmList,
   });
 
-  const alarmList = useNotificationDetail(data ? data : []);
+  const alarmList = data ? data : [];
 
   useEffect(() => {
     if (inView && hasNextPage) {
       fetchNextPage();
     }
   }, [inView, hasNextPage, fetchNextPage]);
+
+  if (isLoading) return;
 
   return (
     <>
@@ -32,16 +34,9 @@ const AlarmPage = () => {
           {alarmList.length === 0 && <FallBack desc="" subDesc="오늘은 조용한 하루였어요" />}
           <ul className="font-desc w-full">
             {alarmList.map((item) => (
-              <AlarmItem
-                id={item.id}
-                content={item.content}
-                commentCount={item.commentCount}
-                categoryName={item.categoryName}
-                createTime={item.createTime}
-                isAuthor={item.isAuthor}
-              />
+              <AlarmItem id={item.questionId} content={item.content} createTime={item.createTime} />
             ))}
-            <div ref={ref} style={{ display: 'none' }}>
+            <div ref={ref} style={{ visibility: 'hidden' }}>
               로딩
             </div>
           </ul>
