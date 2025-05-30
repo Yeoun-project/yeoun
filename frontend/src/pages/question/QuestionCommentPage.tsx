@@ -132,7 +132,7 @@ const QuestionCommentPage = () => {
     if (questionDetail?.isAuthor) {
       toast.addToast.notification({
         title: '여운 등록 실패',
-        message: '본인 답변에는 여운을 남길 수 없어요!',
+        message: '본인 질문에는 여운을 남길 수 없어요!',
       });
     } else if (mycomment === null) {
       setQuestionReport(false);
