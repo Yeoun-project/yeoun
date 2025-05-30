@@ -56,7 +56,7 @@ const QuestionListPage = () => {
         {questionsYear.length > 0 && (
           <>
             <div className="font-desc gap-2.5 px-6 py-3 text-[14px]">
-              <p>💬 같은 날 올라온 질문 중, 답변이 많이 달린 질문부터 보여드려요 :)</p>
+              <p>💬 같은 날 올라온 질문 중, 최신 질문부터 보여드려요 :)</p>
             </div>
             <div
               className="no-scrollbar overflow-scroll pb-6"
