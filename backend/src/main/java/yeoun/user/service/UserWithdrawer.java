@@ -17,11 +17,17 @@ public class UserWithdrawer {
     private final UserDeleteRepository userDeleteRepository;
 
     public void withdraw(final Boolean isHard, final Long userId) {
+        updateLikeCount(userId);
         if (isHard) {
             hardDeleteAll(userId);
         } else {
             softDeleteUser(userId);
         }
+    }
+
+    private void updateLikeCount(final Long userId) {
+        List<Long> commentIds = userDeleteRepository.findCommentIdsByUserLike(userId);
+        userDeleteRepository.updateLikeCount(commentIds);
     }
 
     private void softDeleteUser(final Long userId) {
