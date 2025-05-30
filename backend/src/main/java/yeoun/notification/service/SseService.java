@@ -14,7 +14,6 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @Service
 @Slf4j
 public class SseService implements SseServiceInterface<Long, Integer> {
-
     @Value("${sse.connection_time}")
     private Long SSE_CONNECTION_TIME;
     private final Long SEE_RECONNECTION_SECOND = 5L;
@@ -24,10 +23,10 @@ public class SseService implements SseServiceInterface<Long, Integer> {
     @Override
     public SseEmitter getSseEmitter(Long pk, Integer firstData) {
         CustomEmitter oldEmitter = emitterMap.get(pk);
-        if(oldEmitter != null && oldEmitter.wasRecentlyConnected(SSE_CONNECTION_TIME)) {
-            log.info("recently returned emitter");
-            return null;
-        }
+//        if(oldEmitter != null && oldEmitter.wasRecentlyConnected(SSE_CONNECTION_TIME)) {
+//            log.info("recently returned emitter");
+//            return null;
+//        }
         log.info("return new emitter");
         return createSseEmitter(pk, firstData);
     }
@@ -53,14 +52,18 @@ public class SseService implements SseServiceInterface<Long, Integer> {
 
         if(customEmitter == null)
             return;
+        if(customEmitter.lastData == data)
+            return;
 
         try {
             customEmitter.getEmitter().send(SseEmitter.event().name(title).data(data.toString()).reconnectTime(
                 SEE_RECONNECTION_SECOND * 1000).build());
+            log.info("sse emitter send data");
         } catch (IOException e) {
             log.info("sse send fail");
             removeSseEmitter(pk);
         }
+        customEmitter.lastData = data;
     }
 
     private void removeSseEmitter(Long pk) {
@@ -78,6 +81,7 @@ public class SseService implements SseServiceInterface<Long, Integer> {
     class CustomEmitter {
         private LocalDateTime createdAt;
         private SseEmitter emitter;
+        private Integer lastData;
 
         public boolean wasRecentlyConnected(Long recentTime) {
             return createdAt.plusSeconds(recentTime).isAfter(LocalDateTime.now());
@@ -86,6 +90,7 @@ public class SseService implements SseServiceInterface<Long, Integer> {
         public CustomEmitter(SseEmitter emitter) {
             this.emitter = emitter;
             this.createdAt = LocalDateTime.now();
+            lastData=null;
         }
     }
 

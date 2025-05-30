@@ -43,6 +43,10 @@ public class NotificationService {
     private final UserRepository userRepository;
 
     public SseEmitter getConnect(Long userId) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if(optionalUser.isEmpty() || !optionalUser.get().getIsNotification()) {
+            return null;
+        }
         return sseService.getSseEmitter(userId, notificationRepository.getUnReadNotificationsCount(userId));
     }
 
