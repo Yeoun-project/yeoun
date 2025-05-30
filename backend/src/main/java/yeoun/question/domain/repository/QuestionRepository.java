@@ -28,22 +28,33 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
             """)
     Boolean existsByUserIdAndToday(@Param("userId") Long userId);
 
+//    @Query(value = """
+//            SELECT question FROM Question question
+//            left join question.comments c
+//            WHERE question.isFixed = false
+//            group by question
+//            ORDER BY FUNCTION('date', question.createTime) desc , count(c) desc
+//            """)
     @Query(value = """
             SELECT question FROM Question question
-            left join question.comments c
             WHERE question.isFixed = false
-            group by question
-            ORDER BY FUNCTION('date', question.createTime) desc , count(c) desc
+            order by question.createTime desc
             """)
     Slice<Question> findAllOrderByCreateTimeDesc(Pageable pageable);
 
+//    @Query("""
+//            SELECT question FROM Question question
+//            left join question.comments c
+//            WHERE question.isFixed = false
+//            AND question.category.name = :category
+//            group by question
+//            ORDER BY FUNCTION('date', question.createTime) DESC, count(c) desc
+//            """)
     @Query("""
             SELECT question FROM Question question
-            left join question.comments c
             WHERE question.isFixed = false
             AND question.category.name = :category
-            group by question
-            ORDER BY FUNCTION('date', question.createTime) DESC, count(c) desc
+            ORDER BY question.createTime desc
             """)
     Slice<Question> findAllByCategoryOrderByCreateTimeDesc(@Param("category") String category, Pageable pageable);
 
