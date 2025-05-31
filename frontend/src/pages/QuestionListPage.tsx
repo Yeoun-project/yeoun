@@ -12,10 +12,24 @@ import { getAllQuestions } from '../services/api/question/getQuestions';
 
 import { useScrollRestore } from '../hooks/useScrolLRestore';
 import useQuestionGroupByDate from '../hooks/useQuestionGroupByDate';
-import useGetInfiniteQuestion from '../hooks/queries/useGetInfiniteQuestion';
 
 import ListMoreButton from '../components/questionList/ListMoreButton';
 import RenderedQuestions from '../components/questionList/renderQuestions';
+import CheckBox from '../components/common/CheckBox';
+import { useInfiniteQuery } from '@tanstack/react-query';
+
+type sortOrder = 'latest' | 'old';
+
+const SORTORDER_CHECKBOXS = [
+  {
+    label: '최신순',
+    id: 'latest',
+  },
+  {
+    label: '오래된순',
+    id: 'old',
+  },
+];
 
 const QuestionListPage = () => {
   const { scrollRef, handleScroll } = useScrollRestore();
@@ -24,13 +38,31 @@ const QuestionListPage = () => {
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const { data, fetchNextPage, hasNextPage } = useGetInfiniteQuestion({
-    queryKey: ['all', 'questions', categoryId],
-    getQuestions: getAllQuestions,
-    categoryId: categoryId as string,
+  const [sortOrder, setSortOrder] = useState<sortOrder>(
+    (searchParams.get('sort') as sortOrder) || 'latest'
+  );
+
+  const handleSelectSortOrder = (sortOrder: sortOrder) => {
+    setSortOrder(sortOrder);
+  };
+
+  const { data, fetchNextPage, hasNextPage } = useInfiniteQuery({
+    queryKey: ['all', 'questions', categoryId, sortOrder],
+    queryFn: async ({ pageParam }) =>
+      await getAllQuestions({
+        page: pageParam as number,
+        categoryId: categoryId === '0' ? undefined : (categoryId as string),
+        sort: sortOrder,
+      }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, allPages) => (lastPage.hasNext ? allPages.length : undefined),
+    select: (data) => {
+      // 새로 불러온 데이터들이 있다면 기존 데이터들과 매핑 후 반환
+      return data.pages.flatMap((page) => page.questions || []);
+    },
   });
 
-  const { questionsDate, questionsYear } = useQuestionGroupByDate(data ? data : [], 'latest');
+  const { questionsDate, questionsYear } = useQuestionGroupByDate(data ? data : [], sortOrder);
 
   const handleSelect = (categoryId: number) => {
     setSearchParams({ q: categoryId.toString() });
@@ -53,8 +85,18 @@ const QuestionListPage = () => {
         />
         {questionsYear.length > 0 && (
           <>
-            <div className="font-desc gap-2.5 px-6 py-3 text-[14px]">
-              <p>💬 같은 날 올라온 질문 중, 최신 질문부터 보여드려요 :)</p>
+            <div className="flex items-center justify-start gap-2.5 px-6 py-4">
+              {SORTORDER_CHECKBOXS.map((option) => (
+                <CheckBox
+                  key={option.id}
+                  isChecked={sortOrder === option.id}
+                  id="sortOrder"
+                  name={option.id}
+                  label={option.label}
+                  value={option.id}
+                  onChange={(e) => handleSelectSortOrder(e.target.value as sortOrder)}
+                />
+              ))}
             </div>
             <div
               className="no-scrollbar overflow-scroll pb-6"

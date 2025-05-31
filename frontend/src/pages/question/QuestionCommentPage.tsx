@@ -229,6 +229,7 @@ const QuestionCommentPage = () => {
                 isLike={comment.isLike}
                 likeCount={comment.likeCount}
                 content={comment.content}
+                isDeleted={comment.isDeleted}
                 reportBtnClick={onClickCommentReportBtn}
                 onSubmit={onSubmitModal}
                 onCancel={onClickCancel}
