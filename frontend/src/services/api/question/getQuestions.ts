@@ -19,17 +19,30 @@ const getQuestionListApiUrl = (url: string, { page = 1, category }: QuestionList
 const getCategoryName = (categoryId: string | undefined) => {
   if (!categoryId) return undefined;
 
-  const filteredCategory = CATEGORY.filter((category) => category.id === Number(categoryId))[0];
+  const filteredCategory = CATEGORY.find((category) => category.id === Number(categoryId));
 
-  return filteredCategory.category;
+  return filteredCategory ? filteredCategory.category : undefined;
+};
+
+const getQuestionUrl = (url: string, { page = 0, category, sort }: QuestionListReq) => {
+  if (category) {
+    if (sort === 'latest') return `${url}?page=${page}&category=${category}&sort=createTime,DESC`;
+    if (sort === 'old') return `${url}?page=${page}&category=${category}&sort=createTime,ASC`;
+  } else {
+    if (sort === 'latest') return `${url}?page=${page}&sort=createTime,DESC`;
+    if (sort === 'old') return `${url}?page=${page}&sort=createTime,ASC`;
+  }
+
+  return `${url}?page=${page}&sort=createTime,DESC`;
 };
 
 // 모든 질문 리스트
-const getAllQuestions = async ({ page = 0, categoryId }: QuestionListReq) => {
+const getAllQuestions = async ({ page = 0, categoryId, sort }: QuestionListReq) => {
   const response = await client.get<Response<QuestionList>>(
-    getQuestionListApiUrl('/api/question/all', {
+    getQuestionUrl('/api/question/all', {
       page,
       category: getCategoryName(categoryId) as QuestionCategory,
+      sort,
     })
   );
 

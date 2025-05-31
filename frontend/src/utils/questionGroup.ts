@@ -66,15 +66,12 @@ export const questionGroupByYearAndDate = (questionList: Question[]) => {
   } = {};
 
   Object.entries(YEAR_DATE_GROUP).forEach(([year, dateGroup]) => {
-    const sorted = Object.entries(dateGroup)
-      .sort((a, b) => {
-        const dateA = new Date(`${year}-${a[0]}`);
-        const dateB = new Date(`${year}-${b[0]}`);
-        return dateB.getTime() - dateA.getTime(); // 최신순
-      })
-      .map(([date, items]) => ({ date, items }));
+    const grouped = Object.entries(dateGroup).map(([date, items]) => ({
+      date,
+      items,
+    }));
 
-    result[year] = sorted;
+    result[year] = grouped;
   });
 
   return result;
