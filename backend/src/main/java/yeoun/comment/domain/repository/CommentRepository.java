@@ -41,7 +41,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
             LEFT JOIN c.likes l
             WHERE c.question.id = :questionId AND (c.user.id <> :userId or c.user.id is null)
             GROUP BY c
-            ORDER BY COUNT(l.id) DESC
+            ORDER BY COUNT(l.id) DESC, c.createTime asc 
             """)
     Slice<Comment> findAllByQuestionIdExcludeMineOrderByLikeCountDesc(
             @Param("questionId") Long questionId,
