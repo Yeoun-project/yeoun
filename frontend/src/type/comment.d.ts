@@ -16,6 +16,7 @@ export interface Comment {
   likeCount: number;
   isLike: boolean;
   createTime: string;
+  isDeleted: boolean;
 }
 
 export interface CommentList {

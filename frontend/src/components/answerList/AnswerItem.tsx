@@ -11,6 +11,7 @@ const AnswerItem = ({
   isLike,
   likeCount,
   content,
+  isDeleted,
   reportBtnClick,
   onSubmit,
   onCancel,
@@ -22,6 +23,7 @@ const AnswerItem = ({
   isLike: boolean;
   likeCount: number;
   content: string;
+  isDeleted?: boolean;
   reportBtnClick: () => void;
   onSubmit: () => void;
   onCancel: () => void;
@@ -45,17 +47,19 @@ const AnswerItem = ({
     <div className="flex min-h-12 justify-between">
       <div className="gap-21px w-[calc(100%-100px)] break-all">
         {my && <p className="font-desc text-[#FC90D1]">{content}</p>}
-        {!my && <p className="font-desc text-[14px]">{content}</p>}
+        {!my && !isDeleted && <p className="font-desc text-[14px]">{content}</p>}
+        {isDeleted && <p className="font-desc text-[#AAAAAA]">이 답변은 더 이상 머물지 않습니다</p>}
       </div>
       <div className="flex gap-4">
         <div className="justify-between">
           <button
             className={`min-h-6 min-w-6 cursor-pointer bg-contain bg-center bg-no-repeat ${
-              isLike
+              !isDeleted &&
+              (isLike
                 ? 'bg-[url(/icons/filledHeart.svg)]'
                 : my
                   ? 'bg-[url(/icons/filledHeart.svg)]'
-                  : 'bg-[url(/icons/heart.svg)]'
+                  : 'bg-[url(/icons/heart.svg)]')
             }`}
             onClick={() => {
               if (!my) {
@@ -68,9 +72,11 @@ const AnswerItem = ({
               }
             }}
           />
-          <p className="font-desc text-center text-[14px]">{likeCount.toString()}</p>
+          {!isDeleted && (
+            <p className="font-desc text-center text-[14px]">{likeCount.toString()}</p>
+          )}
         </div>
-        {!my && (
+        {!my && !isDeleted && (
           <div className="justify-between">
             <button
               className="min-h-6 min-w-6 cursor-pointer bg-[url(/icons/report.svg)] bg-contain bg-center bg-no-repeat"
