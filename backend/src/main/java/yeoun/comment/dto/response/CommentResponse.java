@@ -14,6 +14,7 @@ public class CommentResponse {
     private final String content;
     private final Long likeCount;
     private final Boolean isLike;
+    private final Boolean isDeleted;
     private final LocalDateTime createTime;
 
     public static CommentResponse of(
@@ -26,6 +27,7 @@ public class CommentResponse {
                 .isLike(isLike)
                 .likeCount(comment.getLikeCount())
                 .createTime(comment.getCreateTime())
+                .isDeleted(comment.getUser() == null)
                 .build();
     }
 

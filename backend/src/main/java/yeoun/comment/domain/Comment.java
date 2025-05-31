@@ -33,7 +33,7 @@ public class Comment {
     @Column(nullable = false)
     private Long likeCount = 0L;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -6,12 +6,21 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import yeoun.like.domain.Like;
 import yeoun.user.domain.User;
 
 @Repository
 public interface UserDeleteRepository extends JpaRepository<User, Long> {
+
+    @Query("select l.comment.id from Like l where l.user.id = :userId")
+    List<Long> findCommentIdsByUserLike(@Param("userId") Long userId);
+
     @Modifying
-    @Query("update Comment c set c.content = '이미 떠나간 여운입니다!', c.user.id = null where c.user.id = :userId")
+    @Query("update Comment c set c.likeCount = c.likeCount - 1 where c.id in :commentIds")
+    void updateLikeCount(@Param("commentIds") List<Long> commentIds);
+
+    @Modifying
+    @Query("update Comment c set c.content = '이 답변은 더 이상 머물지 않습니다', c.user.id = null where c.user.id = :userId")
     void updateComment(@Param("userId") Long userId);
 
     @Modifying
