@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { AlarmQuestion } from '../../type/auth/notification';
 import Circle from '../circle/Circle';
-import { getAlarmList } from '../../services/api/alarm/getNotificationList';
+import { getAlarmDetail, getAlarmList } from '../../services/api/alarm/getNotificationList';
 import { queryClient } from '../../utils/queryClient';
 
 const getElapsedTimeText = (createTime: string) => {
@@ -40,6 +40,8 @@ const AlarmItem = ({ id, content, createTime }: AlarmQuestion) => {
       onClick={() => {
         getAlarmList({});
         queryClient.invalidateQueries({ queryKey: ['alarmList'] });
+
+        getAlarmDetail(id);
         nav(`/question/${id}`);
       }}
       className="flex items-center border-b-1 border-[#AAAAAA] px-3 py-3"
