@@ -18,6 +18,7 @@ export interface Question {
   commentCount: number;
   categoryName: QuestionCategory;
   createTime: string;
+  isDeleted: boolean;
 }
 
 export interface QuestionList {
