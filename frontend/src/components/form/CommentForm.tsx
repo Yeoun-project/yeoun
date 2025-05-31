@@ -38,7 +38,7 @@ const CommentForm = ({
           name="comment"
           id="comment"
           maxLength={maxValue}
-          className={`font-desc z-30 h-[250px] w-full resize-none rounded-sm border px-5 py-4 text-base/relaxed backdrop-blur-xs outline-none placeholder:text-white ${error ? 'border-error/30 bg-error/5' : 'border-white/50 bg-white/5'} transition-colors`}
+          className={`font-desc z-30 h-[250px] w-full resize-none rounded-sm border px-5 py-4 text-base/relaxed backdrop-blur-xs outline-none placeholder:text-[#AAAAAA] ${error ? 'border-error/30 bg-error/5' : 'border-white/50 bg-white/5'} transition-colors`}
           placeholder={placeholder || '답변을 작성해주세요'}
         />
         <div className="font-desc w-full text-right text-sm">{`${commentValue.length || 0} / ${maxValue}`}</div>

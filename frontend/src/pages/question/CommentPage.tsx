@@ -73,6 +73,9 @@ const CommentPage = () => {
     setContent('');
 
     queryClient.invalidateQueries({ queryKey: ['comment', questionId, 'old'] });
+    queryClient.invalidateQueries({ queryKey: ['comment', questionId, 'latest'] });
+    queryClient.invalidateQueries({ queryKey: ['comment', questionId, 'like'] });
+
     modal.closeModal();
     navigate(`/question/${questionId}`, {
       replace: true,

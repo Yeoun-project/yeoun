@@ -132,7 +132,7 @@ const QuestionCommentPage = () => {
     if (questionDetail?.isAuthor) {
       toast.addToast.notification({
         title: '여운 등록 실패',
-        message: '본인 답변에는 여운을 남길 수 없어요!',
+        message: '본인 질문에는 여운을 남길 수 없어요!',
       });
     } else if (mycomment === null) {
       setQuestionReport(false);
@@ -142,10 +142,6 @@ const QuestionCommentPage = () => {
     } else {
       modal.openModal();
     }
-
-    console.log(mycomment);
-    console.log(questionReport);
-    console.log(commentReport);
   };
 
   if (!questionDetail) return null;
@@ -219,7 +215,6 @@ const QuestionCommentPage = () => {
               onSubmit={() => console.log('삭제')}
               onCancel={onClickCancel}
               questionId={questionId}
-              sortOrder={sortOrder}
             />
           </div>
         )}
@@ -238,7 +233,6 @@ const QuestionCommentPage = () => {
                 onSubmit={onSubmitModal}
                 onCancel={onClickCancel}
                 questionId={questionId}
-                sortOrder={sortOrder}
               />
             </div>
           ))}
@@ -251,15 +245,25 @@ const QuestionCommentPage = () => {
       {register && !commentReport && !questionReport && (
         <AvailableModal title="질문 당 답변" subTitle="답변" handleConfirm={handleConfirm} />
       )}
-      <div className="absolute bottom-0 w-full p-6">
-        <button
-          form="add-question"
-          className="font-desc h-[60px] w-full cursor-pointer rounded-xl bg-white py-4 font-bold text-black"
-          onClick={onClickComment}
-        >
-          답변 작성하기
-        </button>
-      </div>
+      {!questionDetail.isDeleted && (
+        <div className="absolute bottom-0 w-full p-6">
+          <button
+            form="add-question"
+            className="font-desc h-[60px] w-full cursor-pointer rounded-xl bg-white py-4 font-bold text-black"
+            onClick={onClickComment}
+          >
+            답변 작성하기
+          </button>
+        </div>
+      )}
+
+      {questionDetail.isDeleted && (
+        <div className="absolute bottom-0 w-full p-6">
+          <div className="font-desc h-[60px] w-full cursor-pointer py-4 text-center text-[#AAAAAA]">
+            작성자가 떠난 질문은 답변 등록이 불가합니다
+          </div>
+        </div>
+      )}
       {!!mycomment && !commentReport && !questionReport && (
         <Modal>
           <Modal.Header>

@@ -10,14 +10,12 @@ import CATEGORY from '../constant/category/Category';
 
 import { getAllQuestions } from '../services/api/question/getQuestions';
 
-import useGetInfiniteQuestion from '../hooks/queries/useGetInfiniteQuestion';
-
-import QuestionListYearSection from '../components/questionList/QuestionListYearSection';
-import ListMoreButton from '../components/questionList/ListMoreButton';
-import QuestionListByDate from '../components/questionList/QuestionListByDate';
-
 import { useScrollRestore } from '../hooks/useScrolLRestore';
 import useQuestionGroupByDate from '../hooks/useQuestionGroupByDate';
+import useGetInfiniteQuestion from '../hooks/queries/useGetInfiniteQuestion';
+
+import ListMoreButton from '../components/questionList/ListMoreButton';
+import RenderedQuestions from '../components/questionList/renderQuestions';
 
 const QuestionListPage = () => {
   const { scrollRef, handleScroll } = useScrollRestore();
@@ -56,21 +54,14 @@ const QuestionListPage = () => {
         {questionsYear.length > 0 && (
           <>
             <div className="font-desc gap-2.5 px-6 py-3 text-[14px]">
-              <p>💬 같은 날 올라온 질문 중, 답변이 많이 달린 질문부터 보여드려요 :)</p>
+              <p>💬 같은 날 올라온 질문 중, 최신 질문부터 보여드려요 :)</p>
             </div>
             <div
               className="no-scrollbar overflow-scroll pb-6"
               ref={scrollRef}
               onScroll={(e) => handleScroll(e)}
             >
-              {questionsYear.map((year) => (
-                <QuestionListYearSection key={year} year={year}>
-                  {questionsDate[year].map((date) => (
-                    <QuestionListByDate questions={date.items} />
-                  ))}
-                </QuestionListYearSection>
-              ))}
-
+              <RenderedQuestions questionsYear={questionsYear} questionsDate={questionsDate} />
               {/* 더보기 버튼 */}
               {hasNextPage && <ListMoreButton fetchNextPage={fetchNextPage} />}
             </div>

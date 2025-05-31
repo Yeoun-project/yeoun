@@ -73,6 +73,7 @@ const extnedsCategoryIconAndColor = {
 
 const QuestionPage = () => {
   const { state } = useLocation();
+  const [showToast, setShowToast] = useState(false);
   const navigate = useNavigate();
 
   const [checkQuestion, setCheckQuestion] = useState<boolean>();
@@ -82,13 +83,14 @@ const QuestionPage = () => {
   const toast = useToastStore();
 
   useEffect(() => {
-    if (state?.showToast) {
+    if (state?.showToast && !showToast) {
       toast.addToast.notification({
         title: '여운 등록 완료',
         message: '당신의 질문이 누군가의 마음에 여운을 남길 거예요.',
       });
+      setShowToast(true);
     }
-  }, []);
+  }, [state, showToast, toast]);
 
   const QuestionCategoryList = useMemo(() => extendsCategoryData(extnedsCategoryIconAndColor), []);
 
