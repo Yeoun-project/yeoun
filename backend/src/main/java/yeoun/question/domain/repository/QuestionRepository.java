@@ -38,9 +38,8 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     @Query(value = """
             SELECT question FROM Question question
             WHERE question.isFixed = false
-            order by question.createTime desc
             """)
-    Slice<Question> findAllOrderByCreateTimeDesc(Pageable pageable);
+    Slice<Question> findAllOrder(Pageable pageable);
 
 //    @Query("""
 //            SELECT question FROM Question question
@@ -54,9 +53,8 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
             SELECT question FROM Question question
             WHERE question.isFixed = false
             AND question.category.name = :category
-            ORDER BY question.createTime desc
             """)
-    Slice<Question> findAllByCategoryOrderByCreateTimeDesc(@Param("category") String category, Pageable pageable);
+    Slice<Question> findAllByCategory(@Param("category") String category, Pageable pageable);
 
     @Query("""
             SELECT question FROM Question question

@@ -1,8 +1,5 @@
 package yeoun.question.service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
 import jakarta.persistence.EntityManager;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -23,7 +20,6 @@ import org.springframework.stereotype.Service;
 import yeoun.user.domain.repository.UserRepository;
 import yeoun.user.service.UserService;
 
-import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -103,9 +99,9 @@ public class QuestionService {
     public QuestionListResponse getAllQuestions(String category, Pageable pageable) {
         Slice<Question> questionSlice;
         if (category == null || category.isBlank()) {
-            questionSlice = questionRepository.findAllOrderByCreateTimeDesc(pageable);
+            questionSlice = questionRepository.findAllOrder(pageable);
         } else {
-            questionSlice = questionRepository.findAllByCategoryOrderByCreateTimeDesc(category, pageable);
+            questionSlice = questionRepository.findAllByCategory(category, pageable);
         }
 
         List<QuestionResponse> questionResponseList = questionSlice.stream()
