@@ -17,7 +17,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     @Query("SELECT c FROM Comment c WHERE c.user.id = :userId AND c.question.id = :questionId")
     Optional<Comment> getCommentByUserId(@Param("userId") Long userId, @Param("questionId")Long questionId);
 
-    @Query("SELECT c FROM Comment c LEFT JOIN FETCH c.user LEFT JOIN FETCH c.question WHERE c.id = :id")
+    @Query("SELECT c FROM Comment c LEFT JOIN FETCH c.question WHERE c.id = :id")
     Optional<Comment> getCommentById(@Param("id") Long id);
 
     @Modifying
@@ -39,7 +39,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
             SELECT c
             FROM Comment c
             LEFT JOIN c.likes l
-            WHERE c.question.id = :questionId AND c.user.id <> :userId
+            WHERE c.question.id = :questionId AND (c.user.id <> :userId or c.user.id is null)
             GROUP BY c
             ORDER BY COUNT(l.id) DESC
             """)
