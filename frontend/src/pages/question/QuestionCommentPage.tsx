@@ -142,10 +142,6 @@ const QuestionCommentPage = () => {
     } else {
       modal.openModal();
     }
-
-    console.log(mycomment);
-    console.log(questionReport);
-    console.log(commentReport);
   };
 
   if (!questionDetail) return null;
