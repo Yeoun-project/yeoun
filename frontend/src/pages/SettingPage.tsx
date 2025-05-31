@@ -1,5 +1,3 @@
-import { useEffect } from 'react';
-
 import BackArrowButton from '../components/button/BackArrowButton';
 import useAuthStore from '../store/useAuthStore';
 import { useNavigate } from 'react-router-dom';
@@ -8,16 +6,10 @@ import { postNotification } from '../services/api/alarm/getNotification';
 import { useAlarmStore } from '../store/useAlarmStore';
 
 const SettingPage = () => {
-  const { notification, setNotification, fetchNotificationState } = useAlarmStore();
+  const { notification, setNotification } = useAlarmStore();
 
   const { userType, setUserType } = useAuthStore();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (userType === 'User') {
-      fetchNotificationState();
-    }
-  }, []);
 
   const onClickLogout = async () => {
     try {
