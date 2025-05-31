@@ -63,7 +63,7 @@ const EditorForm = ({
         }}
         onInput={onChange}
         data-placeholder={placeholder}
-        className={`!h-[160px] w-full resize-none rounded-[4px] border p-5 placeholder:text-white empty:before:content-[attr(data-placeholder)] focus:outline-none focus:before:content-[''] ${
+        className={`!h-[160px] w-full resize-none rounded-[4px] border p-5 placeholder:text-[#AAAAAA] before:opacity-50 empty:before:content-[attr(data-placeholder)] focus:outline-none focus:before:content-[''] ${
           hasError
             ? 'border-[#FF202080] bg-[#FF20200D] focus:border-[#FF202080]'
             : 'border-[#99999999] bg-[#ffffff1a]'
