@@ -20,7 +20,7 @@ public interface UserDeleteRepository extends JpaRepository<User, Long> {
     void updateLikeCount(@Param("commentIds") List<Long> commentIds);
 
     @Modifying
-    @Query("update Comment c set c.content = '이미 떠나간 여운입니다!', c.user.id = null where c.user.id = :userId")
+    @Query("update Comment c set c.content = '이 답변은 더 이상 머물지 않습니다', c.user.id = null where c.user.id = :userId")
     void updateComment(@Param("userId") Long userId);
 
     @Modifying
