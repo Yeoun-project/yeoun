@@ -3,11 +3,12 @@ import QuestionListItemByDate from './QuestionListItemByDate';
 
 interface QuestionsProps {
   questions: Question[];
+  isLast: boolean;
 }
 
-const QuestionListByDate = ({ questions }: QuestionsProps) => {
+const QuestionListByDate = ({ questions, isLast }: QuestionsProps) => {
   return (
-    <ul className="my-2 flex w-full flex-col border-b border-[#AAAAAA]">
+    <ul className={`my-2 flex w-full flex-col ${!isLast ? 'border-b border-[#AAAAAA]' : ''}`}>
       {questions.map((question) => (
         <QuestionListItemByDate
           key={question.id}

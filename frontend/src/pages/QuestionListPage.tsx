@@ -10,14 +10,12 @@ import CATEGORY from '../constant/category/Category';
 
 import { getAllQuestions } from '../services/api/question/getQuestions';
 
-import useGetInfiniteQuestion from '../hooks/queries/useGetInfiniteQuestion';
-
-import QuestionListYearSection from '../components/questionList/QuestionListYearSection';
-import ListMoreButton from '../components/questionList/ListMoreButton';
-import QuestionListByDate from '../components/questionList/QuestionListByDate';
-
 import { useScrollRestore } from '../hooks/useScrolLRestore';
 import useQuestionGroupByDate from '../hooks/useQuestionGroupByDate';
+import useGetInfiniteQuestion from '../hooks/queries/useGetInfiniteQuestion';
+
+import ListMoreButton from '../components/questionList/ListMoreButton';
+import RenderedQuestions from '../components/questionList/renderQuestions';
 
 const QuestionListPage = () => {
   const { scrollRef, handleScroll } = useScrollRestore();
@@ -63,14 +61,7 @@ const QuestionListPage = () => {
               ref={scrollRef}
               onScroll={(e) => handleScroll(e)}
             >
-              {questionsYear.map((year) => (
-                <QuestionListYearSection key={year} year={year}>
-                  {questionsDate[year].map((date) => (
-                    <QuestionListByDate questions={date.items} />
-                  ))}
-                </QuestionListYearSection>
-              ))}
-
+              <RenderedQuestions questionsYear={questionsYear} questionsDate={questionsDate} />
               {/* 더보기 버튼 */}
               {hasNextPage && <ListMoreButton fetchNextPage={fetchNextPage} />}
             </div>
