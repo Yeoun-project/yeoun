@@ -41,8 +41,10 @@ export default function AlarmManager() {
       };
     };
 
-    fetchSSE();
-    if (userType === 'User') fetchNotificationState();
+    if (userType === 'User') {
+      fetchSSE();
+      fetchNotificationState();
+    }
 
     return () => {
       eventSource.current?.close();
