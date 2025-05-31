@@ -15,7 +15,6 @@ const AnswerItem = ({
   onSubmit,
   onCancel,
   questionId,
-  sortOrder,
 }: {
   my: boolean;
   report: boolean;
@@ -27,7 +26,6 @@ const AnswerItem = ({
   onSubmit: () => void;
   onCancel: () => void;
   questionId: number;
-  sortOrder: 'old' | 'latest' | 'like';
 }) => {
   const toast = useToastStore();
   const queryClient = useQueryClient();
@@ -37,7 +35,9 @@ const AnswerItem = ({
       return changeCommentLike(id, isLike);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['comment', questionId, sortOrder] });
+      queryClient.invalidateQueries({ queryKey: ['comment', questionId, 'old'] });
+      queryClient.invalidateQueries({ queryKey: ['comment', questionId, 'latest'] });
+      queryClient.invalidateQueries({ queryKey: ['comment', questionId, 'like'] });
     },
   });
 

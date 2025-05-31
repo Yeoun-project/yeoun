@@ -219,7 +219,6 @@ const QuestionCommentPage = () => {
               onSubmit={() => console.log('삭제')}
               onCancel={onClickCancel}
               questionId={questionId}
-              sortOrder={sortOrder}
             />
           </div>
         )}
@@ -238,7 +237,6 @@ const QuestionCommentPage = () => {
                 onSubmit={onSubmitModal}
                 onCancel={onClickCancel}
                 questionId={questionId}
-                sortOrder={sortOrder}
               />
             </div>
           ))}
