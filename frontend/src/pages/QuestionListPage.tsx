@@ -85,7 +85,7 @@ const QuestionListPage = () => {
         />
         {questionsYear.length > 0 && (
           <>
-            <div className="flex items-center justify-start gap-2.5 px-6 py-4">
+            <div className="flex items-center justify-end gap-2.5 px-6 py-4">
               {SORTORDER_CHECKBOXS.map((option) => (
                 <CheckBox
                   key={option.id}
