@@ -21,6 +21,8 @@ public class CommentResponse {
             final Comment comment,
             final Boolean isLike
     ) {
+        System.out.println("시발 진짜 너무 하네 씨발 씨발 씨발"
+            + comment.getUser().getId());
         return CommentResponse.builder()
                 .id(comment.getId())
                 .content(comment.getContent())
