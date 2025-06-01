@@ -11,6 +11,7 @@ export interface Alarm {
   questionId: number;
   content: string;
   createTime: string;
+  category: QuestionCategory;
 }
 
 export interface AlarmList {

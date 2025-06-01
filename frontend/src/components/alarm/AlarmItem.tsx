@@ -31,27 +31,50 @@ const getElapsedTimeText = (createTime: string) => {
   return `${created.getMonth() + 1}월 ${created.getDate()}일`;
 };
 
-const AlarmItem = ({ id, content, createTime }: AlarmQuestion) => {
+const AlarmItem = ({ id, content, createTime, categoryName }: AlarmQuestion) => {
   const nav = useNavigate();
   const elapsedTimeText = getElapsedTimeText(createTime);
+
+  const highlightPersonCount = (content: string) => {
+    const regex = /(\d+명)/;
+    const match = content.match(regex);
+
+    if (!match) return content; // 매칭 없으면 그대로 반환
+
+    const [fullMatch] = match;
+    const splitParts = content.split(regex); // 정규식 기준으로 분할
+
+    return (
+      <>
+        {splitParts.map((part, idx) =>
+          part === fullMatch ? (
+            <span key={idx} className="text-[#FC90D1]">
+              {part}
+            </span>
+          ) : (
+            <span key={idx}>{part}</span>
+          )
+        )}
+      </>
+    );
+  };
 
   return (
     <div
       onClick={() => {
+        getAlarmDetail(id);
         getAlarmList({});
         queryClient.invalidateQueries({ queryKey: ['alarmList'] });
 
-        getAlarmDetail(id);
         nav(`/question/${id}`);
       }}
       className="flex items-center border-b-1 border-[#AAAAAA] px-3 py-3"
     >
       <div className="px-2">
-        {/* <Circle size={30} category={categoryName}></Circle> */}
-        <Circle size={30}></Circle>
+        <Circle size={30} category={categoryName}></Circle>
       </div>
       <div className="flex w-full flex-col px-3">
-        <p className="text-sm">{`${content}`}</p>
+        <p className="text-sm">{highlightPersonCount(content)}</p>
         <span className="text-right text-xs text-[#AAAAAA]">{elapsedTimeText}</span>
       </div>
     </div>
