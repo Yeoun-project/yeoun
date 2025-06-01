@@ -5,6 +5,7 @@ export interface AlarmQuestion {
   content: string;
   categoryName?: QuestionCategory;
   createTime: string;
+  isLast: boolean;
 }
 
 export interface Alarm {

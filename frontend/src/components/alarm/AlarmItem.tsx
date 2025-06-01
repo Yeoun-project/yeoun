@@ -31,7 +31,7 @@ const getElapsedTimeText = (createTime: string) => {
   return `${created.getMonth() + 1}월 ${created.getDate()}일`;
 };
 
-const AlarmItem = ({ id, content, createTime, categoryName }: AlarmQuestion) => {
+const AlarmItem = ({ id, content, createTime, categoryName, isLast }: AlarmQuestion) => {
   const nav = useNavigate();
   const elapsedTimeText = getElapsedTimeText(createTime);
 
@@ -68,7 +68,7 @@ const AlarmItem = ({ id, content, createTime, categoryName }: AlarmQuestion) => 
 
         nav(`/question/${id}`);
       }}
-      className="flex items-center border-b-1 border-[#AAAAAA] px-3 py-3"
+      className={`flex items-center ${!isLast ? 'border-b-1 border-[#AAAAAA]' : ''} px-3 py-3`}
     >
       <div className="px-2">
         <Circle size={30} category={categoryName}></Circle>
