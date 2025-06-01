@@ -24,7 +24,7 @@ public interface UserDeleteRepository extends JpaRepository<User, Long> {
     void updateComment(@Param("userId") Long userId);
 
     @Modifying
-    @Query("delete from Like l where l.user.id = :userId")
+    @Query(value = "delete from Like l where l.user.id = :userId", nativeQuery = true)
     void deleteLike(@Param("userId") Long userId);
 
     @Modifying
