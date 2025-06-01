@@ -83,6 +83,7 @@ public class NotificationService {
             Optional<Notification> old = notificationRepository.findOldNotification(receiverId, questionId, type.toString());
             if(old.isPresent()) {
                 notificationRepository.upCountAndUnRead(old.get().getId());
+                sendUnReadNotificationCount(receiverId);
                 return;
             }
         }
