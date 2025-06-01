@@ -24,7 +24,7 @@ import yeoun.question.domain.QuestionHistory;
 @Entity
 @Table(name = "user")
 @Getter
-@SQLDelete(sql = "UPDATE user SET delete_time = CURRENT_TIMESTAMP, uuid = 'deleted' , is_notification = false, email='deleted' WHERE id = ?") // soft delete
+@SQLDelete(sql = "UPDATE user SET delete_time = CURRENT_TIMESTAMP, o_auth_id = 'deleted', uuid = 'deleted' , is_notification = false, email='deleted' WHERE id = ?") // soft delete
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User implements UserDetails {
 
