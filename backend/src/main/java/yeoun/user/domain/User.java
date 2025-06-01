@@ -67,7 +67,7 @@ public class User implements UserDetails {
     private LocalDateTime deleteTime;
 
     // like : soft
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", cascade = {}, fetch = FetchType.LAZY)
     private List<Like> likes;
 
     // question : soft

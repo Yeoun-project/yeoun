@@ -17,8 +17,8 @@ public class UserWithdrawer {
     private final UserDeleteRepository userDeleteRepository;
 
     public void withdraw(final Boolean isHard, final Long userId) {
-        updateLikeCount(userId);
         if (isHard) {
+            updateLikeCount(userId);
             hardDeleteAll(userId);
         } else {
             softDeleteUser(userId);

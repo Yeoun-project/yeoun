@@ -6,8 +6,8 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public enum NotificationType {
 
-    COMMENT_LIKE("LIKE", "[%s]에 당신의 답변이 누군가에게 여운을 남겼어요! ❤", "[%s]에 당신의 답변이 <span className=\"text-[#FC90D1]\">%d명</span> 에게 여운을 남겼어요! ❤"),
-    NEW_COMMENT("COMMENT", "[%s]에 새로운 답변이 달렸어요!", "[%s]에 새로운 답변이 <span className=\"text-[#FC90D1]\">%d개</span> 달렸어요!");
+    COMMENT_LIKE("LIKE", "[%s]에 당신의 답변이 누군가에게 여운을 남겼어요! ❤", "[%s]에 당신의 답변이 n명 에게 여운을 남겼어요! ❤"),
+    NEW_COMMENT("COMMENT", "[%s]에 새로운 답변이 달렸어요!", "[%s]에 새로운 답변이 %d개 달렸어요!");
 
     public final String type;
     public final String[] content;
@@ -17,7 +17,7 @@ public enum NotificationType {
         this.content = content;
     }
 
-    public static String getContent(String type, String questionContent, long count, String senderName) {
+    public static String getContent(String type, String questionContent, long count) {
         if(count == 1)
             return String.format(NotificationType.valueOf(type).content[0], questionContent);
         else

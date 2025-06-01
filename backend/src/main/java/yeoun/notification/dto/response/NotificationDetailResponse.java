@@ -28,8 +28,7 @@ public class NotificationDetailResponse {
                     NotificationType.getContent(
                             notification.getNotificationType(),
                             notification.getQuestion().getContent(),
-                            notification.getCount(),
-                            notification.getSender().getName()
+                            notification.getCount()
                     )
             )
             .createTime(notification.getCreateTime())
