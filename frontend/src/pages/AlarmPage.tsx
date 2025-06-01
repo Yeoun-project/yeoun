@@ -11,7 +11,7 @@ import { useEffect } from 'react';
 const AlarmPage = () => {
   const [ref, inView] = useInView();
 
-  const { data, fetchNextPage, hasNextPage, isLoading } = useGetInfiniteNotification({
+  const { data, fetchNextPage, hasNextPage } = useGetInfiniteNotification({
     queryKey: ['alarmList'],
     getAlarm: getAlarmList,
   });
@@ -23,8 +23,6 @@ const AlarmPage = () => {
       fetchNextPage();
     }
   }, [inView, hasNextPage, fetchNextPage]);
-
-  if (isLoading) return;
 
   return (
     <>

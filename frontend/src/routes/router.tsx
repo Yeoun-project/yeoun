@@ -8,6 +8,7 @@ import PrivateRoute from './PrivateRoute.tsx';
 
 import HomePage from '../pages/HomePage.tsx';
 const QuestionPage = lazy(() => import('../pages/QuestionPage.tsx'));
+const AlarmPage = lazy(() => import('../pages/AlarmPage.tsx'));
 import AddQuestionPage from '../pages/AddQuestionPage.tsx';
 import SettingPage from '../pages/SettingPage.tsx';
 import UserDeletePage from '../pages/UserDeletePage.tsx';
@@ -26,7 +27,6 @@ import MyTodayAnswersPage from '../pages/todayQuestion/MyTodayAnswersPage.tsx';
 import MyTodayAnswerPage, {
   loader as TodayQuestionCommentLoader,
 } from '../pages/todayQuestion/MyTodayAnswerPage.tsx';
-import AlarmPage from '../pages/AlarmPage.tsx';
 
 import MyActivityPage from '../pages/my/MyActivityPage.tsx';
 import MyQuestionsPage from '../pages/my/MyQuestionsPage.tsx';
@@ -43,7 +43,14 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <HomePage /> },
       { path: '/setting', element: <SettingPage /> },
-      { path: '/notification', element: <AlarmPage /> },
+      {
+        path: '/notification',
+        element: (
+          <Suspense fallback={<QuestionPageFallback />}>
+            <AlarmPage />
+          </Suspense>
+        ),
+      },
       { path: '/user-delete', element: <UserDeletePage /> },
 
       {
