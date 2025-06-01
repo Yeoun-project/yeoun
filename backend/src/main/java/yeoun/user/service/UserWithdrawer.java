@@ -37,7 +37,8 @@ public class UserWithdrawer {
 
     private void hardDeleteAll(final Long userId) {
         List<Long> questionIdList = questionRepository.findAllIdsByUserId(userId);
-        userDeleteRepository.deleteLike(userId);
+        userDeleteRepository.deleteLike(userId, questionIdList);
+
         userDeleteRepository.deleteNotification(userId, questionIdList);
         userDeleteRepository.deleteUserHistory(userId);
         userDeleteRepository.deleteComment(userId, questionIdList);
