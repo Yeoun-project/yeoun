@@ -31,6 +31,7 @@ public class UserWithdrawer {
     }
 
     private void softDeleteUser(final Long userId) {
+        userDeleteRepository.updateLikeUserIdNull(userId);
         userRepository.deleteById(userId);
     }
 

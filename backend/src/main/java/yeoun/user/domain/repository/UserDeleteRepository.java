@@ -51,4 +51,8 @@ public interface UserDeleteRepository extends JpaRepository<User, Long> {
     @Query(value = "delete from user where id = :userId", nativeQuery = true)
     void hardDeleteUser(@Param("userId") Long userId);
 
+    @Modifying
+    @Query("update Like l set l.user = null where l.user.id = :userId")
+    void updateLikeUserIdNull(@Param("userId") Long userId);
+
 }

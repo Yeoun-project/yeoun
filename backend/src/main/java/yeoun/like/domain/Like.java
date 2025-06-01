@@ -24,7 +24,7 @@ public class Like {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
+    @JoinColumn(nullable = true)
     private User user;
 
     @ManyToOne

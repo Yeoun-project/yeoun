@@ -144,8 +144,7 @@ public class CommentService {
 
     private boolean isLikedByUser(final Comment comment, final Long userId) {
         return comment.getLikes().stream()
-                .anyMatch(like -> like.getUser().getId().equals(userId));
+                .anyMatch(like -> like.getUser()!=null && like.getUser().getId().equals(userId));
     }
-
 
 }
