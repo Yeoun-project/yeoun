@@ -1,4 +1,6 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+
 import { getNotification } from '../services/api/alarm/getNotification';
 
 interface AlarmState {
@@ -9,19 +11,25 @@ interface AlarmState {
   fetchNotificationState: () => Promise<void>;
 }
 
-export const useAlarmStore = create<AlarmState>((set) => {
-  return {
-    notification: false,
-    hasAlarm: false,
-    setNotification: (value) => set({ notification: value }),
-    setHasAlarm: (value) => set({ hasAlarm: value }),
-    fetchNotificationState: async () => {
-      try {
-        const response = await getNotification();
-        set({ notification: response.isNotification });
-      } catch (error) {
-        console.error('알림 상태 동기화 실패:', error);
-      }
-    },
-  };
-});
+export const useAlarmStore = create<AlarmState>()(
+  persist(
+    (set) => ({
+      notification: false,
+      hasAlarm: false,
+      setNotification: (value) => set({ notification: value }),
+      setHasAlarm: (value) => set({ hasAlarm: value }),
+      fetchNotificationState: async () => {
+        try {
+          const response = await getNotification();
+          set({ notification: response.isNotification });
+        } catch (error) {
+          console.error('알림 상태 동기화 실패:', error);
+        }
+      },
+    }),
+    {
+      name: 'alarm-storage',
+      partialize: (state) => ({ notification: state.notification }),
+    }
+  )
+);
