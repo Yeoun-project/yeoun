@@ -44,9 +44,9 @@ public class NotificationService {
 
     public SseEmitter getConnect(Long userId) {
         Optional<User> optionalUser = userRepository.findById(userId);
-        if(optionalUser.isEmpty() || !optionalUser.get().getIsNotification()) {
-            return null;
-        }
+//        if(optionalUser.isEmpty() || !optionalUser.get().getIsNotification()) {
+//            return null;
+//        }
         return sseService.getSseEmitter(userId, notificationRepository.getUnReadNotificationsCount(userId));
     }
 
@@ -83,6 +83,7 @@ public class NotificationService {
             Optional<Notification> old = notificationRepository.findOldNotification(receiverId, questionId, type.toString());
             if(old.isPresent()) {
                 notificationRepository.upCountAndUnRead(old.get().getId());
+                sendUnReadNotificationCount(receiverId);
                 return;
             }
         }

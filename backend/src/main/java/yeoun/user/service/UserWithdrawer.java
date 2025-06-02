@@ -17,8 +17,8 @@ public class UserWithdrawer {
     private final UserDeleteRepository userDeleteRepository;
 
     public void withdraw(final Boolean isHard, final Long userId) {
-        updateLikeCount(userId);
         if (isHard) {
+            updateLikeCount(userId);
             hardDeleteAll(userId);
         } else {
             softDeleteUser(userId);
@@ -31,12 +31,14 @@ public class UserWithdrawer {
     }
 
     private void softDeleteUser(final Long userId) {
+        userDeleteRepository.updateLikeUserIdNull(userId);
         userRepository.deleteById(userId);
     }
 
     private void hardDeleteAll(final Long userId) {
         List<Long> questionIdList = questionRepository.findAllIdsByUserId(userId);
-        userDeleteRepository.deleteLike(userId);
+        userDeleteRepository.deleteLike(userId, questionIdList);
+
         userDeleteRepository.deleteNotification(userId, questionIdList);
         userDeleteRepository.deleteUserHistory(userId);
         userDeleteRepository.deleteComment(userId, questionIdList);

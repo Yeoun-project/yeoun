@@ -11,7 +11,7 @@ import { useEffect } from 'react';
 const AlarmPage = () => {
   const [ref, inView] = useInView();
 
-  const { data, fetchNextPage, hasNextPage, isLoading } = useGetInfiniteNotification({
+  const { data, fetchNextPage, hasNextPage } = useGetInfiniteNotification({
     queryKey: ['alarmList'],
     getAlarm: getAlarmList,
   });
@@ -24,8 +24,6 @@ const AlarmPage = () => {
     }
   }, [inView, hasNextPage, fetchNextPage]);
 
-  if (isLoading) return;
-
   return (
     <>
       <main className="flex h-[100svh] flex-col">
@@ -33,12 +31,13 @@ const AlarmPage = () => {
         <div className="flex h-[calc(100%-140px)] flex-col">
           {alarmList.length === 0 && <FallBack desc="" subDesc="오늘은 조용한 하루였어요" />}
           <ul className="font-desc w-full">
-            {alarmList.map((item) => (
+            {alarmList.map((item, index) => (
               <AlarmItem
                 id={item.questionId}
                 content={item.content}
                 createTime={item.createTime}
                 categoryName={item.category}
+                isLast={index === alarmList.length - 1}
               />
             ))}
             <div ref={ref} style={{ visibility: 'hidden' }}>

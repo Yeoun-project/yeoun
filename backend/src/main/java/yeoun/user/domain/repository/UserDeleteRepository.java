@@ -24,8 +24,10 @@ public interface UserDeleteRepository extends JpaRepository<User, Long> {
     void updateComment(@Param("userId") Long userId);
 
     @Modifying
-    @Query("delete from Like l where l.user.id = :userId")
-    void deleteLike(@Param("userId") Long userId);
+    @Query(value = "delete l from `like` l "
+        + "join comment c on c.id=l.comment_id "
+        + "where l.user_id = :userId or c.question_id in :questionIds or c.user_id = :userId", nativeQuery = true)
+    void deleteLike(@Param("userId") Long userId, @Param("questionIds") List<Long> questionIds);
 
     @Modifying
     @Query("delete from Notification n where n.receiver.id = :userId or n.sender.id = :userId or n.question.id in :questionId")
@@ -50,5 +52,9 @@ public interface UserDeleteRepository extends JpaRepository<User, Long> {
     @Modifying
     @Query(value = "delete from user where id = :userId", nativeQuery = true)
     void hardDeleteUser(@Param("userId") Long userId);
+
+    @Modifying
+    @Query("update Like l set l.user = null where l.user.id = :userId")
+    void updateLikeUserIdNull(@Param("userId") Long userId);
 
 }

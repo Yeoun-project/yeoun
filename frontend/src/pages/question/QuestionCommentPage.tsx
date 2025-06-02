@@ -184,7 +184,7 @@ const QuestionCommentPage = () => {
               : ''}
           </span>
         </p>
-        {comments.length === 0 && !mycomment && (
+        {comments.length === 0 && !mycomment && !questionDetail.isDeleted && (
           <FallBack desc="아직 남겨진 여운이 없어요" subDesc="당신의 답변이 첫 여운이 되어주세요" />
         )}
         {(comments.length > 0 || !!mycomment) && (
