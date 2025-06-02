@@ -25,6 +25,12 @@ export default function AlarmManager() {
         setHasAlarm(event.data !== '0');
       });
 
+      eventSource.current.addEventListener('connect', (event) => {
+        queryClient.invalidateQueries({ queryKey: ['alarmList'] });
+        setHasAlarm(event.data !== '0');
+        console.log("socket 연결 성공")
+      });
+
       eventSource.current.onmessage = (event) => {
         queryClient.invalidateQueries({ queryKey: ['alarmList'] });
         setHasAlarm(event.data !== '0');
