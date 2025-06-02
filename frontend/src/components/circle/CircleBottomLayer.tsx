@@ -9,10 +9,10 @@ const CircleBottomLayer = ({ size = 150, animate = false, colors }: CircleLayerP
       fill="none"
       width={size}
       height={size}
-      viewBox="-3 6 168 155"
+      viewBox="-3 6 178 165"
       className={`absolute z-2 ${animate && 'animate-spin-circle-layer'}`}
     >
-      <g filter="url(#filter0_dddddd_98_1050)" opacity=".6">
+      <g filter="url(#filter0_dddddd_98_1050)" opacity=".4">
         <path
           fill="#fff"
           d="M30 120c14 59 70 36 94 18 52-48 30-63 35-76S121-1 65 18C8 37 2 76 30 120Z"

@@ -11,7 +11,7 @@ const CircleTopLayer = ({ size = 150, animate = false, colors }: CircleLayerProp
       height={size}
       fill="none"
       className={`absolute z-4 ${animate && 'animate-spin-circle-layer'}`}
-      viewBox="1 -2 150 162"
+      viewBox="1 -2 160 172"
     >
       <g filter="url(#filter0_dddddd_98_1052)" opacity=".6">
         <path
