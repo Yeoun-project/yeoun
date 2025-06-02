@@ -8,7 +8,7 @@ const CircleMiddleLayer = ({ size = 150, animate = false, colors }: CircleLayerP
     <svg
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
-      viewBox="3 2 170 160"
+      viewBox="-1 2 180 165"
       width={size}
       height={size}
       className={`absolute z-3 ${animate && 'animate-spin-circle-layer'}`}
