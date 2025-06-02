@@ -61,12 +61,16 @@ const AlarmItem = ({ id, content, createTime, categoryName, isLast }: AlarmQuest
 
   return (
     <div
-      onClick={() => {
-        getAlarmDetail(id);
-        getAlarmList({});
-        queryClient.invalidateQueries({ queryKey: ['alarmList'] });
+      onClick={async () => {
+        try {
+          await getAlarmDetail(id);
+          await getAlarmList({});
+          queryClient.invalidateQueries({ queryKey: ['alarmList'] });
 
-        nav(`/question/${id}`);
+          nav(`/question/${id}`);
+        } catch (err) {
+          console.log(err);
+        }
       }}
       className={`flex items-center ${!isLast ? 'border-b-1 border-[#AAAAAA]' : ''} px-3 py-3`}
     >
