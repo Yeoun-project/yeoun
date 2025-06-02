@@ -15,7 +15,8 @@ const useDeleteCommentMutation = () => {
 
   return useMutation({
     mutationFn: async (questionId: number) => deleteTodayQuestionComment(questionId),
-    onSuccess: async () => {
+    onSuccess: async (data, varibles) => {
+      console.log(varibles);
       await queryClient.invalidateQueries({
         queryKey: ['my', 'today-question', 'answers'],
       });
@@ -23,6 +24,11 @@ const useDeleteCommentMutation = () => {
       await queryClient.invalidateQueries({
         queryKey: [userType, 'today-question'],
       });
+
+      await queryClient.invalidateQueries({
+        queryKey: ['today-question', 'comment', varibles.toString()],
+      });
+
       addToast.notification({
         title: '여운 삭제 완료',
         message: '이 날의 여운은 더 이상 머물지 않아요.',
