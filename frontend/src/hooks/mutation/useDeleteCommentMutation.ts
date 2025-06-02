@@ -15,7 +15,7 @@ const useDeleteCommentMutation = () => {
 
   return useMutation({
     mutationFn: async (questionId: number) => deleteTodayQuestionComment(questionId),
-    onSuccess: async (data, varibles) => {
+    onSuccess: async (_, varibles) => {
       console.log(varibles);
       await queryClient.invalidateQueries({
         queryKey: ['my', 'today-question', 'answers'],
