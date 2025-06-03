@@ -77,7 +77,7 @@ const SettingPage = () => {
             <div
               onClick={() =>
                 window.open(
-                  'https://docs.google.com/forms/d/e/1FAIpQLSfVJyI_TuJHHbXotFaNuUnDhqEQF5Yt_lXL8tRxXl03IAFfOw/viewform?usp=sharing&ouid=110681974483144339268'
+                  'https://docs.google.com/forms/d/e/1FAIpQLSfVJyI_TuJHHbXotFaNuUnDhqEQF5Yt_lXL8tRxXl03IAFfOw/viewform'
                 )
               }
               className="px-6 py-4.5 transition-transform duration-150 active:shadow-inner"
