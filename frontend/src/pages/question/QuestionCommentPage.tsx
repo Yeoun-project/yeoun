@@ -20,6 +20,7 @@ import useCommentGroup from '../../hooks/queries/useCommentGroup';
 import useGetQuestionDetail from '../../hooks/queries/useGetQuestionDetail';
 import FallBack from '../../components/ui/FallBack';
 import Modal from '../../components/modal/Modal';
+import { queryClient } from '../../utils/queryClient';
 
 type sortOrder = 'old' | 'latest' | 'like';
 
@@ -47,6 +48,10 @@ const QuestionCommentPage = () => {
   const toast = useToastStore();
 
   useEffect(() => {
+    queryClient.invalidateQueries({ queryKey: ['comment', questionId, 'old'] });
+    queryClient.invalidateQueries({ queryKey: ['comment', questionId, 'latest'] });
+    queryClient.invalidateQueries({ queryKey: ['comment', questionId, 'like'] });
+
     if (state?.showToast) {
       toast.addToast.notification({
         title: '여운 등록 완료',

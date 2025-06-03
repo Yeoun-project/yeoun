@@ -65,24 +65,28 @@ const CommentPage = () => {
   };
   // 두 번째 모달 등록 버튼
   const onConfirm = async () => {
-    const response = await addQuestionComment(content, questionId);
-    console.log(response?.data);
+    try {
+      const response = await addQuestionComment(content, questionId);
+      console.log(response?.data);
 
-    // 등록 후 초기화
-    setSecond(false);
-    setContent('');
+      // 등록 후 초기화
+      setSecond(false);
+      setContent('');
 
-    queryClient.invalidateQueries({ queryKey: ['comment', questionId, 'old'] });
-    queryClient.invalidateQueries({ queryKey: ['comment', questionId, 'latest'] });
-    queryClient.invalidateQueries({ queryKey: ['comment', questionId, 'like'] });
+      queryClient.invalidateQueries({ queryKey: ['comment', questionId, 'old'] });
+      queryClient.invalidateQueries({ queryKey: ['comment', questionId, 'latest'] });
+      queryClient.invalidateQueries({ queryKey: ['comment', questionId, 'like'] });
 
-    modal.closeModal();
-    navigate(`/question/${questionId}`, {
-      replace: true,
-      state: {
-        showToast: true,
-      },
-    });
+      modal.closeModal();
+      navigate(`/question/${questionId}`, {
+        replace: true,
+        state: {
+          showToast: true,
+        },
+      });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
