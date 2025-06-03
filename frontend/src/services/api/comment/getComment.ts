@@ -7,11 +7,11 @@ type sortOrder = 'old' | 'latest' | 'like';
 
 // 답변 정렬 api
 const getCommentsUrl = (url: string, { id, sort = 'old' }: { id: number; sort: sortOrder }) => {
-  if (sort === 'old') return `${url}/${id}?sort=createTime,DESC`;
-  if (sort === 'latest') return `${url}/${id}?sort=createTime,ASC`;
+  if (sort === 'old') return `${url}/${id}?sort=createTime,ASC`;
+  if (sort === 'latest') return `${url}/${id}?sort=createTime,DESC`;
   if (sort === 'like') return `${url}/${id}?sort=createTime,LIKE`;
 
-  return `${url}/${id}?sort=createTime,DESC`;
+  return `${url}/${id}?sort=createTime,ASC`;
 };
 
 // 해당 질문의 모든 댓글 리스트 불러오기
