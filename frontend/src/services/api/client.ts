@@ -6,3 +6,22 @@ const client = axios.create({
 });
 
 export default client;
+
+client.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  async (error) => {
+    if (import.meta.env.PROD && error.response && error.response.status === 401) {
+      try {
+        localStorage.removeItem('auth-storage');
+        window.location.href = '/login';
+      } catch (error) {
+        console.log('interceptor Logout Error :', error);
+        return Promise.reject(error);
+      }
+    }
+
+    return Promise.reject(error);
+  }
+);
