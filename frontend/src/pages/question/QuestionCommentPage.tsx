@@ -117,7 +117,7 @@ const QuestionCommentPage = () => {
     setRegister(false);
     modal.closeModal();
     window.open(
-      'https://docs.google.com/forms/d/e/1FAIpQLScP20nRH81EhVu4RsfNM2CUtfSPwnoZFUIBSfSHu6fv6yCNLw/viewform?usp=dialog'
+      'https://docs.google.com/forms/d/e/1FAIpQLScP20nRH81EhVu4RsfNM2CUtfSPwnoZFUIBSfSHu6fv6yCNLw/viewform'
     );
   };
 
